@@ -12,21 +12,6 @@
                     </group>
                 </group>
             </xpath>
-            
-            <xpath expr="///field[@name='vat']" position="after">
-               
-                <field name="supplier_ntn" attrs="{'invisible': [('partner_type', 'not in', ['vendor'])]}"/>
-               
-            </xpath>
-            
-            <xpath expr="//group/group[2]/field[@name='category_id']" position="after">
-               
-                <field name="supplier_code" attrs="{'invisible': [('partner_type', 'not in', ['vendor'])]}"/>
-                   
-            </xpath>
-            
-            
-            
         </field>
     </record>
 
