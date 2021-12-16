@@ -1,0 +1,141 @@
+<odoo>
+
+    <record id="view_mrp_bom_form_inherit" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inherit</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="button_draft"
+                            type="object"
+                            string="Set To Draft"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('state', 'not in', ['done', 'rejected'])]}"
+                    />
+                    <button name="button_confirm"
+                            type="object"
+                            states="draft"
+                            string="Confirm"
+                            class="oe_highlight"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,done"/>
+                </header>
+            </xpath>
+
+            <xpath expr="//header//button[@name='button_confirm']" position="after">
+                <button name="button_approve"
+                        type="object"
+                        states="to_approve"
+                        string="Approve"
+                        class="oe_highlight"
+                        groups="eng_bom_approval.group_bom_approval"
+                />
+                <button name="button_reject"
+                        type="object"
+                        states="to_approve"
+                        string="Reject"
+                        class="oe_highlight"
+                        groups="eng_bom_approval.group_bom_approval"
+                />
+            </xpath>
+
+            <xpath expr="//field[@name='bom_line_ids']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='operation_ids']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='product_qty']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='code']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='type']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='company_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='picking_type_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='ready_to_produce']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='consumption']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_mrp_production_form_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='bom_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', bom_ids)]</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='bom_id']" position="after">
+                <field name="bom_ids" invisible="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_mrp_bom_form_inherits" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inherit</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="state"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_mrp_bom_filter_inherit" model="ir.ui.view">
+        <field name="name">mrp.bom.select</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.view_mrp_bom_filter"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//filter[@name='phantom']" position="after">
+                <filter string="Draft" name="draft_status" domain="[('state', '=', 'draft')]"/>
+                <filter string="Waiting For Approval" name="to_approve_status" domain="[('state', '=', 'to_approve')]"/>
+                <filter string="Done" name="done_status" domain="[('state', '=', 'done')]"/>
+                <filter string="Rejected" name="reject_status" domain="[('state', '=', 'rejected')]"/>
+            </xpath>
+            <separator/>
+            <xpath expr="//filter[@name='default_unit_of_measure']" position="after">
+                <filter string="Status" name="status" context="{'group_by': 'state'}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
