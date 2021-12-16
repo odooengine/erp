@@ -155,7 +155,7 @@ class ProductTemplateInherit(models.Model):
         return res
 
     def write(self, vals):
-        res = super(ProductTemplateInherit, self).write(vals)
+        # res = super(ProductTemplateInherit, self).write(vals)
         if 'calender_season_id' in vals or 'class_fabric_id' in vals or 'life_type_id' in vals or 'accessories_type_id' in vals or 'dept_id' in vals:
             todays_date = date.today()
             year = str(todays_date.year)
