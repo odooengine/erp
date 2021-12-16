@@ -147,17 +147,53 @@ class ProductTemplateInherit(models.Model):
             new_acc_name = ('A' + dept_code + accessory_code + '-' + season_code + crnt_year + '-' + '1000')
             print(new_acc_name)
             vals['name'] = new_acc_name
-            # vals.update({
-            #     'name': new_acc_name
-            # })
         elif vals['fabric'] == True:
             new_fab_name = (dept_code + life_code + fabric_code + '-' + season_code + crnt_year + '-' + '1000')
             print(new_fab_name)
             vals['name'] = new_fab_name
-            # vals.update({
-            #     'name': new_fab_name
-            # })
         res = super(ProductTemplateInherit, self).create(vals)
+        return res
+
+    def write(self, vals):
+        res = super(ProductTemplateInherit, self).write(vals)
+        if 'calender_season_id' in vals or 'class_fabric_id' in vals or 'life_type_id' in vals or 'accessories_type_id' in vals or 'dept_id' in vals:
+            todays_date = date.today()
+            year = str(todays_date.year)
+            crnt_year = year[2:]
+            if 'dept_id' in vals:
+                dept_record = self.env['class.department'].browse(vals['dept_id'])
+                dept_code = str(dept_record.code)
+            else:
+                dept_code = str(self.dept_id.code)
+            if 'accessories_type_id' in vals:
+                accessory_record = self.env['accessories.type'].browse(vals['accessories_type_id'])
+                accessory_code = str(accessory_record.code)
+            else:
+                accessory_code = str(self.accessories_type_id.code)
+            if 'calender_season_id' in vals:
+                season_record = self.env['calender.season'].browse(vals['calender_season_id'])
+                season_code = str(season_record.code)
+            else:
+                season_code = str(self.calender_season_id.code)
+            if 'life_type_id' in vals:
+                life_record = self.env['life.type'].browse(vals['life_type_id'])
+                life_code = str(life_record.code)
+            else:
+                life_code = str(self.life_type_id.code)
+            if 'class_fabric_id' in vals:
+                fabric_record = self.env['class.fabric'].browse(vals['class_fabric_id'])
+                fabric_code = str(fabric_record.code)
+            else:
+                fabric_code = str(self.class_fabric_id.code)
+            if self.accessories == True:
+                new_acc_name = ('A' + dept_code + accessory_code + '-' + season_code + crnt_year + '-' + '1000')
+                print(new_acc_name)
+                vals['name'] = new_acc_name
+            elif self.fabric == True:
+                new_fab_name = (dept_code + life_code + fabric_code + '-' + season_code + crnt_year + '-' + '1000')
+                print(new_fab_name)
+                vals['name'] = new_fab_name
+        res = super(ProductTemplateInherit, self).write(vals)
         return res
 
 
