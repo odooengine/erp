@@ -39,12 +39,15 @@
                                     <field name="department_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                     <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                     <field name="requisiton_responsible_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                    <field name="tech_pack" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+
                                 </group>
                                 <group>
                                     <field name="request_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                     <field name="receive_date" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
                                     <field name="date_end" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
                                     <field name="analytic_account_id" groups="analytic.group_analytic_accounting" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
+                                <field name="vendor_id" domain="[('supplier_rank', '=', 1)]" options="{'no_create': True, 'no_edit' : True}"/>
                                 </group>
                              </group>
                         <notebook>
@@ -56,7 +59,7 @@
                                         <field name="description"/>
                                         <field name="qty"/>
                                         <field name="uom"/>
-                                        <field name="partner_id" groups="material_purchase_requisitions.group_purchase_requisition_user,purchase.group_purchase_user,material_purchase_requisitions.group_purchase_requisition_manager,material_purchase_requisitions.group_purchase_requisition_department" attrs="{'readonly': [('requisition_type', '!=', 'purchase')]}" widget="many2many_tags"/>
+                                        <field name="partner_id" readonly="1" groups="material_purchase_requisitions.group_purchase_requisition_user,purchase.group_purchase_user,material_purchase_requisitions.group_purchase_requisition_manager,material_purchase_requisitions.group_purchase_requisition_department" attrs="{'readonly': [('requisition_type', '!=', 'purchase')]}" widget="many2many_tags"/>
                                     </tree>
                                 </field>
                                 <group>
