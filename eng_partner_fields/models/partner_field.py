@@ -48,11 +48,11 @@ class PartnerInherit(models.Model):
             
             
             if (supplier_code_obj and len(supplier_code_obj) > 1 )  and  (supplier_ntn_obj and len(supplier_ntn_obj) > 1 ):
-                raise ValidationError(_('Supplier code and ntn number must be unique!'))
+                raise ValidationError(_('Supplier Code and NTN# already exist!'))
             elif supplier_code_obj and len(supplier_code_obj) > 1:
-                raise ValidationError(_('supplier code number must be unique!'))
+                raise ValidationError(_('Supplier Code number already exists!'))
             elif supplier_ntn_obj and len(supplier_ntn_obj) > 1:
-                raise ValidationError(_('supplier ntn number must be unique!')) 
+                raise ValidationError(_('Supplier NTN# already exists!')) 
 #             if self.supplier_ntn:
 #                 self.supplier_ntn = self.supplier_ntn.upper()
 #                 return 
