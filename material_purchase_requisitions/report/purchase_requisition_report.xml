@@ -7,9 +7,116 @@
             model="material.purchase.requisition" 
             string="Purchase Requisition" 
             report_type="qweb-pdf"
-            name="material_purchase_requisitions.purchase_requisition" 
-            file="material_purchase_requisitions.purchase_requisition"
+            name="material_purchase_requisitions.report_requisistion_document_inh"
+            file="material_purchase_requisitions.report_requisistion_document_inh"
         />
+
+         <template id="report_requisistion_document_inh">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="doc">
+
+                        <div class="page">
+                            <div class="oe_structure"/>
+
+                            <h2 class="mt16">
+                                <span>Requisition # </span>
+                                <span t-field="doc.name"/>
+                            </h2>
+                            <div class="row">
+                                <div class="col-7">
+<!--                                    <span class="p1"><strong>Reference :</strong>-->
+<!--                                        <span class="p2" t-field="doc.name"/>-->
+<!--                                    </span><br/>-->
+
+                                    <spn class="p1"><strong>Employee :</strong>
+                                        <span class="p2" t-field="doc.employee_id.name"/>
+                                    </spn><br/>
+                                    <spn class="p1"><strong>Department :</strong>
+                                        <span class="p2" t-field="doc.department_id.name"/>
+                                    </spn><br/>
+                                    <spn class="p1"><strong>Tech Pak :</strong>
+                                        <span class="p2" t-field="doc.tech_pack"/>
+                                    </spn><br/>
+                                </div>
+                                <div class="col-6">
+                                    <span class="p1"><strong>Requisition Date :</strong>
+                                        <span t-field="doc.request_date"/>
+                                    </span><br/>
+                                    <span class="p1"><strong>Vendor :</strong>
+                                        <span t-field="doc.vendor_id.name"/>
+                                    </span><br/>
+                                    <span class="p1"><strong>Company :</strong>
+                                        <span t-field="doc.company_id.name"/>
+                                    </span><br/>
+                                </div>
+                            </div>
+                            <br/>
+                            <t t-set="total_amount" t-value="0"/>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr >
+<!--                                        <th class="text-nowrap text-center">-->
+<!--                                            <strong>Requisition Action</strong>-->
+<!--                                        </th>-->
+                                        <th class="text-nowrap">
+                                            <strong>Product</strong>
+                                        </th>
+<!--                                        <th class="text-nowrap text-center">-->
+<!--                                            <strong>Article No</strong>-->
+<!--                                        </th>-->
+<!--                                        <th class="text-nowrap text-center">-->
+<!--                                            <strong>Finish No</strong>-->
+<!--                                        </th>-->
+                                        <th class="text-nowrap text-center">
+                                            <strong>Quantity</strong>
+                                        </th >
+                                        <th class="text-nowrap text-center">
+                                            <strong>Uom</strong>
+                                        </th>
+<!--                                        <th class="text-nowrap text-center">-->
+<!--                                            <strong>Vendor</strong>-->
+<!--                                        </th>-->
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tbody">
+                                    <t t-foreach="doc.requisition_line_ids" t-as="line">
+                                        <tr>
+<!--                                            <td name="td_id" class="text-center" >-->
+<!--                                                <span t-field="line.requisition_type"/>-->
+<!--                                            </td>-->
+                                            <td class="div_tb" >
+                                                <span t-field="line.product_id.name"/>
+                                            </td>
+<!--                                            <td class="text-center" >-->
+<!--                                                <span t-field="line.product_id.article_no"/>-->
+<!--                                            </td>-->
+<!--                                            <td class="text-center" >-->
+<!--                                                <span t-field="line.product_id.finish_no"/>-->
+<!--                                            </td>-->
+                                            <td class="text-center" >
+                                                <span t-field="line.qty"/>
+                                            </td>
+                                            <td class="text-center" >
+                                                <span t-field="line.uom.name" />
+                                            </td>
+<!--                                            <td class="text-center" >-->
+<!--                                                <span t-field="line.partner_id.name"/>-->
+<!--                                            </td>-->
+                                        </tr>
+                                    </t>
+                                    <br/>
+
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
         
         <template id="purchase_requisition">
             <t t-call="web.html_container">
