@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <template id="sale_template_inherit" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@class='page']" position="after">
+            <br/>
+            <br/>
+            <br/>
+            <div style="width: 450px; height: 100px; display: inline-block;">
+                <div class="row mt32 mb32">
+                    <div class="col-8">
+                        <strong>Prepared By: </strong><span t-field="doc.user_id"/>
+                    </div>
+                    <div class="col-8">
+                        <strong>Auth By: </strong><span t-field="doc.approve_by_id"/>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
