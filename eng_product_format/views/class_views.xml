@@ -4,11 +4,12 @@
         <field name="name">class.fabric.form</field>
         <field name="model">class.fabric</field>
         <field name="arch" type="xml">
-            <form string="Class Fabric">
+            <form string="Fabric">
                 <sheet>
                     <group>
                         <group>
                             <field name="name" required="1"/>
+                            <field name="code" required="1"/>
                         </group>
                     </group>
                 </sheet>
@@ -27,6 +28,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="code"/>
             </tree>
         </field>
     </record>
@@ -37,6 +39,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="code"/>
             </search>
         </field>
     </record>
@@ -44,7 +47,7 @@
     <!--  Main Actions-->
 
     <record id="action_class_fabric_view" model="ir.actions.act_window">
-        <field name="name">Class Fabric</field>
+        <field name="name">Fabric</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">class.fabric</field>
         <field name="view_mode">tree,form</field>
@@ -59,7 +62,7 @@
     <!--  Main Menus-->
 
     <menuitem id="menu_class_fabric"
-              name="Class Fabric"
+              name="Fabric"
               parent="stock.menu_stock_config_settings"
               action="action_class_fabric_view"
     />

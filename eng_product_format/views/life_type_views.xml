@@ -1,10 +1,10 @@
 <odoo>
 
-    <record id="view_calender_season_form" model="ir.ui.view">
-        <field name="name">calender.season.form</field>
-        <field name="model">calender.season</field>
+    <record id="view_life_type_form" model="ir.ui.view">
+        <field name="name">life.type.form</field>
+        <field name="model">life.type</field>
         <field name="arch" type="xml">
-            <form string="Season">
+            <form string="Life Type">
                 <sheet>
                     <group>
                         <group>
@@ -22,9 +22,9 @@
         </field>
     </record>
 
-    <record id="view_calender_season_tree" model="ir.ui.view">
-        <field name="name">calender.season.tree</field>
-        <field name="model">calender.season</field>
+    <record id="view_life_type_tree" model="ir.ui.view">
+        <field name="name">life.type.tree</field>
+        <field name="model">life.type</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -33,9 +33,9 @@
         </field>
     </record>
 
-    <record id="view_calender_season_search" model="ir.ui.view">
-        <field name="name">calender.season.search</field>
-        <field name="model">calender.season</field>
+    <record id="view_life_type_search" model="ir.ui.view">
+        <field name="name">life.type.search</field>
+        <field name="model">life.type</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -46,12 +46,12 @@
 
     <!--  Main Actions-->
 
-    <record id="action_calender_season_view" model="ir.actions.act_window">
-        <field name="name">Season</field>
+    <record id="action_life_type_view" model="ir.actions.act_window">
+        <field name="name">Life Type</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">calender.season</field>
+        <field name="res_model">life.type</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_calender_season_tree"/>
+        <field name="view_id" ref="view_life_type_tree"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No Record Found. Let's Create..........
@@ -61,10 +61,10 @@
 
     <!--  Main Menus-->
 
-    <menuitem id="menu_calender_season"
-              name="Season"
+    <menuitem id="menu_life_type"
+              name="Life Type"
               parent="stock.menu_stock_config_settings"
-              action="action_calender_season_view"
+              action="action_life_type_view"
     />
 
 </odoo>

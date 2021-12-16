@@ -24,9 +24,12 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'views/accessories_type_views.xml',
         'views/age_group_views.xml',
         'views/calender_season_views.xml',
         'views/class_views.xml',
+        'views/department_views.xml',
+        'views/life_type_views.xml',
         'views/line_item_views.xml',
         'views/product_group_views.xml',
         'views/size_views.xml',
