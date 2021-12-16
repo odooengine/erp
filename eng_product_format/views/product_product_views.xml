@@ -5,17 +5,34 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="after">
+                <div name="options_types">
+                    <div>
+                        <field name="accessories"/>
+                        <label for="accessories"/>
+                    </div>
+                    <div>
+                        <field name="fabric"/>
+                        <label for="fabric"/>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>
+            </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
                 <field name="age_group_id"/>
                 <field name="calender_season_id"/>
                 <field name="class_fabric_id"/>
+                <field name="dept_id"/>
                 <field name="product_gender"/>
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="line_item_id"/>
                 <field name="product_group_id"/>
                 <field name="size_range_id"/>
-                <field name="life_type"/>
+                <field name="life_type_id"/>
+                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)]}"/>
             </xpath>
         </field>
     </record>

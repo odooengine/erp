@@ -22,6 +22,7 @@ class CalenderSeason(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Name', tracking=True)
+    code = fields.Char(string='Code', tracking=True)
 
 
 class ClassFabric(models.Model):
@@ -31,6 +32,7 @@ class ClassFabric(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Name', tracking=True)
+    code = fields.Char(string='Code', tracking=True)
 
 
 class LineItem(models.Model):
@@ -60,41 +62,137 @@ class SizeRange(models.Model):
     name = fields.Char(string='Name', tracking=True)
 
 
+class Department(models.Model):
+    _name = 'class.department'
+    _description = 'Department'
+    _rec_name = 'name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Name', tracking=True)
+    code = fields.Char(string='Code', tracking=True)
+
+
+class AccessoriesType(models.Model):
+    _name = 'accessories.type'
+    _description = 'Accessories Type'
+    _rec_name = 'name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Name', tracking=True)
+    code = fields.Char(string='Code', tracking=True)
+
+
+class LifeType(models.Model):
+    _name = 'life.type'
+    _description = 'Life Type'
+    _rec_name = 'name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Name', tracking=True)
+    code = fields.Char(string='Code', tracking=True)
+
+
 class ProductTemplateInherit(models.Model):
     _inherit = 'product.template'
 
     age_group_id = fields.Many2one('age.group', string='Age Group')
-    calender_season_id = fields.Many2one('calender.season', string='Calender Season')
-    class_fabric_id = fields.Many2one('class.fabric', string='Class Fabric')
+    calender_season_id = fields.Many2one('calender.season', string='Season')
+    class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
     line_item_id = fields.Many2one('line.item', string='Line Item')
     product_group_id = fields.Many2one('product.group', string='Product Group')
     size_range_id = fields.Many2one('size.range', string='Size Range')
+    dept_id = fields.Many2one('class.department', string='Department')
+    accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
     product_gender = fields.Selection([('men', 'Men'),
                                        ('women', 'Women'),
                                        ('boys', 'Boys'),
                                        ('girls', 'Girls'),
                                        ], string='Product Gender')
 
-    life_type = fields.Selection([('outlet', 'Outlet'),
-                                  ('regular', 'Regular'),
-                                  ], string='Life Type')
+    life_type_id = fields.Many2one('life.type', string='Life Type')
+
+    accessories = fields.Boolean(string='Accessories')
+    fabric = fields.Boolean(string='Fabric')
+
+    @api.onchange('accessories')
+    def onchange_accessories(self):
+        if self.accessories == True:
+            self.fabric = False
+        elif self.accessories == False:
+            self.fabric = True
+
+    @api.onchange('fabric')
+    def onchange_fabric(self):
+        if self.fabric == True:
+            self.accessories = False
+        elif self.fabric == False:
+            self.accessories = True
+
+    @api.model
+    def create(self, vals):
+        todays_date = date.today()
+        year = str(todays_date.year)
+        crnt_year = year[2:]
+        dept_record = self.env['class.department'].browse(vals['dept_id'])
+        dept_code = str(dept_record.code)
+        accessory_record = self.env['accessories.type'].browse(vals['accessories_type_id'])
+        accessory_code = str(accessory_record.code)
+        season_record = self.env['calender.season'].browse(vals['calender_season_id'])
+        season_code = str(season_record.code)
+        life_record = self.env['life.type'].browse(vals['life_type_id'])
+        life_code = str(life_record.code)
+        fabric_record = self.env['class.fabric'].browse(vals['class_fabric_id'])
+        fabric_code = str(fabric_record.code)
+        if vals['accessories'] == True:
+            new_acc_name = ('A' + dept_code + accessory_code + '-' + season_code + crnt_year + '-' + '1000')
+            print(new_acc_name)
+            vals['name'] = new_acc_name
+            # vals.update({
+            #     'name': new_acc_name
+            # })
+        elif vals['fabric'] == True:
+            new_fab_name = (dept_code + life_code + fabric_code + '-' + season_code + crnt_year + '-' + '1000')
+            print(new_fab_name)
+            vals['name'] = new_fab_name
+            # vals.update({
+            #     'name': new_fab_name
+            # })
+        res = super(ProductTemplateInherit, self).create(vals)
+        return res
 
 
 class ProductProductInherit(models.Model):
     _inherit = 'product.product'
 
     age_group_id = fields.Many2one('age.group', string='Age Group')
-    calender_season_id = fields.Many2one('calender.season', string='Calender Season')
-    class_fabric_id = fields.Many2one('class.fabric', string='Class Fabric')
+    calender_season_id = fields.Many2one('calender.season', string='Season')
+    class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
     line_item_id = fields.Many2one('line.item', string='Line Item')
     product_group_id = fields.Many2one('product.group', string='Product Group')
     size_range_id = fields.Many2one('size.range', string='Size Range')
+    dept_id = fields.Many2one('class.department', string='Department')
+    accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
     product_gender = fields.Selection([('men', 'Men'),
                                        ('women', 'Women'),
                                        ('boys', 'Boys'),
                                        ('girls', 'Girls'),
                                        ], string='Product Gender')
 
-    life_type = fields.Selection([('outlet', 'Outlet'),
-                                  ('regular', 'Regular'),
-                                  ], string='Life Type')
+    life_type_id = fields.Many2one('life.type', string='Life Type')
+
+    accessories = fields.Boolean(string='Accessories')
+    fabric = fields.Boolean(string='Fabric')
+
+    @api.onchange('accessories')
+    def onchange_accessories(self):
+        if self.accessories == True:
+            self.fabric = False
+        elif self.accessories == False:
+            self.fabric = True
+
+    @api.onchange('fabric')
+    def onchange_fabric(self):
+        if self.fabric == True:
+            self.accessories = False
+        elif self.fabric == False:
+            self.accessories = True
