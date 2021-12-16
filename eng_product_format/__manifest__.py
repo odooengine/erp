@@ -24,6 +24,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/sequence.xml',
         'views/accessories_type_views.xml',
         'views/age_group_views.xml',
         'views/calender_season_views.xml',

@@ -95,6 +95,8 @@ class LifeType(models.Model):
 class ProductTemplateInherit(models.Model):
     _inherit = 'product.template'
 
+    name_seq = fields.Char(string='Sequence')
+
     age_group_id = fields.Many2one('age.group', string='Age Group')
     calender_season_id = fields.Many2one('calender.season', string='Season')
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
@@ -130,6 +132,10 @@ class ProductTemplateInherit(models.Model):
 
     @api.model
     def create(self, vals):
+        sequence = self.env.ref('eng_product_format.product_sequence')
+        vals['name'] = sequence.next_by_id()
+        vals['name_seq'] = vals['name']
+
         todays_date = date.today()
         year = str(todays_date.year)
         crnt_year = year[2:]
@@ -144,11 +150,11 @@ class ProductTemplateInherit(models.Model):
         fabric_record = self.env['class.fabric'].browse(vals['class_fabric_id'])
         fabric_code = str(fabric_record.code)
         if vals['accessories'] == True:
-            new_acc_name = ('A' + dept_code + accessory_code + '-' + season_code + crnt_year + '-' + '1000')
+            new_acc_name = ('A' + dept_code + accessory_code + '-' + season_code + crnt_year + '-' + vals['name'])
             print(new_acc_name)
             vals['name'] = new_acc_name
         elif vals['fabric'] == True:
-            new_fab_name = (dept_code + life_code + fabric_code + '-' + season_code + crnt_year + '-' + '1000')
+            new_fab_name = (dept_code + life_code + fabric_code + '-' + season_code + crnt_year + '-' + vals['name'])
             print(new_fab_name)
             vals['name'] = new_fab_name
         res = super(ProductTemplateInherit, self).create(vals)
@@ -156,7 +162,7 @@ class ProductTemplateInherit(models.Model):
 
     def write(self, vals):
         # res = super(ProductTemplateInherit, self).write(vals)
-        if 'calender_season_id' in vals or 'class_fabric_id' in vals or 'life_type_id' in vals or 'accessories_type_id' in vals or 'dept_id' in vals:
+        if 'calender_season_id' in vals or 'class_fabric_id' in vals or 'life_type_id' in vals or 'accessories_type_id' in vals or 'dept_id' in vals or 'accessories' in vals or 'fabric' in vals:
             todays_date = date.today()
             year = str(todays_date.year)
             crnt_year = year[2:]
@@ -185,12 +191,23 @@ class ProductTemplateInherit(models.Model):
                 fabric_code = str(fabric_record.code)
             else:
                 fabric_code = str(self.class_fabric_id.code)
-            if self.accessories == True:
-                new_acc_name = ('A' + dept_code + accessory_code + '-' + season_code + crnt_year + '-' + '1000')
+
+            if 'accessories' in vals:
+                acc_rec = vals['accessories']
+            else:
+                acc_rec = self.accessories
+            if 'fabric' in vals:
+                fab_rec = vals['fabric']
+            else:
+                fab_rec = self.fabric
+            # if self.accessories == True:
+            if acc_rec:
+                new_acc_name = ('A' + dept_code + accessory_code + '-' + season_code + crnt_year + '-' + self.name_seq)
                 print(new_acc_name)
                 vals['name'] = new_acc_name
-            elif self.fabric == True:
-                new_fab_name = (dept_code + life_code + fabric_code + '-' + season_code + crnt_year + '-' + '1000')
+            # elif self.fabric == True:
+            elif fab_rec:
+                new_fab_name = (dept_code + life_code + fabric_code + '-' + season_code + crnt_year + '-' + self.name_seq)
                 print(new_fab_name)
                 vals['name'] = new_fab_name
         res = super(ProductTemplateInherit, self).write(vals)

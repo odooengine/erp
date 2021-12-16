@@ -26,6 +26,7 @@
                 <field name="class_fabric_id" attrs="{'required': [('fabric', '=', True)]}"/>
                 <field name="dept_id" required="1"/>
                 <field name="product_gender"/>
+                <field name="name_seq" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="line_item_id"/>
