@@ -22,17 +22,17 @@
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
                 <field name="age_group_id"/>
-                <field name="calender_season_id" invisible="1"/>
-                <field name="class_fabric_id" invisible="1"/>
-                <field name="dept_id" invisible="1"/>
+                <field name="calender_season_id"/>
+                <field name="class_fabric_id"/>
+                <field name="dept_id"/>
                 <field name="product_gender"/>
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="line_item_id"/>
                 <field name="product_group_id"/>
                 <field name="size_range_id"/>
-                <field name="life_type_id" invisible="1"/>
-                <field name="accessories_type_id" invisible="1"/>
+                <field name="life_type_id"/>
+                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)]}"/>
             </xpath>
         </field>
     </record>
