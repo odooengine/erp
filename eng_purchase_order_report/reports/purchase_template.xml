@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="purchase_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <div class="text-center">
+                            <h3>
+                                <strong>Engine</strong>
+                            </h3>
+                        </div>
+                        <div class="text-center">
+                            <h3>
+                                <strong>Purchase Order</strong>
+                            </h3>
+                        </div>
+                        <br/>
+                        <div class="row" id="journal_information">
+                            <div class="col-6">
+                                <div>
+                                    <strong>Supplier Code : </strong>
+                                    <span t-field="doc.partner_id.supplier_code"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Supplier : </strong>
+                                    <span t-field="doc.partner_id"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Contact Person : </strong>
+<!--                                    <span t-field="o.journal_type"/>-->
+                                </div>
+                                <div class="text-left">
+                                    <strong>Address : </strong>
+                                    <span t-field="doc.partner_id.street"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Contact No# : </strong>
+                                    <span t-field="doc.partner_id.mobile"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Supplier NTN# : </strong>
+                                    <span t-field="doc.partner_id.supplier_ntn"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Reference# : </strong>
+                                    <span t-field="doc.partner_ref"/>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div>
+                                    <strong>PO No# : </strong>
+                                    <span t-field="doc.name"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Issue Date : </strong>
+                                    <span t-esc="doc.date_order"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Delivery Date : </strong>
+                                    <span t-esc="doc.date_planned"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Delivery To : </strong>
+                                    <span t-esc="doc.picking_type_id.name"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Total Designs : </strong>
+                                    <span t-esc="doc.total_design"/>
+                                </div>
+                                <div class="text-left">
+                                    <strong>Total Pairs : </strong>
+                                    <span t-esc="doc.total_pair"/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-bordered">
+                            <thead class="text-center" style="background-color:#eeeeee; font-size:14px; font-weight:600;">
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Price Unit</th>
+                                <th>Taxes</th>
+                                <th>Subtotal</th>
+                           </thead>
+                            <tbody class="text-center" style="font-size:12px;">
+                                <tr t-foreach="doc.order_line" t-as="line">
+                                    <td>
+                                        <span t-field="line.product_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_qty"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.price_unit"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.taxes_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.price_subtotal"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <div style="width: 450px; height: 100px; display: inline-block;">
+                            <table>
+                                <tr>
+                                    <h6><strong>Picking Instructions: </strong><span t-field="doc.packing_instruction"/></h6>
+                                </tr>
+                                <br/>
+                            </table>
+                            <div class="row mt32 mb32">
+                                <div class="col-6">
+                                    <strong>Branding:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Sock Label:</strong><t t-if="doc.sock_label"><span class="far fa-check-square"/></t>
+<!--                                    <span t-field="doc.sock_label"/>-->
+                                </div>
+                                <div class="col-6">
+                                    <strong>Embossing Stamp:</strong><span t-field="doc.embossing_stamp"/>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Sock Stamp:</strong><span t-field="doc.sock_stamp"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row mt32 mb32">
+                                <div class="col-4">
+                                    <strong>Special Instructions:</strong>
+<!--                                    <span t-field="doc.special_instruction"/>-->
+                                </div>
+                                <div class="col-8">
+                                    <span t-field="doc.special_instruction"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row mt32 mb32">
+                                <div class="col-8">
+                                    <strong>Payment Terms: </strong><span t-field="doc.payment_term_id"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row mt32 mb32">
+                                <div class="col-6">
+                                    <strong>P/D Officer:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Merchandizing Manager:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>General Manager:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Supplier:</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,28 @@
+<odoo>
+
+    <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="total_design"/>
+                <field name="total_pair"/>
+            </xpath>
+
+            <xpath expr="//field[@name='fiscal_position_id']" position="after">
+                <field name="packing_instruction"/>
+                <field name="special_instruction"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="before">
+                <field name="sock_label"/>
+                <field name="embossing_stamp"/>
+                <field name="sock_stamp"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
