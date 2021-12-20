@@ -13,6 +13,9 @@
 
             <xpath expr="//field[@name='fiscal_position_id']" position="after">
                 <field name="packing_instruction"/>
+            </xpath>
+
+            <xpath expr="//group[@name='other_info']" position="inside">
                 <field name="special_instruction"/>
             </xpath>
 
