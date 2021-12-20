@@ -14,11 +14,13 @@ class PartnerInherit(models.Model):
                               ('frenchise', 'Frenchise'),
                               ('owned', 'Owned'),
                               ], string='Partner Type')
-     
-     
+
     supplier_code = fields.Char(string = 'Supplier Code') 
-    supplier_ntn = fields.Char(string = 'Supplier NTN#')  
-     
+    supplier_ntn = fields.Char(string = 'Supplier NTN#')
+
+    customer_rank = fields.Integer(string = 'Customer Rank')
+    supplier_rank = fields.Integer(string = 'Supplier Rank')
+
     @api.onchange('partner_type')
     def onchange_partner_type(self):
         if self.partner_type == 'customer':
