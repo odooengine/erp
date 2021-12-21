@@ -46,7 +46,7 @@ class LineItem(models.Model):
 
 class ProductGroup(models.Model):
     _name = 'product.group'
-    _description = 'Product Group'
+    _description = 'Grade'
     _rec_name = 'name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -131,7 +131,7 @@ class ProductTemplateInherit(models.Model):
     calender_season_id = fields.Many2one('calender.season', string='Season')
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
     line_item_id = fields.Many2one('line.item', string='Line Item')
-    product_group_id = fields.Many2one('product.group', string='Product Group')
+    product_group_id = fields.Many2one('product.group', string='Grade')
     size_range_id = fields.Many2one('size.range', string='Size Range')
     dept_id = fields.Many2one('class.department', string='Department')
     accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
@@ -254,7 +254,7 @@ class ProductProductInherit(models.Model):
     calender_season_id = fields.Many2one('calender.season', string='Season')
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
     line_item_id = fields.Many2one('line.item', string='Line Item')
-    product_group_id = fields.Many2one('product.group', string='Product Group')
+    product_group_id = fields.Many2one('product.group', string='Grade')
     size_range_id = fields.Many2one('size.range', string='Size Range')
     dept_id = fields.Many2one('class.department', string='Department')
     accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
