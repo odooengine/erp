@@ -30,6 +30,8 @@
         'views/calender_season_views.xml',
         'views/class_views.xml',
         'views/department_views.xml',
+        'views/item_category_views.xml',
+        'views/item_sub_category_views.xml',
         'views/life_type_views.xml',
         'views/line_item_views.xml',
         'views/product_group_views.xml',
