@@ -1,15 +1,15 @@
 <odoo>
 
-    <record id="view_item_category_form" model="ir.ui.view">
-        <field name="name">item.category.form</field>
-        <field name="model">item.category</field>
+    <record id="view_engine_year_form" model="ir.ui.view">
+        <field name="name">engine.year.form</field>
+        <field name="model">engine.year</field>
         <field name="arch" type="xml">
-            <form string="Item Category">
+            <form string="Year">
                 <sheet>
                     <group>
                         <group>
                             <field name="name" required="1"/>
-                            <field name="code" invisible="1"/>
+                            <field name="code" required="1"/>
                         </group>
                     </group>
                 </sheet>
@@ -22,36 +22,36 @@
         </field>
     </record>
 
-    <record id="view_item_category_tree" model="ir.ui.view">
-        <field name="name">item.category.tree</field>
-        <field name="model">item.category</field>
+    <record id="view_engine_year_tree" model="ir.ui.view">
+        <field name="name">engine.year.tree</field>
+        <field name="model">engine.year</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
-                <field name="code" invisible="1"/>
+                <field name="code"/>
             </tree>
         </field>
     </record>
 
-    <record id="view_item_category_search" model="ir.ui.view">
-        <field name="name">item.category.search</field>
-        <field name="model">item.category</field>
+    <record id="view_engine_year_search" model="ir.ui.view">
+        <field name="name">engine.year.search</field>
+        <field name="model">engine.year</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="code" invisible="1"/>
+                <field name="code"/>
             </search>
         </field>
     </record>
 
     <!--  Main Actions-->
 
-    <record id="action_item_category_view" model="ir.actions.act_window">
-        <field name="name">Item Category</field>
+    <record id="action_engine_year_view" model="ir.actions.act_window">
+        <field name="name">Year</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">item.category</field>
+        <field name="res_model">engine.year</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_item_category_tree"/>
+        <field name="view_id" ref="view_engine_year_tree"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No Record Found. Let's Create..........
@@ -61,10 +61,10 @@
 
     <!--  Main Menus-->
 
-    <menuitem id="menu_item_category"
-              name="Item Category"
+    <menuitem id="menu_engine_year"
+              name="Year"
               parent="stock.menu_stock_config_settings"
-              action="action_item_category_view"
+              action="action_engine_year_view"
     />
 
 </odoo>

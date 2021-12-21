@@ -36,6 +36,7 @@
         'views/line_item_views.xml',
         'views/product_group_views.xml',
         'views/size_views.xml',
+        'views/year_views.xml',
         'views/product_product_views.xml',
         'views/product_template_views.xml',
     ],
