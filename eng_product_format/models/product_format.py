@@ -135,10 +135,9 @@ class ProductTemplateInherit(models.Model):
     size_range_id = fields.Many2one('size.range', string='Size Range')
     dept_id = fields.Many2one('class.department', string='Department')
     accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
-    product_gender = fields.Selection([('men', 'Men'),
-                                       ('women', 'Women'),
-                                       ('boys', 'Boys'),
-                                       ('girls', 'Girls'),
+    product_gender = fields.Selection([('male', 'Male'),
+                                       ('female', 'Female'),
+                                       ('unisex', 'Unisex'),
                                        ], string='Product Gender')
 
     life_type_id = fields.Many2one('life.type', string='Life Type')
@@ -146,8 +145,15 @@ class ProductTemplateInherit(models.Model):
     item_cat_id = fields.Many2one('item.category', string='Item Category')
     engine_year_id = fields.Many2one('engine.year', string='Year')
 
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+
     accessories = fields.Boolean(string='Accessories')
     fabric = fields.Boolean(string='Fabric')
+
+    # @api.constrains('seller_ids')
+    # def _check_o2m_field(self):
+    #     if len(self.seller_ids) > 0:
+    #         raise ValidationError(_('Warning! You cannot add lines.'))
 
     @api.onchange('accessories')
     def onchange_accessories(self):
@@ -258,10 +264,9 @@ class ProductProductInherit(models.Model):
     size_range_id = fields.Many2one('size.range', string='Size Range')
     dept_id = fields.Many2one('class.department', string='Department')
     accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
-    product_gender = fields.Selection([('men', 'Men'),
-                                       ('women', 'Women'),
-                                       ('boys', 'Boys'),
-                                       ('girls', 'Girls'),
+    product_gender = fields.Selection([('male', 'Male'),
+                                       ('female', 'Female'),
+                                       ('unisex', 'Unisex'),
                                        ], string='Product Gender')
 
     life_type_id = fields.Many2one('life.type', string='Life Type')
