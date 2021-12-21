@@ -11,8 +11,8 @@ from odoo.tools import float_is_zero, float_compare
 class PurchaseOrderInherit(models.Model):
     _inherit = 'purchase.order'
 
-    total_design = fields.Integer(string='Total Design', compute='compute_total_design')
-    total_pair = fields.Integer(string='Total Pairs', compute='compute_total_pair')
+    total_design = fields.Integer(string='Total Design / Items', compute='compute_total_design')
+    total_pair = fields.Integer(string='Total Pairs / Qty', compute='compute_total_pair')
 
     packing_instruction = fields.Char(string='Packing Instructions')
     special_instruction = fields.Char(string='Special Instructions')
@@ -40,3 +40,5 @@ class PurchaseOrderInherit(models.Model):
         for record in self.order_line:
             total = total + record.product_qty
         self.total_pair = total
+
+
