@@ -22,11 +22,11 @@
             </xpath>
             <xpath expr="//field[@name='barcode']" position="after">
                 <field name="age_group_id"/>
+                <field name="engine_year_id"/>
                 <field name="calender_season_id" required="1"/>
                 <field name="class_fabric_id" attrs="{'required': [('fabric', '=', True)]}"/>
-                <field name="item_sub_cat_id"/>
                 <field name="item_cat_id"/>
-                <field name="engine_year_id"/>
+                <field name="item_sub_cat_id"/>
                 <field name="dept_id" required="1"/>
                 <field name="product_gender"/>
                 <field name="name_seq" invisible="1"/>
