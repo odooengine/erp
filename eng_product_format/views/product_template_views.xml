@@ -21,24 +21,61 @@
                 <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>
             </xpath>
             <xpath expr="//field[@name='barcode']" position="after">
-                <field name="age_group_id"/>
-                <field name="engine_year_id"/>
-                <field name="calender_season_id" required="1"/>
-                <field name="class_fabric_id" attrs="{'required': [('fabric', '=', True)]}"/>
-                <field name="item_cat_id"/>
-                <field name="item_sub_cat_id"/>
-                <field name="dept_id" required="1"/>
+                <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="engine_year_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="calender_season_id" required="1" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="class_fabric_id" attrs="{'required': [('fabric', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="item_sub_cat_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="dept_id" required="1" options="{'no_quick_create': True, 'no_create': True}"/>
                 <field name="product_gender"/>
                 <field name="name_seq" invisible="1"/>
+                <field name="user_id" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
-                <field name="line_item_id"/>
-                <field name="product_group_id"/>
-                <field name="size_range_id"/>
-                <field name="life_type_id" attrs="{'required': [('fabric', '=', True)]}"/>
-                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)]}"/>
+                <field name="line_item_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="product_group_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="life_type_id" attrs="{'required': [('fabric', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
             </xpath>
+
+<!--            Remove Create Edit-->
+
+            <xpath expr="//field[@name='attribute_line_ids']//tree/field[@name='attribute_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='attribute_line_ids']//tree/field[@name='value_ids']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='categ_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='taxes_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+			</xpath>
+
         </field>
     </record>
+
+<!--    <record id="view_purchase_product_template_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">product.template.supplier.inherit</field>-->
+<!--        <field name="model">product.template</field>-->
+<!--        <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>-->
+<!--        <field name="arch" type="xml">-->
+
+<!--            <xpath expr="//field[@name='seller_ids']//tree/field[@name='name']" position="attributes">-->
+<!--				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>-->
+<!--			</xpath>-->
+
+<!--            <xpath expr="//field[@name='seller_ids']//tree/field[@name='currency_id']" position="attributes">-->
+<!--				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>-->
+<!--			</xpath>-->
+
+<!--        </field>-->
+<!--    </record>-->
 
 </odoo>

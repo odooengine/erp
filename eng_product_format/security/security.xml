@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_create_own_rule" model="ir.rule">
+        <field name="name">Product Creation Own</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="domain_force">[('user_id','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="product_create_own_manager_rule" model="ir.rule">
+        <field name="name">Product Creation Manager Own</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_manager'))]"/>
+    </record>
+
+</odoo>
