@@ -24,6 +24,8 @@
                 <field name="age_group_id"/>
                 <field name="calender_season_id" invisible="1"/>
                 <field name="class_fabric_id" invisible="1"/>
+                <field name="item_sub_cat_id" invisible="1"/>
+                <field name="item_cat_id" invisible="1"/>
                 <field name="dept_id" invisible="1"/>
                 <field name="product_gender"/>
             </xpath>
