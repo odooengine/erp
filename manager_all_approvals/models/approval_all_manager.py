@@ -1,10 +1,15 @@
-
-
 from odoo.exceptions import Warning
 from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
+
+
+class AccountEdi(models.Model):
+    _inherit = 'account.edi.document'
+
+    def action_export_xml(self):
+        pass
 
 
 class PurchaseOrderInherit(models.Model):
@@ -129,7 +134,7 @@ class MRPProductionInh(models.Model):
         ('to_close', 'To Close'),
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
-        ('rejected', 'Rejected'),], string='State',
+        ('rejected', 'Rejected')], string='State',
         compute='_compute_state', copy=False, index=True, readonly=True,
         store=True, tracking=True,
         help=" * Draft: The MO is not confirmed yet.\n"
@@ -139,7 +144,32 @@ class MRPProductionInh(models.Model):
              " * Done: The MO is closed, the stock moves are posted. \n"
              " * Cancelled: The MO has been cancelled, can't be confirmed anymore.")
 
+    def _create_notification(self):
+        for res in self:
+            act_type_xmlid = 'mail.mail_activity_data_todo'
+            summary = 'MO Approval'
+            note = 'Manufacturing order no:' + res.name + ' is waiting for Approval.'
+            if act_type_xmlid:
+                activity_type = self.sudo().env.ref(act_type_xmlid)
+            model_id = self.env['ir.model']._get(res._name).id
+            users = self.env['res.users'].search([])
+            for rec in users:
+                if rec.has_group('mrp.group_mrp_manager'):
+                    create_vals = {
+                        'activity_type_id': activity_type.id,
+                        'summary': summary or activity_type.summary,
+                        'automated': True,
+                        'note': note,
+                        'date_deadline': datetime.today(),
+                        'res_model_id': model_id,
+                        'res_id': res.id,
+                        # 'user_id': self.sale_id.user_id.id,
+                        'user_id': rec.id,
+                    }
+                    activities = self.env['mail.activity'].create(create_vals)
+
     def action_confirm(self):
+        self._create_notification()
         self.write({
             'state': 'approve'
         })
@@ -261,59 +291,58 @@ class AccountPaymentInh(models.Model):
             'state': 'rejected'
         })
 
-
     # def button_approve(self):
-        # AccountMove = self.env['account.move'].with_context(default_type='entry')
-        # for rec in self:
-        #
-        #     if rec.state != 'approve':
-        #         raise UserError(_("Only a draft payment can be posted."))
-        #
-        #     if any(inv.state != 'posted' for inv in rec.invoice_ids):
-        #         raise ValidationError(_("The payment cannot be processed because the invoice is not open!"))
-        #
-        #     # keep the name in case of a payment reset to draft
-        #     if not rec.name:
-        #         # Use the right sequence to set the name
-        #         if rec.payment_type == 'transfer':
-        #             sequence_code = 'account.payment.transfer'
-        #         else:
-        #             if rec.partner_type == 'customer':
-        #                 if rec.payment_type == 'inbound':
-        #                     sequence_code = 'account.payment.customer.invoice'
-        #                 if rec.payment_type == 'outbound':
-        #                     sequence_code = 'account.payment.customer.refund'
-        #             if rec.partner_type == 'supplier':
-        #                 if rec.payment_type == 'inbound':
-        #                     sequence_code = 'account.payment.supplier.refund'
-        #                 if rec.payment_type == 'outbound':
-        #                     sequence_code = 'account.payment.supplier.invoice'
-        #         rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
-        #         if not rec.name and rec.payment_type != 'transfer':
-        #             raise UserError(_("You have to define a sequence for %s in your company.") % (sequence_code,))
-        #
-        #     moves = AccountMove.create(rec._prepare_payment_moves())
-        #     moves.filtered(lambda move: move.journal_id.post_at != 'bank_rec').post()
-        #
-        #     # Update the state / move before performing any reconciliation.
-        #     move_name = self._get_move_name_transfer_separator().join(moves.mapped('name'))
-        #     rec.write({'state': 'posted', 'move_name': move_name})
-        #
-        #     if rec.payment_type in ('inbound', 'outbound'):
-        #         # ==== 'inbound' / 'outbound' ====
-        #         if rec.invoice_ids:
-        #             (moves[0] + rec.invoice_ids).line_ids \
-        #                 .filtered(
-        #                 lambda line: not line.reconciled and line.account_id == rec.destination_account_id and not (
-        #                             line.account_id == line.payment_id.writeoff_account_id and line.name == line.payment_id.writeoff_label)) \
-        #                 .reconcile()
-        #     elif rec.payment_type == 'transfer':
-        #         # ==== 'transfer' ====
-        #         moves.mapped('line_ids') \
-        #             .filtered(lambda line: line.account_id == rec.company_id.transfer_account_id) \
-        #             .reconcile()
-        #
-        # return True
+    # AccountMove = self.env['account.move'].with_context(default_type='entry')
+    # for rec in self:
+    #
+    #     if rec.state != 'approve':
+    #         raise UserError(_("Only a draft payment can be posted."))
+    #
+    #     if any(inv.state != 'posted' for inv in rec.invoice_ids):
+    #         raise ValidationError(_("The payment cannot be processed because the invoice is not open!"))
+    #
+    #     # keep the name in case of a payment reset to draft
+    #     if not rec.name:
+    #         # Use the right sequence to set the name
+    #         if rec.payment_type == 'transfer':
+    #             sequence_code = 'account.payment.transfer'
+    #         else:
+    #             if rec.partner_type == 'customer':
+    #                 if rec.payment_type == 'inbound':
+    #                     sequence_code = 'account.payment.customer.invoice'
+    #                 if rec.payment_type == 'outbound':
+    #                     sequence_code = 'account.payment.customer.refund'
+    #             if rec.partner_type == 'supplier':
+    #                 if rec.payment_type == 'inbound':
+    #                     sequence_code = 'account.payment.supplier.refund'
+    #                 if rec.payment_type == 'outbound':
+    #                     sequence_code = 'account.payment.supplier.invoice'
+    #         rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
+    #         if not rec.name and rec.payment_type != 'transfer':
+    #             raise UserError(_("You have to define a sequence for %s in your company.") % (sequence_code,))
+    #
+    #     moves = AccountMove.create(rec._prepare_payment_moves())
+    #     moves.filtered(lambda move: move.journal_id.post_at != 'bank_rec').post()
+    #
+    #     # Update the state / move before performing any reconciliation.
+    #     move_name = self._get_move_name_transfer_separator().join(moves.mapped('name'))
+    #     rec.write({'state': 'posted', 'move_name': move_name})
+    #
+    #     if rec.payment_type in ('inbound', 'outbound'):
+    #         # ==== 'inbound' / 'outbound' ====
+    #         if rec.invoice_ids:
+    #             (moves[0] + rec.invoice_ids).line_ids \
+    #                 .filtered(
+    #                 lambda line: not line.reconciled and line.account_id == rec.destination_account_id and not (
+    #                             line.account_id == line.payment_id.writeoff_account_id and line.name == line.payment_id.writeoff_label)) \
+    #                 .reconcile()
+    #     elif rec.payment_type == 'transfer':
+    #         # ==== 'transfer' ====
+    #         moves.mapped('line_ids') \
+    #             .filtered(lambda line: line.account_id == rec.company_id.transfer_account_id) \
+    #             .reconcile()
+    #
+    # return True
 
 
 class StockPickingInh(models.Model):
@@ -342,11 +371,6 @@ class StockPickingInh(models.Model):
              " * Cancelled: The transfer has been cancelled.")
 
     def button_validate(self):
-        for record in self.move_ids_without_package:
-            print(record.quantity_done)
-            print(record.product_uom_qty)
-            if record.quantity_done > record.product_uom_qty:
-                raise UserError(_('Receiving Quantity Cannot be Exceeded Than Demanded'))
         self.received_by_id = self.env.user.id
         self.write({
             'state': 'approve'
@@ -395,7 +419,8 @@ class StockImmediateTransferInh(models.TransientModel):
                 if picking.state != 'assigned':
                     picking.action_assign()
                     if picking.state != 'assigned':
-                        raise UserError(_("Could not reserve all requested products. Please use the \'Mark as Todo\' button to handle the reservation manually."))
+                        raise UserError \
+                            (_("Could not reserve all requested products. Please use the \'Mark as Todo\' button to handle the reservation manually."))
             for move in picking.move_lines.filtered(lambda m: m.state not in ['done', 'cancel']):
                 for move_line in move.move_line_ids:
                     move_line.qty_done = move_line.product_uom_qty
@@ -408,3 +433,43 @@ class StockImmediateTransferInh(models.TransientModel):
         return True
 
 
+class StockBackorderConfirmationInh(models.TransientModel):
+    _inherit = 'stock.backorder.confirmation'
+
+    def process(self):
+        pickings_to_do = self.env['stock.picking']
+        pickings_not_to_do = self.env['stock.picking']
+        for line in self.backorder_confirmation_line_ids:
+            if line.to_backorder is True:
+                pickings_to_do |= line.picking_id
+            else:
+                pickings_not_to_do |= line.picking_id
+
+        for pick_id in pickings_not_to_do:
+            moves_to_log = {}
+            for move in pick_id.move_lines:
+                if float_compare(move.product_uom_qty,
+                                 move.quantity_done,
+                                 precision_rounding=move.product_uom.rounding) > 0:
+                    moves_to_log[move] = (move.quantity_done, move.product_uom_qty)
+            pick_id._log_less_quantities_than_expected(moves_to_log)
+
+        pickings_to_validate = self.env.context.get('button_validate_picking_ids')
+        if pickings_to_validate:
+            pickings_to_validate = self.env['stock.picking'].browse(pickings_to_validate).with_context(
+                skip_backorder=True)
+            if pickings_not_to_do:
+                pickings_to_validate = pickings_to_validate.with_context(
+                    picking_ids_not_to_backorder=pickings_not_to_do.ids)
+
+            return pickings_to_validate.button_approved()
+        return True
+
+    def process_cancel_backorder(self):
+        pickings_to_validate = self.env.context.get('button_validate_picking_ids')
+        if pickings_to_validate:
+            return self.env['stock.picking'] \
+                .browse(pickings_to_validate) \
+                .with_context(skip_backorder=True, picking_ids_not_to_backorder=self.pick_ids.ids) \
+                .button_approved()
+        return True
