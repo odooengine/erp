@@ -10,3 +10,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 9,life.type,model_life_type,base.group_user,1,1,1,1
 10,item.sub.category,model_item_sub_category,base.group_user,1,1,1,1
 11,item.category,model_item_category,base.group_user,1,1,1,1
+12,engine.year,model_engine_year,base.group_user,1,1,1,1

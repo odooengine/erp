@@ -112,6 +112,16 @@ class ItemCategory(models.Model):
     code = fields.Char(string='Code', tracking=True)
 
 
+class EngineYear(models.Model):
+    _name = 'engine.year'
+    _description = 'Year'
+    _rec_name = 'name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string='Name', tracking=True)
+    code = fields.Char(string='Code', tracking=True)
+
+
 class ProductTemplateInherit(models.Model):
     _inherit = 'product.template'
 
@@ -134,6 +144,7 @@ class ProductTemplateInherit(models.Model):
     life_type_id = fields.Many2one('life.type', string='Life Type')
     item_sub_cat_id = fields.Many2one('item.sub.category', string='Item Sub Category')
     item_cat_id = fields.Many2one('item.category', string='Item Category')
+    engine_year_id = fields.Many2one('engine.year', string='Year')
 
     accessories = fields.Boolean(string='Accessories')
     fabric = fields.Boolean(string='Fabric')
@@ -254,6 +265,9 @@ class ProductProductInherit(models.Model):
                                        ], string='Product Gender')
 
     life_type_id = fields.Many2one('life.type', string='Life Type')
+    item_sub_cat_id = fields.Many2one('item.sub.category', string='Item Sub Category')
+    item_cat_id = fields.Many2one('item.category', string='Item Category')
+    engine_year_id = fields.Many2one('engine.year', string='Year')
 
     accessories = fields.Boolean(string='Accessories')
     fabric = fields.Boolean(string='Fabric')
