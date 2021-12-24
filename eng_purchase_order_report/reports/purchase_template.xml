@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="purchase_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <div class="text-center">
+                            <h3>
+                                <strong>Engine</strong>
+                            </h3>
+                        </div>
+                        <div class="text-center">
+                            <h3>
+                                <strong>Purchase Order</strong>
+                            </h3>
+                        </div>
+                        <br/>
+                        <div style="float: left;">
+                            <div>
+                                <strong>Supplier Code : </strong>
+                                <span t-field="doc.partner_id.supplier_code"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Supplier : </strong>
+                                <span t-field="doc.partner_id"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Contact Person : </strong>
+<!--                                    <span t-field="doc.journal_type"/>-->
+                            </div>
+                            <div class="text-left">
+                                <strong>Address : </strong>
+                                <span t-field="doc.partner_id.street"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Contact No# : </strong>
+                                <span t-field="doc.partner_id.mobile"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Supplier NTN# : </strong>
+                                <span t-field="doc.partner_id.supplier_ntn"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Reference# : </strong>
+                                <span t-field="doc.partner_ref"/>
+                            </div>
+                        </div>
+
+                        <div style="float:left; margin-left:20%">
+                            <div>
+                                <strong>PO No# : </strong>
+                                <span t-field="doc.name"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Issue Date : </strong>
+                                <span t-esc="doc.date_order"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Delivery Date : </strong>
+                                <span t-esc="doc.date_planned"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Delivery To : </strong>
+                                <span t-esc="doc.picking_type_id.warehouse_id.name"/> : <span t-esc="doc.picking_type_id.name"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Total Designs / Items : </strong>
+                                <span t-esc="doc.total_design"/>
+                            </div>
+                            <div class="text-left">
+                                <strong>Total Pairs / Qty : </strong>
+                                <span t-esc="doc.total_pair"/>
+                            </div>
+                        </div>
+                        <t t-set="total_qty" t-value="0.0"/>
+                        <t t-set="total_subtotal" t-value="0.0"/>
+                        <table class="table table-bordered">
+                            <thead class="text-center" style="background-color:#eeeeee; font-size:14px; font-weight:600;">
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Price Unit</th>
+                                <th>Taxes</th>
+                                <th>Subtotal</th>
+                           </thead>
+                            <tbody class="text-center" style="font-size:12px;">
+                                <tr t-foreach="doc.order_line" t-as="line">
+                                    <td>
+                                        <span t-field="line.product_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_qty"/>
+                                        <t t-set="total_qty" t-value="total_qty+(line.product_qty)"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.price_unit"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.taxes_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.price_subtotal"/>
+                                        <t t-set="total_subtotal" t-value="total_subtotal+(line.price_subtotal)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tr style="border:1px solid #E0E0E0">
+                                <td style="border:none" colspan="4"><b>Total</b></td>
+                                <td class="text-center"><b><span t-esc="doc.amount_tax"/></b></td>
+                                <td class="text-center">
+                                    <b><span t-esc="total_subtotal"/></b>
+                                </td>
+                            </tr>
+                            <tr style="border:1px solid HTML">
+                                <td style="border:none" colspan="5"><b>Net Total</b></td>
+                                <td class="text-center">
+                                    <b><span t-esc="round(total_subtotal + (doc.amount_tax), 2)"/></b>
+                                </td>
+                            </tr>
+                        </table>
+<!--                        <p style="page-break-after: always;"/>-->
+                        <div style="width: 100%; height: 100%;page-break-inside: avoid;">
+<!--                        <div style="width: 100%; height: 100%;">-->
+                            <div>
+                                <span><strong>Picking Instructions: </strong><span t-field="doc.packing_instruction"/></span>
+                            </div>
+                            <div class="row mt32 mb32" style="margin-top:1%;">
+                                <div class="col-3">
+                                    <strong>Branding:</strong>
+                                </div>
+                                <div class="col-3">
+                                    <strong>Sock Label:</strong><!--<t t-if="doc.sock_label"><span class="far fa-check-square"/></t>-->
+                                    <span t-field="doc.sock_label"/>
+                                </div>
+                                <div class="col-3">
+                                    <strong>Embossing Stamp:</strong><span t-field="doc.embossing_stamp"/>
+                                </div>
+                                <div class="col-3">
+                                    <strong>Sock Stamp:</strong><span t-field="doc.sock_stamp"/>
+                                </div>
+                            </div>
+                            <div class="row mt32 mb32" style="margin-top:1%;">
+                                <div class="col-12">
+                                    <strong>Special Instructions:</strong>
+                                    <span t-field="doc.special_instruction"/>
+                                </div>
+                            </div>
+                            <div class="row mt32 mb32" style="margin-top:1%;">
+                                <div class="col-8">
+                                    <strong>Payment Terms: </strong><span t-field="doc.payment_term_id"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div class="row mt32 mb32" style="margin-top:1%;">
+                                <div class="col-3">
+                                    <strong>P/D Officer:</strong>
+                                </div>
+                                <div class="col-3">
+                                    <strong>Merchandizing Manager:</strong>
+                                </div>
+                                <div class="col-3">
+                                    <strong>General Manager:</strong>
+                                </div>
+                                <div class="col-3">
+                                    <strong>Supplier:</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
