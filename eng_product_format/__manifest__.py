@@ -19,7 +19,7 @@
     'version': '14.0.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'purchase'],
+    'depends': ['base', 'stock', 'product', 'mail'],
 
     # always loaded
     'data': [
@@ -30,16 +30,17 @@
         'views/age_group_views.xml',
         'views/calender_season_views.xml',
         'views/class_views.xml',
-        'views/department_views.xml',
+        # 'views/department_views.xml',
         'views/item_category_views.xml',
         'views/item_sub_category_views.xml',
         'views/life_type_views.xml',
         'views/line_item_views.xml',
         'views/product_group_views.xml',
-        'views/size_views.xml',
-        'views/year_views.xml',
         'views/product_product_views.xml',
         'views/product_template_views.xml',
+        'views/size_views.xml',
+        # 'views/sub_department_views.xml',
+        'views/year_views.xml',
     ],
 
 }

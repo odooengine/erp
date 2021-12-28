@@ -15,6 +15,10 @@
                         <field name="fabric"/>
                         <label for="fabric"/>
                     </div>
+                    <div>
+                        <field name="finish"/>
+                        <label for="finish"/>
+                    </div>
                 </div>
             </xpath>
             <xpath expr="//field[@name='name']" position="attributes">
@@ -22,22 +26,39 @@
             </xpath>
             <xpath expr="//field[@name='barcode']" position="after">
                 <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="engine_year_id" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="engine_year_id" required="1" options="{'no_quick_create': True, 'no_create': True}"/>
                 <field name="calender_season_id" required="1" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="class_fabric_id" attrs="{'required': [('fabric', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="class_fabric_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
                 <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="item_sub_cat_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="dept_id" required="1" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="product_gender"/>
-                <field name="name_seq" invisible="1"/>
+                <field name="item_sub_cat_id" attrs="{'required': [('finish', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="dept_id" required="1"/>
+<!--                <field name="sub_dept_id" attrs="{'required': [('finish', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}" style="color:blue;"/>-->
+                <field name="sub_dept" attrs="{'required': [('finish', '=', True)]}"/>
                 <field name="user_id" invisible="1"/>
+
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="line_item_id" options="{'no_quick_create': True, 'no_create': True}"/>
                 <field name="product_group_id" options="{'no_quick_create': True, 'no_create': True}"/>
                 <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="life_type_id" attrs="{'required': [('fabric', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="life_type_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
                 <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="product_gender"/>
+
+                <field name="acc_seq" invisible="1"/>
+                <field name="fab_seq" invisible="1"/>
+
+                <field name="fin_men_seq" invisible="1"/>
+                <field name="fin_women_seq" invisible="1"/>
+                <field name="fin_boy_infan_seq" invisible="1"/>
+                <field name="fin_boy_tod_seq" invisible="1"/>
+                <field name="fin_boy_kid_seq" invisible="1"/>
+                <field name="fin_girl_infan_seq" invisible="1"/>
+                <field name="fin_girl_tod_seq" invisible="1"/>
+                <field name="fin_girl_kid_seq" invisible="1"/>
+
+                <field name="product_group_type"/>
+
             </xpath>
 
 <!--            Remove Create Edit-->
@@ -58,6 +79,18 @@
 				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
 			</xpath>
 
+        </field>
+    </record>
+
+    <record id="view_product_template_search_form_inherited" model="ir.ui.view">
+        <field name="name">view.product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='categ_id']" position="after">
+                <separator/>
+                <filter string="Product Group Type" name="product_group_type" context="{'group_by':'product_group_type'}"/>
+            </xpath>
         </field>
     </record>
 

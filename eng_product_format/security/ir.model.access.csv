@@ -5,9 +5,8 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 4,line.item,model_line_item,base.group_user,1,1,1,1
 5,product.group,model_product_group,base.group_user,1,1,1,1
 6,size.range,model_size_range,base.group_user,1,1,1,1
-7,class.department,model_class_department,base.group_user,1,1,1,1
-8,accessories.type,model_accessories_type,base.group_user,1,1,1,1
-9,life.type,model_life_type,base.group_user,1,1,1,1
-10,item.sub.category,model_item_sub_category,base.group_user,1,1,1,1
-11,item.category,model_item_category,base.group_user,1,1,1,1
-12,engine.year,model_engine_year,base.group_user,1,1,1,1
+7,accessories.type,model_accessories_type,base.group_user,1,1,1,1
+8,life.type,model_life_type,base.group_user,1,1,1,1
+9,item.sub.category,model_item_sub_category,base.group_user,1,1,1,1
+10,item.category,model_item_category,base.group_user,1,1,1,1
+11,engine.year,model_engine_year,base.group_user,1,1,1,1

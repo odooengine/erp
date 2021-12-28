@@ -1,10 +1,10 @@
 <odoo>
 
-    <record id="view_item_sub_category_form" model="ir.ui.view">
-        <field name="name">item.sub.category.form</field>
-        <field name="model">item.sub.category</field>
+    <record id="view_sub_department_form" model="ir.ui.view">
+        <field name="name">sub.department.form</field>
+        <field name="model">sub.department</field>
         <field name="arch" type="xml">
-            <form string="Item Sub Category">
+            <form string="Sub Department">
                 <sheet>
                     <group>
                         <group>
@@ -22,9 +22,9 @@
         </field>
     </record>
 
-    <record id="view_item_sub_category_tree" model="ir.ui.view">
-        <field name="name">item.sub.category.tree</field>
-        <field name="model">item.sub.category</field>
+    <record id="view_sub_department_tree" model="ir.ui.view">
+        <field name="name">sub.department.tree</field>
+        <field name="model">sub.department</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -33,9 +33,9 @@
         </field>
     </record>
 
-    <record id="view_item_sub_category_search" model="ir.ui.view">
-        <field name="name">item.sub.category.search</field>
-        <field name="model">item.sub.category</field>
+    <record id="view_sub_department_search" model="ir.ui.view">
+        <field name="name">sub.department.search</field>
+        <field name="model">sub.department</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -46,12 +46,12 @@
 
     <!--  Main Actions-->
 
-    <record id="action_item_sub_category_view" model="ir.actions.act_window">
-        <field name="name">Item Sub Category</field>
+    <record id="action_sub_department_view" model="ir.actions.act_window">
+        <field name="name">Sub Department</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">item.sub.category</field>
+        <field name="res_model">sub.department</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_item_sub_category_tree"/>
+        <field name="view_id" ref="view_sub_department_tree"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No Record Found. Let's Create..........
@@ -61,10 +61,10 @@
 
     <!--  Main Menus-->
 
-    <menuitem id="menu_item_sub_category"
-              name="Item Sub Category"
+    <menuitem id="menu_sub_department"
+              name="Sub Department"
               parent="stock.menu_stock_config_settings"
-              action="action_item_sub_category_view"
+              action="action_sub_department_view"
     />
 
 </odoo>
