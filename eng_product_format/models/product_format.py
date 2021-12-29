@@ -179,6 +179,8 @@ class ProductTemplateInherit(models.Model):
     sub_dept = fields.Selection([('infant', 'Infant'),
                                  ('toddlers', 'Toddlers'),
                                  ('kids', 'Kids'),
+                                 ('men', 'Men'),
+                                 ('women', 'Women'),
                                  ], string='Sub Department')
 
     life_type_id = fields.Many2one('life.type', string='Life Type')
@@ -192,6 +194,8 @@ class ProductTemplateInherit(models.Model):
     accessories = fields.Boolean(string='Accessories', default=False)
     fabric = fields.Boolean(string='Fabric', default=False)
     finish = fields.Boolean(string='Finish Goods', default=False)
+
+    is_freeze = fields.Boolean(string='Freeze', default=False)
 
     # @api.constrains('seller_ids')
     # def _check_o2m_field(self):
@@ -221,6 +225,7 @@ class ProductTemplateInherit(models.Model):
 
     @api.model
     def create(self, vals):
+        vals['is_freeze'] = True
         if vals['accessories']:
             access_sequence = self.env.ref('eng_product_format.acc_sequence')
             vals['acc_seq'] = access_sequence.next_by_id()
@@ -296,11 +301,11 @@ class ProductTemplateInherit(models.Model):
                 new_fab_name = ('W' + life_code + fabric_code + '-' + season_code + year_code + '-' + vals['fab_seq'])
                 vals['name'] = new_fab_name
         elif vals['finish'] == True:
-            if vals['dept_id'] == 'men':
-                new_fin_man_name = ('M' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '1' + vals['fin_men_seq'])
+            if vals['dept_id'] == 'men' and vals['sub_dept'] == 'men':
+                new_fin_man_name = ('M' + 'M' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '1' + vals['fin_men_seq'])
                 vals['name'] = new_fin_man_name
-            elif vals['dept_id'] == 'women':
-                new_fin_man_name = ('W' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '2' + vals['fin_women_seq'])
+            elif vals['dept_id'] == 'women' and vals['sub_dept'] == 'women':
+                new_fin_man_name = ('W' + 'W' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '2' + vals['fin_women_seq'])
                 vals['name'] = new_fin_man_name
             elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'infant':
                 new_fin_boy_inf_name = ('I' + 'B' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '3' + vals['fin_boy_infan_seq'])
