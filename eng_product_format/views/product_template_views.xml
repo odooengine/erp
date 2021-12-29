@@ -25,12 +25,12 @@
                 <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>
             </xpath>
             <xpath expr="//field[@name='barcode']" position="after">
-                <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="engine_year_id" required="1" options="{'no_quick_create': True, 'no_create': True}" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
-                <field name="calender_season_id" required="1" options="{'no_quick_create': True, 'no_create': True}" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
-                <field name="class_fabric_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="item_sub_cat_id" attrs="{'required': [('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="engine_year_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+                <field name="calender_season_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+                <field name="class_fabric_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
+                <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="item_sub_cat_id" attrs="{'required': [('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
                 <field name="dept_id" required="1" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
 <!--                <field name="sub_dept_id" attrs="{'required': [('finish', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}" style="color:blue;"/>-->
                 <field name="sub_dept" attrs="{'required': [('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}"/>
@@ -38,11 +38,11 @@
 
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
-                <field name="line_item_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="product_group_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="life_type_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
-                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}"/>
+                <field name="line_item_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="product_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="life_type_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
                 <field name="product_gender"/>
 
                 <field name="acc_seq" invisible="1"/>
@@ -83,17 +83,17 @@
         </field>
     </record>
 
-<!--    <record id="view_product_template_search_form_inherited" model="ir.ui.view">-->
-<!--        <field name="name">view.product.template.form.inherit</field>-->
-<!--        <field name="model">product.template</field>-->
-<!--        <field name="inherit_id" ref="product.product_template_search_view"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr="//filter[@name='categ_id']" position="after">-->
-<!--                <separator/>-->
-<!--                <filter string="Product Group Type" name="product_group_type" context="{'group_by':'product_group_type'}"/>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
+    <record id="view_product_template_search_form_inherited" model="ir.ui.view">
+        <field name="name">view.product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='categ_id']" position="after">
+                <separator/>
+                <filter string="Product Group Type" name="product_group_type" context="{'group_by':'product_group_type'}"/>
+            </xpath>
+        </field>
+    </record>
 
 <!--    <record id="view_purchase_product_template_form_inherit" model="ir.ui.view">-->
 <!--        <field name="name">product.template.supplier.inherit</field>-->
