@@ -1,0 +1,18 @@
+<odoo>
+
+    <record model="ir.module.category" id="show_cost_groups_root">
+        <field name="name">Show Cost</field>
+        <field name="description">Manage Show Cost Security</field>
+    </record>
+
+    <record id="group_show_cost" model="res.groups">
+        <field name="name">Show Cost</field>
+        <field name="category_id" ref="production_overall.show_cost_groups_root"/>
+    </record>
+
+    <record id="group_show_origin" model="res.groups">
+        <field name="name">Show Contact and Source</field>
+        <field name="category_id" ref="production_overall.show_cost_groups_root"/>
+    </record>
+
+</odoo>
