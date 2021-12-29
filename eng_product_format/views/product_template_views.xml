@@ -95,18 +95,30 @@
         </field>
     </record>
 
-<!--    <record id="view_purchase_product_template_form_inherit" model="ir.ui.view">-->
-<!--        <field name="name">product.template.supplier.inherit</field>-->
+<!--    <record model="ir.ui.view" id="l10n_in.product_template_hsn_code">-->
+<!--        <field name="name">l10n_in.product.template.form.hsn_code</field>-->
 <!--        <field name="model">product.template</field>-->
-<!--        <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>-->
+<!--        <field name="inherit_id" ref="product.product_template_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <field name="categ_id" position="after">-->
+<!--                <field name="l10n_in_hsn_code" invisible="1"/>-->
+<!--                <field name="l10n_in_hsn_description" invisible="1"/>-->
+<!--            </field>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="view_l10n_product_template_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">product.template.l10n.inherit</field>-->
+<!--        <field name="model">product.template</field>-->
+<!--        <field name="inherit_id" ref="l10n_in.product_template_hsn_code"/>-->
 <!--        <field name="arch" type="xml">-->
 
-<!--            <xpath expr="//field[@name='seller_ids']//tree/field[@name='name']" position="attributes">-->
-<!--				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>-->
+<!--            <xpath expr="//field[@name='l10n_in_hsn_code']" position="attributes">-->
+<!--				<attribute name="invisible">1</attribute>-->
 <!--			</xpath>-->
 
-<!--            <xpath expr="//field[@name='seller_ids']//tree/field[@name='currency_id']" position="attributes">-->
-<!--				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>-->
+<!--            <xpath expr="//field[@name='l10n_in_hsn_description']" position="attributes">-->
+<!--				<attribute name="invisible">1</attribute>-->
 <!--			</xpath>-->
 
 <!--        </field>-->

@@ -162,7 +162,7 @@ class ProductTemplateInherit(models.Model):
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
     line_item_id = fields.Many2one('line.item', string='Line Item')
     product_group_id = fields.Many2one('product.group', string='Grade')
-    size_range_id = fields.Many2one('size.range', string='Size Range')
+    size_range_id = fields.Many2one('size.range', string='Width / GSM')
     # dept_id = fields.Many2one('class.department', string='Department')
     accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
     product_gender = fields.Selection([('male', 'Male'),
@@ -326,6 +326,24 @@ class ProductTemplateInherit(models.Model):
                 new_fin_gir_kid_name = ('K' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '8' + vals['fin_girl_kid_seq'])
                 vals['name'] = new_fin_gir_kid_name
         res = super(ProductTemplateInherit, self).create(vals)
+        res.product_variant_id.product_group_type = res.product_group_type
+        res.product_variant_id.age_group_id = res.age_group_id
+        res.product_variant_id.accessories = res.accessories
+        res.product_variant_id.fabric = res.fabric
+        res.product_variant_id.finish = res.finish
+        res.product_variant_id.calender_season_id = res.calender_season_id
+        res.product_variant_id.class_fabric_id = res.class_fabric_id
+        res.product_variant_id.line_item_id = res.line_item_id
+        res.product_variant_id.product_group_id = res.product_group_id
+        res.product_variant_id.size_range_id = res.size_range_id
+        res.product_variant_id.accessories_type_id = res.accessories_type_id
+        res.product_variant_id.product_gender = res.product_gender
+        res.product_variant_id.dept_id = res.dept_id
+        res.product_variant_id.sub_dept = res.sub_dept
+        res.product_variant_id.life_type_id = res.life_type_id
+        res.product_variant_id.item_sub_cat_id = res.item_sub_cat_id
+        res.product_variant_id.item_cat_id = res.item_cat_id
+        res.product_variant_id.engine_year_id = res.engine_year_id
         return res
 
     # def write(self, vals):
@@ -400,34 +418,36 @@ class ProductProductInherit(models.Model):
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
     line_item_id = fields.Many2one('line.item', string='Line Item')
     product_group_id = fields.Many2one('product.group', string='Grade')
-    size_range_id = fields.Many2one('size.range', string='Size Range')
-    dept_id = fields.Many2one('class.department', string='Department')
+    size_range_id = fields.Many2one('size.range', string='Width / GSM')
     accessories_type_id = fields.Many2one('accessories.type', string='Accessories Type')
     product_gender = fields.Selection([('male', 'Male'),
                                        ('female', 'Female'),
                                        ('unisex', 'Unisex'),
                                        ], string='Product Gender')
+    dept_id = fields.Selection([('boys', 'Boys'),
+                                ('girls', 'Girls'),
+                                ('men', 'Men'),
+                                ('women', 'Women'),
+                                ], string='Department')
+
+    sub_dept = fields.Selection([('infant', 'Infant'),
+                                 ('toddlers', 'Toddlers'),
+                                 ('kids', 'Kids'),
+                                 ('men', 'Men'),
+                                 ('women', 'Women'),
+                                 ], string='Sub Department')
+
+    product_group_type = fields.Selection([('filt_acc', 'Accessories'),
+                                           ('filt_fab', 'Fabric'),
+                                           ('filt_fin', 'Finish Goods'),
+                                           ], string='Product Group Type')
 
     life_type_id = fields.Many2one('life.type', string='Life Type')
     item_sub_cat_id = fields.Many2one('item.sub.category', string='Item Sub Category')
     item_cat_id = fields.Many2one('item.category', string='Item Category')
     engine_year_id = fields.Many2one('engine.year', string='Year')
-    # sub_dept_id = fields.Many2one('sub.department', string='Sub Department')
 
     accessories = fields.Boolean(string='Accessories')
     fabric = fields.Boolean(string='Fabric')
     finish = fields.Boolean(string='Finish Goods')
 
-    # @api.onchange('accessories')
-    # def onchange_accessories(self):
-    #     if self.accessories == True:
-    #         self.fabric = False
-    #     elif self.accessories == False:
-    #         self.fabric = True
-    #
-    # @api.onchange('fabric')
-    # def onchange_fabric(self):
-    #     if self.fabric == True:
-    #         self.accessories = False
-    #     elif self.fabric == False:
-    #         self.accessories = True

@@ -4,7 +4,7 @@
         <field name="name">size.range.form</field>
         <field name="model">size.range</field>
         <field name="arch" type="xml">
-            <form string="Size Range">
+            <form string="Width / GSM">
                 <sheet>
                     <group>
                         <group>
@@ -44,7 +44,7 @@
     <!--  Main Actions-->
 
     <record id="action_size_range_view" model="ir.actions.act_window">
-        <field name="name">Size Range</field>
+        <field name="name">Width / GSM</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">size.range</field>
         <field name="view_mode">tree,form</field>
@@ -59,7 +59,7 @@
     <!--  Main Menus-->
 
     <menuitem id="menu_size_range"
-              name="Size Range"
+              name="Width / GSM"
               parent="stock.menu_stock_config_settings"
               action="action_size_range_view"
     />
