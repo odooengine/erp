@@ -5,6 +5,28 @@ from datetime import datetime
 from odoo.exceptions import ValidationError, UserError
 
 
+class MrpBomLineInh(models.Model):
+    _inherit = 'mrp.bom.line'
+
+    class_fabric_id = fields.Many2one('class.fabric', related='product_id.class_fabric_id')
+    accessories_type_id = fields.Many2one('accessories.type', related='product_id.accessories_type_id')
+
+
+class MrpBomInh(models.Model):
+    _inherit = 'mrp.bom'
+
+    product_tmpl_ids = fields.Many2many('product.template', compute='compute_products')
+
+    @api.depends('product_tmpl_id')
+    def compute_products(self):
+        products = self.env['product.template'].search([])
+        products_list = []
+        for product in products:
+            for route in product.route_ids:
+                if route.name == 'Manufacture':
+                    products_list.append(product.id)
+        self.product_tmpl_ids = products_list
+
 class WorkCenterEmbellishment(models.Model):
     _inherit = 'mrp.workcenter'
 
@@ -59,6 +81,7 @@ class MrpOrderInh(models.Model):
                 raise UserError('This workorder is waiting for another operation to get done.')
         if self.workcenter_id.wk_embellish:
             self.action_create_internal_transfer(pre_order)
+            self.action_create_internal_transfer_second(pre_order)
         record = super(MrpOrderInh, self).button_start()
         self.start_date_custom = datetime.today()
 
@@ -92,19 +115,37 @@ class MrpOrderInh(models.Model):
                 # 'quantity_done': qty * line.product_qty,
             }
             stock_move = self.env['stock.move'].create(lines)
-            # moves = {
-            #     'move_id': stock_move.id,
-            #     'product_id': line.product_id.id,
-            #     'location_id': self.workcenter_id.src_location_id.id,
-            #     'location_dest_id': self.workcenter_id.dest_location_id.id,
-            #     'product_uom_id': line.product_id.uom_id.id,
-            #     'product_uom_qty': qty * line.product_qty,
-            #     # 'qty_done': qty * line.product_qty,
-            # }
-            # stock_move_line_id = self.env['stock.move.line'].create(moves)
-        # picking.action_confirm()
-        # picking.action_assign()
-        # picking.button_validate()
+
+    def action_create_internal_transfer_second(self, pre_order):
+        qty = 0
+        for line in self.production_id.produced_lines:
+            if line.workcenter_id.id == pre_order.workcenter_id.id:
+                qty = qty + line.qty
+        picking_delivery = self.env['stock.picking.type'].search([('code', '=', 'internal')], limit=1)
+
+        vals = {
+            'location_id': self.workcenter_id.dest_location_id.id,
+            'location_dest_id': self.workcenter_id.src_location_id.id,
+            'partner_id': self.workcenter_id.partner_id.id,
+            # 'product_sub_id': self.product_subcontract_id.id,
+            'picking_type_id': picking_delivery.id,
+            'origin': self.production_id.name,
+        }
+        picking = self.env['stock.picking'].create(vals)
+        for line in self.production_id.bom_id.bom_line_ids:
+
+            lines = {
+                'picking_id': picking.id,
+                'product_id': line.product_id.id,
+                'name': line.product_id.name,
+                'product_uom': line.product_id.uom_id.id,
+                'location_id': self.workcenter_id.dest_location_id.id,
+                'location_dest_id': self.workcenter_id.src_location_id.id,
+                'product_uom_qty': qty * line.product_qty,
+                # 'reserved_availability': qty * line.product_qty,
+                # 'quantity_done': qty * line.product_qty,
+            }
+            stock_move = self.env['stock.move'].create(lines)
 
     def button_pending(self):
         record = super(MrpOrderInh, self).button_pending()
@@ -127,7 +168,6 @@ class MrpInh(models.Model):
 
     def compute_transfers(self):
         count = self.env['stock.picking'].search_count([('origin', '=', self.name)])
-        print(count)
         self.transfer_count = count
 
     def action_view_transfers(self):
