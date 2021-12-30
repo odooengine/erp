@@ -9,8 +9,8 @@
         This Module Prints Purchase Order Report
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Viltco",
+    'website': "http://www.viltco.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -23,6 +23,7 @@
 
     # always loaded
     'data': [
+        'security/security.xml',
         'views/views.xml',
         'reports/purchase_report.xml',
         'reports/purchase_template.xml',

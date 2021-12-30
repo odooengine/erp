@@ -21,6 +21,17 @@ class PurchaseOrderInherit(models.Model):
     embossing_stamp = fields.Boolean(string='Embossing Stamp')
     sock_stamp = fields.Boolean(string='Sock Stamp')
 
+    # def button_approved(self):
+    #     rec = super(PurchaseOrderInherit, self).button_approved()
+    #     self.fill_so_date()
+    #     return rec
+    #
+    # def fill_so_date(self):
+    #     print('Fill Called')
+    #     record = self.env['sale.order'].search([('client_order_ref', '=', self.name)])
+    #     record.commitment_date = self.date_planned
+    # , ('company_id', '=', 2)
+
     def compute_total_design(self):
         tot_design = 0
         val = []
