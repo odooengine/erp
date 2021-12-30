@@ -135,12 +135,6 @@ class EngineYear(models.Model):
     code = fields.Char(string='Code', tracking=True)
 
 
-class ResCompanyInherit(models.Model):
-    _inherit = 'res.company'
-
-    is_editable = fields.Boolean(string='Editable', default=False)
-
-
 class ProductTemplateInherit(models.Model):
     _inherit = 'product.template'
 
@@ -196,13 +190,6 @@ class ProductTemplateInherit(models.Model):
     # sub_dept_id = fields.Many2one('sub.department', string='Sub Department')
 
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
-    # company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.company.id)
-
-    def _default_get_company(self):
-        return self.env.company.id
-
-    company_id = fields.Many2one('res.company', 'Company', default=_default_get_company)
-    is_editable = fields.Boolean(string='Editable', related='company_id.is_editable')
 
     accessories = fields.Boolean(string='Accessories', default=False)
     fabric = fields.Boolean(string='Fabric', default=False)
