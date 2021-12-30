@@ -80,6 +80,15 @@
 				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
 			</xpath>
 
+            <xpath expr="//field[@name='line_item_id']" position="before">
+                <field name="is_editable" invisible="1"/>
+				<field name="company_id" attrs="{'readonly': [('is_editable', '=', False)]}"/>
+			</xpath>
+
+            <xpath expr="//field[@name='company_id']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
         </field>
     </record>
 
@@ -91,6 +100,17 @@
             <xpath expr="//filter[@name='categ_id']" position="after">
                 <separator/>
                 <filter string="Product Group Type" name="product_group_type" context="{'group_by':'product_group_type'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_company_form_inherit" model="ir.ui.view">
+        <field name="name">view.res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='favicon']" position="after">
+                <field name="is_editable"/>
             </xpath>
         </field>
     </record>
