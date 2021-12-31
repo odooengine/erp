@@ -138,7 +138,7 @@ class EngineYear(models.Model):
 class ResCompanyInherit(models.Model):
     _inherit = 'res.company'
 
-    is_editable = fields.Boolean(string='Editable', default=False)
+    is_editable = fields.Boolean(string='Product Creation Fix', default=False)
 
 
 class ProductTemplateInherit(models.Model):
@@ -199,7 +199,8 @@ class ProductTemplateInherit(models.Model):
     # company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.company.id)
 
     def _default_get_company(self):
-        return self.env.company.id
+        if self.env.company.is_editable:
+            return self.env.company.id
 
     company_id = fields.Many2one('res.company', 'Company', default=_default_get_company)
     is_editable = fields.Boolean(string='Editable', related='company_id.is_editable')
@@ -339,6 +340,42 @@ class ProductTemplateInherit(models.Model):
                 new_fin_gir_kid_name = ('K' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '8' + vals['fin_girl_kid_seq'])
                 vals['name'] = new_fin_gir_kid_name
         res = super(ProductTemplateInherit, self).create(vals)
+        print(res.name)
+        print(res.id)
+        # create_variant = self.env['product.product'].create({
+        # res.product_variant_id.write({
+        #     # 'product_tmpl_id': res.id,
+        #     'default_code': res.default_code,
+        #     'sale_ok': False,
+        #     'purchase_ok': False,
+        #     'categ_id': res.categ_id.id,
+        #     # 'barcode': res.barcode,
+        #     'type': res.type,
+        #     'uom_id': res.uom_id.id,
+        #     'uom_po_id': res.uom_po_id.id,
+        #     'standard_price': res.standard_price,
+        #     'lst_price': res.lst_price,
+        #     'taxes_id': res.taxes_id.ids,
+        #     'company_id': res.company_id.id,
+        #     'product_group_type': res.product_group_type,
+        #     'age_group_id': res.age_group_id.id,
+        #     'accessories': res.accessories,
+        #     'fabric': res.fabric,
+        #     'finish': res.finish,
+        #     'calender_season_id': res.calender_season_id.id,
+        #     'class_fabric_id': res.class_fabric_id.id,
+        #     'line_item_id': res.line_item_id.id,
+        #     'product_group_id': res.product_group_id.id,
+        #     'size_range_id': res.size_range_id.id,
+        #     'accessories_type_id': res.accessories_type_id.id,
+        #     'product_gender': res.product_gender,
+        #     'dept_id': res.dept_id,
+        #     'sub_dept': res.sub_dept,
+        #     'life_type_id': res.life_type_id.id,
+        #     'item_sub_cat_id': res.item_sub_cat_id.id,
+        #     'engine_year_id': res.engine_year_id.id,
+        # })
+        # print('product created 1')
         # res.product_variant_id.product_group_type = res.product_group_type
         # res.product_variant_id.age_group_id = res.age_group_id
         # res.product_variant_id.accessories = res.accessories
@@ -357,7 +394,82 @@ class ProductTemplateInherit(models.Model):
         # res.product_variant_id.item_sub_cat_id = res.item_sub_cat_id
         # res.product_variant_id.item_cat_id = res.item_cat_id
         # res.product_variant_id.engine_year_id = res.engine_year_id
+        # self.env['product.product'].browse([res.id]).copy()
         return res
+
+    def create_extra_variant(self):
+        if self.finish:
+            if self.product_variant_id.product_template_attribute_value_ids:
+                create_variant = self.env['product.product'].create({
+                    'product_tmpl_id': self.id,
+                    'default_code': self.default_code,
+                    'sale_ok': False,
+                    'purchase_ok': False,
+                    'categ_id': self.categ_id.id,
+                    'barcode': self.barcode,
+                    'type': self.type,
+                    'uom_id': self.uom_id.id,
+                    'uom_po_id': self.uom_po_id.id,
+                    'standard_price': self.standard_price,
+                    'lst_price': self.lst_price,
+                    'taxes_id': self.taxes_id.ids,
+                    'company_id': self.company_id.id,
+                    'product_group_type': self.product_group_type,
+                    'age_group_id': self.age_group_id.id,
+                    'accessories': self.accessories,
+                    'fabric': self.fabric,
+                    'finish': self.finish,
+                    'calender_season_id': self.calender_season_id.id,
+                    'class_fabric_id': self.class_fabric_id.id,
+                    'line_item_id': self.line_item_id.id,
+                    'product_group_id': self.product_group_id.id,
+                    'size_range_id': self.size_range_id.id,
+                    'accessories_type_id': self.accessories_type_id.id,
+                    'product_gender': self.product_gender,
+                    'dept_id': self.dept_id,
+                    'sub_dept': self.sub_dept,
+                    'life_type_id': self.life_type_id.id,
+                    'item_sub_cat_id': self.item_sub_cat_id.id,
+                    'engine_year_id': self.engine_year_id.id,
+                })
+
+    # def write(self, vals):
+        # create_variant = self.env['product.product'].create({
+        #     'product_tmpl_id': self.id,
+        #     'default_code': self.default_code,
+        #     'sale_ok': False,
+        #     'purchase_ok': False,
+        #     'categ_id': self.categ_id.id,
+        #     # 'barcode': res.barcode,
+        #     'type': self.type,
+        #     'uom_id': self.uom_id.id,
+        #     'uom_po_id': self.uom_po_id.id,
+        #     'standard_price': self.standard_price,
+        #     'lst_price': self.lst_price,
+        #     'taxes_id': self.taxes_id.ids,
+        #     'company_id': self.company_id.id,
+        #     'product_group_type': self.product_group_type,
+        #     'age_group_id': self.age_group_id.id,
+        #     'accessories': self.accessories,
+        #     'fabric': self.fabric,
+        #     'finish': self.finish,
+        #     'calender_season_id': self.calender_season_id.id,
+        #     'class_fabric_id': self.class_fabric_id.id,
+        #     'line_item_id': self.line_item_id.id,
+        #     'product_group_id': self.product_group_id.id,
+        #     'size_range_id': self.size_range_id.id,
+        #     'accessories_type_id': self.accessories_type_id.id,
+        #     'product_gender': self.product_gender,
+        #     'dept_id': self.dept_id,
+        #     'sub_dept': self.sub_dept,
+        #     'life_type_id': self.life_type_id.id,
+        #     'item_sub_cat_id': self.item_sub_cat_id.id,
+        #     'engine_year_id': self.engine_year_id.id,
+        # })
+        # res = super(ProductTemplateInherit, self).write(vals)
+        # self.create_vari()
+        # res = super(ProductTemplateInherit, self).write(vals)
+        # return res
 
     # def write(self, vals):
     #     # res = super(ProductTemplateInherit, self).write(vals)
