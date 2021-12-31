@@ -172,11 +172,10 @@ class MrpInh(models.Model):
     reason_lines = fields.One2many('reason.line', 'mrp_id')
     transfer_count = fields.Integer(compute='compute_transfers')
     is_req_created = fields.Boolean()
-    req_count = fields.Integer(string="Requisitions")
+    req_count = fields.Integer(string="Requisitions", compute='compute_req_count')
 
     def compute_req_count(self):
         for rec in self:
-
             count = self.env['material.purchase.requisition'].search_count([('ref', '=', rec.name)])
             rec.req_count = count
 
