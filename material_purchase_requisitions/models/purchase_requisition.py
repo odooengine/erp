@@ -316,22 +316,25 @@ class MaterialPurchaseRequisition(models.Model):
                 }
                 rec.write(delivery_vals)
 
+
             po_dict = {}
             if rec.vendor_id:
                 for line in rec.requisition_line_ids:
                     line.partner_id = [rec.vendor_id.id]
             else:
-                raise UserError('Please Select Vendor.')
+                for re_line in rec.requisition_line_ids:
+                    if re_line.requisition_type == 'purchase':
+                        raise UserError('Please Select Vendor.')
             for line in rec.requisition_line_ids:
                 if line.requisition_type == 'internal':
                     pick_vals = rec._prepare_pick_vals(line, stock_id)
                     move_id = move_obj.sudo().create(pick_vals)
-                # else:
                 if line.requisition_type == 'purchase':  # 10/12/2019
                     if not line.partner_id:
                         raise Warning(
                             _('Please enter atleast one vendor on Requisition Lines for Requisition Action Purchase'))
-
+            if any(line.requisition_type == 'internal' for line in rec.requisition_line_ids):
+                stock_id.action_confirm()
             rec.action_create_po()
             rec.state = 'stock'
 
