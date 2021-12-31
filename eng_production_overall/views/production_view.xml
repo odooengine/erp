@@ -38,8 +38,8 @@
         <field name="model">mrp.bom</field>
         <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
         <field name="arch" type="xml">
-                <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
-<!--                <attribute name="domain">[('type', 'in', ['product', 'consu']),('type', 'in', ['product', 'consu']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>-->
+            <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
+                <!--                <attribute name="domain">[('type', 'in', ['product', 'consu']),('type', 'in', ['product', 'consu']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>-->
                 <attribute name="domain">[('id', 'in', product_tmpl_ids)]</attribute>
             </xpath>
 
@@ -72,6 +72,18 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="material_purchase_requisition_form_inh">
+        <field name="name">material.purchase.requisition.form.inh</field>
+        <field name="model">material.purchase.requisition</field>
+        <field name="inherit_id" ref="material_purchase_requisitions.material_purchase_requisition_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='analytic_account_id']" position="after">
+                <field name="ref"/>
+            </xpath>
+        </field>
+    </record>
+
 
     <record model="ir.ui.view" id="mrp_production_form_inh">
         <field name="name">mrp.production.form.inh</field>
@@ -82,6 +94,21 @@
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="allowed_product_ids" invisible="1"/>
             </xpath>
+
+            <xpath expr="//header/button[@name='action_assign']" position="before">
+                <button name="action_create_requisition" type="object" string="Create Requisition" class="oe_highlight" attrs="{'invisible': ['|','|',('state', '!=', 'confirmed'), ('is_req_created', '=', True), ('company_id', '!=', 1)]}"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_requisitions" attrs="{'invisible': [('company_id', '!=', 1)]}">
+                    <field string="Requisitions" name="req_count" widget="statinfo" />
+                </button>
+            </xpath>
+
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="is_req_created" invisible="1"/>
+            </xpath>
+
 
             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
                 <button type="object" name="action_view_transfers" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('transfer_count', '=', 0)]}">

@@ -159,12 +159,37 @@ class MrpOrderInh(models.Model):
         }
 
 
+class RequisitionInh(models.Model):
+    _inherit = 'material.purchase.requisition'
+
+    ref = fields.Char('Origin')
+
+
 class MrpInh(models.Model):
     _inherit = 'mrp.production'
 
     produced_lines = fields.One2many('produced.qty.line', 'mrp_id')
     reason_lines = fields.One2many('reason.line', 'mrp_id')
     transfer_count = fields.Integer(compute='compute_transfers')
+    is_req_created = fields.Boolean()
+    req_count = fields.Integer(string="Requisitions")
+
+    def compute_req_count(self):
+        for rec in self:
+
+            count = self.env['material.purchase.requisition'].search_count([('ref', '=', rec.name)])
+            rec.req_count = count
+
+    def action_show_requisitions(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Requisitions',
+            'view_id': self.env.ref('material_purchase_requisitions.material_purchase_requisition_tree_view', False).id,
+            'target': 'current',
+            'domain': [('ref', '=', self.name)],
+            'res_model': 'material.purchase.requisition',
+            'views': [[False, 'tree'], [False, 'form']],
+        }
 
     def compute_transfers(self):
         count = self.env['stock.picking'].search_count([('origin', '=', self.name)])
@@ -208,3 +233,34 @@ class MrpInh(models.Model):
             if rec.quality_state != 'pass':
                 raise UserError('Quality Checks Are not Passed.')
         return super(MrpInh, self).button_mark_done()
+
+    def action_create_requisition(self):
+        product_list = []
+        bom = self.env['mrp.bom'].search([])
+        for rec in bom:
+            product_list.append(rec.product_tmpl_id.id)
+        line_vals = []
+        for line in self.move_raw_ids:
+            if line.product_id.product_tmpl_id.id not in product_list and line.reserved_availability < line.product_uom_qty:
+                line_vals.append((0, 0, {
+                    'requisition_type': 'internal',
+                    'product_id': line.product_id.id,
+                    'description': line.product_id.name,
+                    'qty':  line.product_uom_qty - line.reserved_availability,
+                    'uom': line.product_id.uom_id.id,
+                }))
+                line_vals.append(line_vals)
+        employee = self.env['hr.employee'].search([('user_id', '=', self.user_id.id)])
+        vals = {
+            'company_id': self.env.user.company_id.id,
+            'department_id': employee.department_id.id,
+            'request_date': fields.Date.today(),
+            'requisition_line_ids': line_vals,
+            'dest_location_id': self.location_src_id.id,
+            'ref': self.name,
+            }
+        move = self.env['material.purchase.requisition'].create(vals)
+        move.requisition_confirm()
+        move.manager_approve()
+        move.user_approve()
+        self.is_req_created = True

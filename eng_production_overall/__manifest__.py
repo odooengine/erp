@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'mrp', 'stock', 'purchase', 'product'],
+    'depends': ['base', 'mrp', 'stock', 'purchase', 'product', 'material_purchase_requisitions'],
 
     # always loaded
     'data': [
