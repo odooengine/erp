@@ -25,7 +25,7 @@
     'data': [
         'security/ir.model.access.csv',
         'security/security.xml',
-        'data/sequence.xml',
+        # 'data/sequence.xml',
         'views/accessories_type_views.xml',
         'views/age_group_views.xml',
         'views/calender_season_views.xml',

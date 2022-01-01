@@ -48,17 +48,22 @@
                 <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
                 <field name="product_gender"/>
 
-                <field name="acc_seq" invisible="1"/>
-                <field name="fab_seq" invisible="1"/>
+<!--                <field name="acc_seq" invisible="1"/>-->
+<!--                <field name="fab_seq" invisible="1"/>-->
 
-                <field name="fin_men_seq" invisible="1"/>
-                <field name="fin_women_seq" invisible="1"/>
-                <field name="fin_boy_infan_seq" invisible="1"/>
-                <field name="fin_boy_tod_seq" invisible="1"/>
-                <field name="fin_boy_kid_seq" invisible="1"/>
-                <field name="fin_girl_infan_seq" invisible="1"/>
-                <field name="fin_girl_tod_seq" invisible="1"/>
-                <field name="fin_girl_kid_seq" invisible="1"/>
+<!--                <field name="fin_men_seq" invisible="1"/>-->
+<!--                <field name="fin_women_seq" invisible="1"/>-->
+<!--                -->
+<!--                <field name="fin_boy_infan_seq" invisible="1"/>-->
+<!--                <field name="fin_boy_tod_seq" invisible="1"/>-->
+<!--                <field name="fin_boy_kid_seq" invisible="1"/>-->
+<!--                -->
+<!--                <field name="fin_girl_infan_seq" invisible="1"/>-->
+<!--                <field name="fin_girl_tod_seq" invisible="1"/>-->
+<!--                <field name="fin_girl_kid_seq" invisible="1"/>-->
+
+                <field name="pre_seq"/>
+                <field name="pos_seq"/>
 
                 <field name="product_group_type" invisible="1"/>
                 <field name="is_freeze" invisible="1"/>
