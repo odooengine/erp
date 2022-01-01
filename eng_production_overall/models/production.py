@@ -65,6 +65,9 @@ class MrpOrderInh(models.Model):
     start_date_custom = fields.Datetime('Date Start')
 
     def button_finish(self):
+        transfers = self.env['stock.picking'].search([('origin', '=', self.production_id.name)])
+        if any(line.state != 'done' for line in transfers):
+            raise UserError('Please Confirm all Transfers')
         return {
             'type': 'ir.actions.act_window',
             'name': 'Done Quantity',
@@ -75,15 +78,17 @@ class MrpOrderInh(models.Model):
         }
 
     def button_start(self):
-        pre_order = self.env['mrp.workorder'].search([('id', '=', self.id-1), ('production_id', '=', self.production_id.id)])
-        if pre_order:
-            if pre_order.state != 'done':
-                raise UserError('This workorder is waiting for another operation to get done.')
-        if self.workcenter_id.wk_embellish:
-            self.action_create_internal_transfer(pre_order)
-            self.action_create_internal_transfer_second(pre_order)
-        record = super(MrpOrderInh, self).button_start()
-        self.start_date_custom = datetime.today()
+        for rec in self:
+            pre_order = self.env['mrp.workorder'].search([('id', '=', rec.id-1), ('production_id', '=', rec.production_id.id)])
+            if pre_order:
+                if pre_order.state != 'done':
+                    raise UserError('This workorder is waiting for another operation to get done.')
+            if rec.workcenter_id.wk_embellish:
+                if not rec.production_id.is_transfer_created:
+                    rec.action_create_internal_transfer(pre_order)
+                    rec.action_create_internal_transfer_second(pre_order)
+            record = super(MrpOrderInh, rec).button_start()
+            rec.start_date_custom = datetime.today()
 
     def action_create_internal_transfer(self, pre_order):
         qty = 0
@@ -146,6 +151,7 @@ class MrpOrderInh(models.Model):
                 # 'quantity_done': qty * line.product_qty,
             }
             stock_move = self.env['stock.move'].create(lines)
+            self.production_id.is_transfer_created = True
 
     def button_pending(self):
         record = super(MrpOrderInh, self).button_pending()
@@ -157,6 +163,18 @@ class MrpOrderInh(models.Model):
             'res_model': 'produced.qty.wizard',
             'view_mode': 'form',
         }
+
+
+# class StockInventoryLineInh(models.Model):
+#     _inherit = 'stock.inventory.line'
+#
+#     ref = fields.Char('Origin')
+
+
+class StockInventoryInh(models.Model):
+    _inherit = 'stock.inventory'
+
+    ref = fields.Char('Origin')
 
 
 class RequisitionInh(models.Model):
@@ -173,11 +191,44 @@ class MrpInh(models.Model):
     transfer_count = fields.Integer(compute='compute_transfers')
     is_req_created = fields.Boolean()
     req_count = fields.Integer(string="Requisitions", compute='compute_req_count')
+    adjust_count = fields.Integer(string="Adjustment", compute='compute_adjust_count')
+
+    product_ids = fields.Many2many('product.product', compute='compute_products')
+    is_transfer_created = fields.Boolean()
+    is_adj_created = fields.Boolean()
+
+    def compute_adjust_count(self):
+        for rec in self:
+            count = self.env['stock.inventory'].search_count([('ref', '=', rec.name)])
+            rec.adjust_count = count
+
+    @api.depends('product_id')
+    def compute_products(self):
+        products = self.env['product.product'].search([])
+        # print(products)
+        products_list = []
+        for product in products:
+            for route in product.route_ids:
+                if route.name == 'Manufacture':
+                    products_list.append(product.id)
+        # print(products_list)
+        self.product_ids = products_list
 
     def compute_req_count(self):
         for rec in self:
             count = self.env['material.purchase.requisition'].search_count([('ref', '=', rec.name)])
             rec.req_count = count
+
+    def action_show_adjustment(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Variants Adjustments',
+            'view_id': self.env.ref('stock.view_inventory_tree', False).id,
+            'target': 'current',
+            'domain': [('ref', '=', self.name)],
+            'res_model': 'stock.inventory',
+            'views': [[False, 'tree'], [False, 'form']],
+        }
 
     def action_show_requisitions(self):
         return {
@@ -227,11 +278,38 @@ class MrpInh(models.Model):
                     activities = self.env['mail.activity'].create(create_vals)
 
     def button_mark_done(self):
-        # self._create_notification()
-        for rec in self.check_ids:
-            if rec.quality_state != 'pass':
-                raise UserError('Quality Checks Are not Passed.')
-        return super(MrpInh, self).button_mark_done()
+        # print(self._context)
+        # if 'active_model' in self._context:
+        #     print('Hello')
+        if 'active_model' not in self._context:
+            for rec in self.check_ids:
+                if rec.quality_state != 'pass':
+                    raise UserError('Quality Checks Are not Passed.')
+            adjustment = self.env['stock.inventory'].search([('ref', '=', self.name)], limit=1)
+            if adjustment:
+                if adjustment.state == 'done':
+                    return super(MrpInh, self).button_mark_done()
+                else:
+                    raise ValidationError('Please Add Adjustment of All Variants.')
+            else:
+                raise ValidationError('Please Add Adjustment of All Variants.')
+        else:
+            return super(MrpInh, self).button_mark_done()
+
+    def create_adjustment(self):
+        if not self.is_adj_created:
+            variants = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
+            create_vals = {
+                'name': 'Manufacturing Adjustment',
+                'location_ids': [self.location_src_id.id],
+                'product_ids': variants.ids,
+                'company_id': self.env.company.id,
+                'ref': self.name,
+                'date': datetime.today(),
+            }
+            adju = self.env['stock.inventory'].create(create_vals)
+            self.is_adj_created = True
+
 
     def action_create_requisition(self):
         product_list = []

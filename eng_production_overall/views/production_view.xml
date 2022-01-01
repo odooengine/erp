@@ -84,6 +84,18 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="stock_inventory_form_inh">
+        <field name="name">stock.inventory.form.inh</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock.view_inventory_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='prefill_counted_quantity']" position="after">
+                <field name="ref"/>
+            </xpath>
+        </field>
+    </record>
+
 
     <record model="ir.ui.view" id="mrp_production_form_inh">
         <field name="name">mrp.production.form.inh</field>
@@ -96,17 +108,28 @@
             </xpath>
 
             <xpath expr="//header/button[@name='action_assign']" position="before">
-                <button name="action_create_requisition" type="object" string="Create Requisition" class="oe_highlight" attrs="{'invisible': ['|','|',('state', '!=', 'confirmed'), ('is_req_created', '=', True), ('company_id', '!=', 1)]}"/>
+                <button name="create_adjustment" type="object" string="Add Variants Adj" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'to_close'), ('is_adj_created', '=', True)]}"/>
+                <button name="action_create_requisition" type="object" string="Create Requisition" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'confirmed'), ('is_req_created', '=', True)]}"/>
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_requisitions" attrs="{'invisible': [('company_id', '!=', 1)]}">
+                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_requisitions">
                     <field string="Requisitions" name="req_count" widget="statinfo" />
+                </button>
+                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_adjustment" attrs="{'invisible': [('adjust_count', '=', 0)]}">
+                    <field string="Adjustment" name="adjust_count" widget="statinfo" />
                 </button>
             </xpath>
 
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="is_req_created" invisible="1"/>
+                <field name="product_ids" widget="many2many_tags" invisible="1"/>
+                <field name="is_transfer_created" invisible="1"/>
+                <field name="is_adj_created" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', product_ids)]</attribute>
             </xpath>
 
 
