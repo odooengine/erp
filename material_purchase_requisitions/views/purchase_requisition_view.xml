@@ -92,6 +92,7 @@
                                         <field name="managerapp_date"/>
                                         <field name="userrapp_date"/>
                                         <field name="userreject_date"/>
+<!--                                        <field name="user_id"/>-->
                                     </group>
                                 </group>
                             </page>

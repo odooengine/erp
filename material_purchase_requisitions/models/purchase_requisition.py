@@ -27,6 +27,8 @@ class MaterialPurchaseRequisition(models.Model):
     #     readonly=1,
     # )
 
+    # user_id = fields.Many2one('res.users',string='User')
+
     name = fields.Char(required=True, copy=False, readonly=True,
                        index=True, default=lambda self: _('New'))
 
