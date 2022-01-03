@@ -47,19 +47,21 @@
                 <field name="life_type_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
                 <field name="product_gender"/>
+                <field name="candela_code"/>
 
                 <field name="pre_seq" invisible="1"/>
                 <field name="pos_seq" invisible="1"/>
 
                 <field name="product_group_type" invisible="1"/>
                 <field name="is_freeze" invisible="1"/>
+                <field name="my_activity_date_deadline" invisible="1"/>
 
             </xpath>
 
 <!--            Remove Create Edit-->
 
             <xpath expr="//field[@name='attribute_line_ids']//tree/field[@name='attribute_id']" position="attributes">
-				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
 			</xpath>
 
             <xpath expr="//field[@name='attribute_line_ids']//tree/field[@name='value_ids']" position="attributes">

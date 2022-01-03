@@ -144,6 +144,8 @@ class ResCompanyInherit(models.Model):
 class ProductTemplateInherit(models.Model):
     _inherit = 'product.template'
 
+    my_activity_date_deadline = fields.Date(string='My Activity Date Deadline')
+
     product_group_type = fields.Selection([('filt_acc', 'Accessories'),
                                            ('filt_fab', 'Fabric'),
                                            ('filt_fin', 'Finish Goods'),
@@ -197,6 +199,8 @@ class ProductTemplateInherit(models.Model):
 
     pre_seq = fields.Char(string='Pre Sequence')
     pos_seq = fields.Integer(string='Post Sequence', default=1)
+
+    candela_code = fields.Char(string='Candela Code')
 
     @api.onchange('accessories')
     def onchange_accessories(self):
