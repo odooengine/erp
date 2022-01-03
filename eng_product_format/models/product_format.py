@@ -149,20 +149,6 @@ class ProductTemplateInherit(models.Model):
                                            ('filt_fin', 'Finish Goods'),
                                            ], string='Product Group Type')
 
-    # acc_seq = fields.Char(string='Acc Sequence')
-    # fab_seq = fields.Char(string='Fab Sequence')
-    #
-    # fin_men_seq = fields.Char(string='Fin Men Sequence')
-    # fin_women_seq = fields.Char(string='Fin Women Sequence')
-    #
-    # fin_boy_infan_seq = fields.Char(string='Fin Boy Infan Sequence')
-    # fin_boy_tod_seq = fields.Char(string='Fin Boy Tod Sequence')
-    # fin_boy_kid_seq = fields.Char(string='Fin Boy Kid Sequence')
-    #
-    # fin_girl_infan_seq = fields.Char(string='Fin Girl Infan Sequence')
-    # fin_girl_tod_seq = fields.Char(string='Fin Girl Tod Sequence')
-    # fin_girl_kid_seq = fields.Char(string='Fin Girl Kid Sequence')
-
     age_group_id = fields.Many2one('age.group', string='Age Group')
     calender_season_id = fields.Many2one('calender.season', string='Season')
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
@@ -236,41 +222,6 @@ class ProductTemplateInherit(models.Model):
     @api.model
     def create(self, vals):
         vals['is_freeze'] = True
-        # if vals['accessories']:
-        #     access_sequence = self.env.ref('eng_product_format.acc_sequence')
-        #     vals['acc_seq'] = access_sequence.next_by_id()
-        # elif vals['fabric']:
-        #     fabri_sequence = self.env.ref('eng_product_format.fab_sequence')
-        #     vals['fab_seq'] = fabri_sequence.next_by_id()
-        # elif vals['finish']:
-        #     if vals['dept_id'] == 'men':
-        #         fini_man_sequence = self.env.ref('eng_product_format.fin_man_sequence')
-        #         vals['fin_men_seq'] = fini_man_sequence.next_by_id()
-        #     elif vals['dept_id'] == 'women':
-        #         fini_wom_sequence = self.env.ref('eng_product_format.fin_woman_sequence')
-        #         vals['fin_women_seq'] = fini_wom_sequence.next_by_id()
-        #     elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'infant':
-        #         fin_boy_inf_sequence = self.env.ref('eng_product_format.fin_boy_infan_sequence')
-        #         vals['fin_boy_infan_seq'] = fin_boy_inf_sequence.next_by_id()
-        #     elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'toddlers':
-        #         fin_boy_tod_sequence = self.env.ref('eng_product_format.fin_boy_tod_sequence')
-        #         vals['fin_boy_tod_seq'] = fin_boy_tod_sequence.next_by_id()
-        #     elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'kids':
-        #         fin_boy_kid_sequence = self.env.ref('eng_product_format.fin_boy_kid_sequence')
-        #         vals['fin_boy_tod_seq'] = fin_boy_kid_sequence.next_by_id()
-        #     elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'infant':
-        #         fin_gir_inf_sequence = self.env.ref('eng_product_format.fin_gir_infan_sequence')
-        #         vals['fin_girl_infan_seq'] = fin_gir_inf_sequence.next_by_id()
-        #     elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'toddlers':
-        #         fin_gir_tod_sequence = self.env.ref('eng_product_format.fin_gir_tod_sequence')
-        #         vals['fin_girl_tod_seq'] = fin_gir_tod_sequence.next_by_id()
-        #     elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'kids':
-        #         fin_gir_kid_sequence = self.env.ref('eng_product_format.fin_gir_kid_sequence')
-        #         vals['fin_girl_kid_seq'] = fin_gir_kid_sequence.next_by_id()
-
-        # product_record = self.env['product.template'].search([('name', '=', vals['pre_seq'])])
-        # if len(product_record) > 1:
-        #     raise ValidationError(_('Product Already Exists'))
 
         accessory_record = self.env['accessories.type'].browse(vals['accessories_type_id'])
         accessory_code = str(accessory_record.code)
@@ -323,17 +274,9 @@ class ProductTemplateInherit(models.Model):
         vals['pre_seq'] = name
 
         product_record = self.env['product.template'].search([('pre_seq', '=', vals['pre_seq'])], order='id desc')
-        print(product_record)
         if product_record:
-            print('IF')
             vals['pos_seq'] = product_record[0].pos_seq + 1
-        # if  vals['pos_seq'] == 0:
-        #     vals['pos_seq'] = 1
-        vals['name'] = name+ '000' + str(vals['pos_seq'])
-        # product_record = self.env['product.template'].search([('pre_seq', '=', vals['pre_seq'])])
-        # if len(product_record) > 1:
-        #     vals['pos_seq'] = vals['pos_seq'] + 1
-            # raise ValidationError(_('Product Already Exists'))
+        vals['name'] = name + '000' + str(vals['pos_seq'])
         res = super(ProductTemplateInherit, self).create(vals)
         return res
 

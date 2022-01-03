@@ -3,10 +3,10 @@
     'name': "Product Format",
 
     'summary': """
-        Add New Menus In Products Under Configuration""",
+        Add New Menus In Product Under Configuration and Generate the Product Code """,
 
     'description': """
-        Add New Menus In Products Under Configuration
+        Add New Menus In Product Under Configuration and Generate the Product Code
     """,
 
     'author': "Viltco",
@@ -16,7 +16,7 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Stock',
-    'version': '14.0.0.3',
+    'version': '14.0.0.4',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'stock', 'product', 'mail'],
@@ -25,7 +25,6 @@
     'data': [
         'security/ir.model.access.csv',
         'security/security.xml',
-        # 'data/sequence.xml',
         'views/accessories_type_views.xml',
         'views/age_group_views.xml',
         'views/calender_season_views.xml',

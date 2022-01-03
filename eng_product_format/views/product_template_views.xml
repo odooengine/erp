@@ -48,22 +48,8 @@
                 <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
                 <field name="product_gender"/>
 
-<!--                <field name="acc_seq" invisible="1"/>-->
-<!--                <field name="fab_seq" invisible="1"/>-->
-
-<!--                <field name="fin_men_seq" invisible="1"/>-->
-<!--                <field name="fin_women_seq" invisible="1"/>-->
-<!--                -->
-<!--                <field name="fin_boy_infan_seq" invisible="1"/>-->
-<!--                <field name="fin_boy_tod_seq" invisible="1"/>-->
-<!--                <field name="fin_boy_kid_seq" invisible="1"/>-->
-<!--                -->
-<!--                <field name="fin_girl_infan_seq" invisible="1"/>-->
-<!--                <field name="fin_girl_tod_seq" invisible="1"/>-->
-<!--                <field name="fin_girl_kid_seq" invisible="1"/>-->
-
-                <field name="pre_seq"/>
-                <field name="pos_seq"/>
+                <field name="pre_seq" invisible="1"/>
+                <field name="pos_seq" invisible="1"/>
 
                 <field name="product_group_type" invisible="1"/>
                 <field name="is_freeze" invisible="1"/>
@@ -91,7 +77,6 @@
             <xpath expr="//field[@name='line_item_id']" position="before">
                 <field name="is_editable" invisible="1"/>
 				<field name="company_id" readonly="1"/>
-<!--                attrs="{'readonly': [('is_editable', '=', False)]}"-->
 			</xpath>
 
             <xpath expr="//field[@name='company_id']" position="attributes">
@@ -123,34 +108,5 @@
             </xpath>
         </field>
     </record>
-
-<!--    <record model="ir.ui.view" id="l10n_in.product_template_hsn_code">-->
-<!--        <field name="name">l10n_in.product.template.form.hsn_code</field>-->
-<!--        <field name="model">product.template</field>-->
-<!--        <field name="inherit_id" ref="product.product_template_form_view"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <field name="categ_id" position="after">-->
-<!--                <field name="l10n_in_hsn_code" invisible="1"/>-->
-<!--                <field name="l10n_in_hsn_description" invisible="1"/>-->
-<!--            </field>-->
-<!--        </field>-->
-<!--    </record>-->
-
-<!--    <record id="view_l10n_product_template_form_inherit" model="ir.ui.view">-->
-<!--        <field name="name">product.template.l10n.inherit</field>-->
-<!--        <field name="model">product.template</field>-->
-<!--        <field name="inherit_id" ref="l10n_in.product_template_hsn_code"/>-->
-<!--        <field name="arch" type="xml">-->
-
-<!--            <xpath expr="//field[@name='l10n_in_hsn_code']" position="attributes">-->
-<!--				<attribute name="invisible">1</attribute>-->
-<!--			</xpath>-->
-
-<!--            <xpath expr="//field[@name='l10n_in_hsn_description']" position="attributes">-->
-<!--				<attribute name="invisible">1</attribute>-->
-<!--			</xpath>-->
-
-<!--        </field>-->
-<!--    </record>-->
 
 </odoo>
