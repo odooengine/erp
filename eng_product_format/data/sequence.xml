@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="acc_sequence" model="ir.sequence">
+        <field name="name">Accessory Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fab_sequence" model="ir.sequence">
+        <field name="name">Fabric Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_man_sequence" model="ir.sequence">
+        <field name="name">Fin Man Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_woman_sequence" model="ir.sequence">
+        <field name="name">Fin Woman Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_boy_infan_sequence" model="ir.sequence">
+        <field name="name">Fin Infan Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_boy_tod_sequence" model="ir.sequence">
+        <field name="name">Fin Tod Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_boy_kid_sequence" model="ir.sequence">
+        <field name="name">Fin Kid Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_gir_infan_sequence" model="ir.sequence">
+        <field name="name">Fin Girl Infan Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_gir_tod_sequence" model="ir.sequence">
+        <field name="name">Fin Girl Tod Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="fin_gir_kid_sequence" model="ir.sequence">
+        <field name="name">Fin Girl Kid Sequence</field>
+        <field name="code">product.template</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

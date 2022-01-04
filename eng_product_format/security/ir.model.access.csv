@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+1,age.group,model_age_group,base.group_user,1,1,1,1
+2,calender.season,model_calender_season,base.group_user,1,1,1,1
+3,class.fabric,model_class_fabric,base.group_user,1,1,1,1
+4,line.item,model_line_item,base.group_user,1,1,1,1
+5,product.group,model_product_group,base.group_user,1,1,1,1
+6,size.range,model_size_range,base.group_user,1,1,1,1
+7,accessories.type,model_accessories_type,base.group_user,1,1,1,1
+8,life.type,model_life_type,base.group_user,1,1,1,1
+9,item.sub.category,model_item_sub_category,base.group_user,1,1,1,1
+10,item.category,model_item_category,base.group_user,1,1,1,1
+11,engine.year,model_engine_year,base.group_user,1,1,1,1
