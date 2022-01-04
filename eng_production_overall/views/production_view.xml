@@ -50,22 +50,7 @@
             <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="after">
                 <field name="class_fabric_id"/>
                 <field name="accessories_type_id"/>
-                <field name="components_ids" widget="many2many_tags" invisible="1"/>
             </xpath>
-
-            <xpath expr="///field[@name='product_id']" position="attributes">
-                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
-            </xpath>
-
-            <xpath expr="///field[@name='product_tmpl_id']" position="attributes">
-                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
-            </xpath>
-
-            <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="attributes">
-                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
-                <attribute name="domain">[('id', 'in', components_ids)]</attribute>
-            </xpath>
-
         </field>
     </record>
 

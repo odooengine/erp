@@ -10,17 +10,7 @@ class MrpBomLineInh(models.Model):
 
     class_fabric_id = fields.Many2one('class.fabric', related='product_id.class_fabric_id')
     accessories_type_id = fields.Many2one('accessories.type', related='product_id.accessories_type_id')
-    components_ids = fields.Many2many('product.product', compute='compute_components')
 
-    @api.depends('product_id')
-    def compute_components(self):
-        products = self.env['product.product'].search([])
-        products_list = []
-        for product in products:
-            for route in product.route_ids:
-                if route.name == 'Components':
-                    products_list.append(product.id)
-        self.components_ids = products_list
 
 class MrpBomInh(models.Model):
     _inherit = 'mrp.bom'
@@ -36,15 +26,6 @@ class MrpBomInh(models.Model):
                 if route.name == 'Manufacture':
                     products_list.append(product.id)
         self.product_tmpl_ids = products_list
-
-        products = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
-        empty_id = ''
-        for rec in products:
-            if not rec.product_template_attribute_value_ids:
-                empty_id = rec.id
-        self.product_id = empty_id
-
-
 
 class WorkCenterEmbellishment(models.Model):
     _inherit = 'mrp.workcenter'
@@ -215,8 +196,6 @@ class MrpInh(models.Model):
     product_ids = fields.Many2many('product.product', compute='compute_products')
     is_transfer_created = fields.Boolean()
     is_adj_created = fields.Boolean()
-
-
 
     def compute_adjust_count(self):
         for rec in self:
