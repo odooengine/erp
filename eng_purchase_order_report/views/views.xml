@@ -1,0 +1,118 @@
+<odoo>
+
+    <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="total_design"/>
+                <field name="total_pair"/>
+            </xpath>
+
+            <xpath expr="//field[@name='fiscal_position_id']" position="after">
+                <field name="packing_instruction" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+            </xpath>
+
+            <xpath expr="//group[@name='other_info']" position="inside">
+                <field name="special_instruction" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="before">
+                <field name="sock_label" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                <field name="embossing_stamp" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                <field name="sock_stamp" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+            </xpath>
+
+<!--            No Create-->
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create': True,'no_open': True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create': True,'no_open': True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create': True,'no_open': True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create': True,'no_open': True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='order_line']//tree/field[@name='product_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True, 'no_create':True}</attribute>
+			</xpath>
+
+<!--            ReadOnly PO-->
+
+            <xpath expr="//field[@name='partner_ref']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='origin']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='order_line']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='notes']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+        </field>
+    </record>
+
+    <record id="view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+<!--            ReadOnly DO-->
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='origin']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='scheduled_date']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='note']" position="attributes">
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+			</xpath>
+
+        </field>
+    </record>
+
+</odoo>
