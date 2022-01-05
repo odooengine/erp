@@ -1,5 +1,27 @@
 <odoo>
 
+    <record id="product_template_form_inh" model="ir.ui.view">
+        <field name="name">product.template</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form" />
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='property_stock_inventory']" position="after">
+                <field name="requisition_location_id"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--    <record id="product_template_form_inh" model="ir.ui.view">-->
+<!--        <field name="name">product.template</field>-->
+<!--        <field name="model">product.template</field>-->
+<!--        <field name="inherit_id" ref="" />-->
+<!--        <field name="arch" type="xml">-->
+<!--             <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+<!--                <field name="requisition_location_id"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
     <record id="work_center_embellishments" model="ir.ui.view">
         <field name="name">embellishment.workcenter.inherited</field>
         <field name="model">mrp.workcenter</field>
@@ -50,7 +72,22 @@
             <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="after">
                 <field name="class_fabric_id"/>
                 <field name="accessories_type_id"/>
+                <field name="components_ids" widget="many2many_tags" invisible="1"/>
             </xpath>
+
+            <xpath expr="///field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="///field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+                <attribute name="domain">[('id', 'in', components_ids)]</attribute>
+            </xpath>
+
         </field>
     </record>
 

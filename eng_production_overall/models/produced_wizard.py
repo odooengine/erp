@@ -49,13 +49,18 @@ class QuantityDoneWizard(models.TransientModel):
     _name = 'done.qty.wizard'
 
     qty = fields.Float('Produced Quantity')
-    reason = fields.Char('Reason')
+    reason = fields.Selection([
+        ('wrong', 'Wrong Cutting'),
+        ('burn', 'Burn'),
+        ('hole', 'Hole'),
+        ('shortage', 'Shortage of material during welding'),
+        ('excess', 'Excess of material during welding'),
+    ], string='Reason', default='')
 
     def action_create(self):
         model = self.env.context.get('active_model')
         rec_model = self.env[model].browse(self.env.context.get('active_id'))
         workorder = self.env['mrp.workorder'].browse([rec_model.id])
-
         pre_order = self.env['mrp.workorder'].search(
             [('id', '=', workorder.id - 1), ('production_id', '=', workorder.production_id.id)])
         qty_producing = 0
