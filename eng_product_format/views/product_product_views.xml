@@ -8,6 +8,10 @@
             <xpath expr="//div[@name='options']" position="after">
                 <div name="options_types">
                     <div>
+                        <field name="simple" readonly="1"/>
+                        <label for="simple"/>
+                    </div>
+                    <div>
                         <field name="accessories" readonly="1"/>
                         <label for="accessories"/>
                     </div>
@@ -22,7 +26,8 @@
                 </div>
             </xpath>
             <xpath expr="//field[@name='name']" position="attributes">
-                <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>
+<!--                <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>-->
+                <attribute name="attrs">{'readonly': [('simple', '=', False)],'required': 0}</attribute>
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
                 <field name="age_group_id" readonly="1"/>
@@ -41,6 +46,7 @@
                 <field name="size_range_id" readonly="1"/>
                 <field name="life_type_id" readonly="1"/>
                 <field name="accessories_type_id" readonly="1"/>
+                <field name="candela_code" readonly="1"/>
             </xpath>
         </field>
     </record>

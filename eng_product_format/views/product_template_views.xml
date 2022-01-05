@@ -6,10 +6,14 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//header/button[@name='%(product.product_attribute_value_action)d']" position="before">
-                <button name="create_extra_variant" string="Review" type="object" class="btn-primary"/>
+                <button name="create_extra_variant" string="Review" type="object" class="btn-primary" attrs="{'invisible': [('finish', '!=', True)]}"/>
             </xpath>
             <xpath expr="//div[@name='options']" position="after">
                 <div name="options_types">
+                    <div>
+                        <field name="simple" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+                        <label for="simple"/>
+                    </div>
                     <div>
                         <field name="accessories" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
                         <label for="accessories"/>
@@ -25,7 +29,8 @@
                 </div>
             </xpath>
             <xpath expr="//field[@name='name']" position="attributes">
-                <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>
+<!--                <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>-->
+                <attribute name="attrs">{'readonly': [('simple', '=', False)],'required': 0}</attribute>
             </xpath>
             <xpath expr="//field[@name='barcode']" position="after">
                 <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>

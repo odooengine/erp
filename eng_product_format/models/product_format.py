@@ -149,6 +149,7 @@ class ProductTemplateInherit(models.Model):
     product_group_type = fields.Selection([('filt_acc', 'Accessories'),
                                            ('filt_fab', 'Fabric'),
                                            ('filt_fin', 'Finish Goods'),
+                                           ('filt_sim', 'Simple Product'),
                                            ], string='Product Group Type')
 
     age_group_id = fields.Many2one('age.group', string='Age Group')
@@ -194,6 +195,7 @@ class ProductTemplateInherit(models.Model):
     accessories = fields.Boolean(string='Accessories', default=False)
     fabric = fields.Boolean(string='Fabric', default=False)
     finish = fields.Boolean(string='Finish Goods', default=False)
+    simple = fields.Boolean(string='Simple Product', default=True)
 
     is_freeze = fields.Boolean(string='Freeze', default=False)
 
@@ -208,6 +210,7 @@ class ProductTemplateInherit(models.Model):
             self.product_group_type = 'filt_acc'
             self.fabric = False
             self.finish = False
+            self.simple = False
 
     @api.onchange('fabric')
     def onchange_fabric(self):
@@ -215,6 +218,7 @@ class ProductTemplateInherit(models.Model):
             self.product_group_type = 'filt_fab'
             self.accessories = False
             self.finish = False
+            self.simple = False
 
     @api.onchange('finish')
     def onchange_finish(self):
@@ -222,67 +226,88 @@ class ProductTemplateInherit(models.Model):
             self.product_group_type = 'filt_fin'
             self.accessories = False
             self.fabric = False
+            self.simple = False
+
+    @api.onchange('simple')
+    def onchange_simple(self):
+        if self.simple == True:
+            self.product_group_type = 'filt_sim'
+            self.accessories = False
+            self.fabric = False
+            self.finish = False
 
     @api.model
     def create(self, vals):
         vals['is_freeze'] = True
+        if not vals['simple']:
+            accessory_record = self.env['accessories.type'].browse(vals['accessories_type_id'])
+            accessory_code = str(accessory_record.code)
+            season_record = self.env['calender.season'].browse(vals['calender_season_id'])
+            season_code = str(season_record.code)
+            life_record = self.env['life.type'].browse(vals['life_type_id'])
+            life_code = str(life_record.code)
+            fabric_record = self.env['class.fabric'].browse(vals['class_fabric_id'])
+            fabric_code = str(fabric_record.code)
+            sub_cat_record = self.env['item.sub.category'].browse(vals['item_sub_cat_id'])
+            sub_cat_code = str(sub_cat_record.code)
+            year_record = self.env['engine.year'].browse(vals['engine_year_id'])
+            year_code = str(year_record.code)
 
-        accessory_record = self.env['accessories.type'].browse(vals['accessories_type_id'])
-        accessory_code = str(accessory_record.code)
-        season_record = self.env['calender.season'].browse(vals['calender_season_id'])
-        season_code = str(season_record.code)
-        life_record = self.env['life.type'].browse(vals['life_type_id'])
-        life_code = str(life_record.code)
-        fabric_record = self.env['class.fabric'].browse(vals['class_fabric_id'])
-        fabric_code = str(fabric_record.code)
-        sub_cat_record = self.env['item.sub.category'].browse(vals['item_sub_cat_id'])
-        sub_cat_code = str(sub_cat_record.code)
-        year_record = self.env['engine.year'].browse(vals['engine_year_id'])
-        year_code = str(year_record.code)
+            if vals['accessories'] == True:
+                if vals['dept_id'] == 'boys':
+                    name = ('A' + 'B' + accessory_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'girls':
+                    name = ('A' + 'G' + accessory_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'men':
+                    name = ('A' + 'M' + accessory_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'women':
+                    name = ('A' + 'W' + accessory_code + '-' + season_code + year_code + '-')
+            elif vals['fabric'] == True:
+                if vals['dept_id'] == 'boys':
+                    name = ('B' + life_code + fabric_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'girls':
+                    name = ('G' + life_code + fabric_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'men':
+                    name = ('M' + life_code + fabric_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'women':
+                    name = ('W' + life_code + fabric_code + '-' + season_code + year_code + '-')
+            elif vals['finish'] == True:
+                if vals['dept_id'] == 'men' and vals['sub_dept'] == 'men':
+                    name = ('M' + 'M' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '1')
+                elif vals['dept_id'] == 'women' and vals['sub_dept'] == 'women':
+                    name = ('W' + 'W' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '2')
+                elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'infant':
+                    name = ('I' + 'B' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '3')
+                elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'toddlers':
+                    name = ('T' + 'B' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '4')
+                elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'kids':
+                    name = ('K' + 'B' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '5')
+                elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'infant':
+                    name = ('I' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '6')
+                elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'toddlers':
+                    name = ('T' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '7')
+                elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'kids':
+                    name = ('K' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '8')
+            vals['pre_seq'] = name
 
-        if vals['accessories'] == True:
-            if vals['dept_id'] == 'boys':
-                name = ('A' + 'B' + accessory_code + '-' + season_code + year_code + '-')
-            elif vals['dept_id'] == 'girls':
-                name = ('A' + 'G' + accessory_code + '-' + season_code + year_code + '-')
-            elif vals['dept_id'] == 'men':
-                name = ('A' + 'M' + accessory_code + '-' + season_code + year_code + '-')
-            elif vals['dept_id'] == 'women':
-                name = ('A' + 'W' + accessory_code + '-' + season_code + year_code + '-')
-        elif vals['fabric'] == True:
-            if vals['dept_id'] == 'boys':
-                name = ('B' + life_code + fabric_code + '-' + season_code + year_code + '-')
-            elif vals['dept_id'] == 'girls':
-                name = ('G' + life_code + fabric_code + '-' + season_code + year_code + '-')
-            elif vals['dept_id'] == 'men':
-                name = ('M' + life_code + fabric_code + '-' + season_code + year_code + '-')
-            elif vals['dept_id'] == 'women':
-                name = ('W' + life_code + fabric_code + '-' + season_code + year_code + '-')
-        elif vals['finish'] == True:
-            if vals['dept_id'] == 'men' and vals['sub_dept'] == 'men':
-                name = ('M' + 'M' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '1')
-            elif vals['dept_id'] == 'women' and vals['sub_dept'] == 'women':
-                name = ('W' + 'W' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '2')
-            elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'infant':
-                name = ('I' + 'B' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '3')
-            elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'toddlers':
-                name = ('T' + 'B' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '4')
-            elif vals['dept_id'] == 'boys' and vals['sub_dept'] == 'kids':
-                name = ('K' + 'B' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '5')
-            elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'infant':
-                name = ('I' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '6')
-            elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'toddlers':
-                name = ('T' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '7')
-            elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'kids':
-                name = ('K' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '8')
-        vals['pre_seq'] = name
-
-        product_record = self.env['product.template'].search([('pre_seq', '=', vals['pre_seq'])], order='id desc')
-        if product_record:
-            vals['pos_seq'] = product_record[0].pos_seq + 1
-        vals['name'] = name + '000' + str(vals['pos_seq'])
-        res = super(ProductTemplateInherit, self).create(vals)
-        return res
+            product_record = self.env['product.template'].search([('pre_seq', '=', vals['pre_seq'])], order='id desc')
+            if product_record:
+                vals['pos_seq'] = product_record[0].pos_seq + 1
+            if vals['pos_seq'] < 10:
+                vals['name'] = name + '000' + str(vals['pos_seq'])
+            elif 9 < vals['pos_seq'] < 100:
+                vals['name'] = name + '00' + str(vals['pos_seq'])
+            elif 99 < vals['pos_seq'] < 1000:
+                vals['name'] = name + '0' + str(vals['pos_seq'])
+            elif 999 < vals['pos_seq'] < 10000:
+                vals['name'] = name + str(vals['pos_seq'])
+            else:
+                vals['name'] = name + str(vals['pos_seq'])
+            res = super(ProductTemplateInherit, self).create(vals)
+            return res
+        else:
+            res = super(ProductTemplateInherit, self).create(vals)
+            return res
 
     def create_extra_variant(self):
         if self.finish:
@@ -306,6 +331,7 @@ class ProductTemplateInherit(models.Model):
                     'accessories': self.accessories,
                     'fabric': self.fabric,
                     'finish': self.finish,
+                    'simple': self.simple,
                     'calender_season_id': self.calender_season_id.id,
                     'class_fabric_id': self.class_fabric_id.id,
                     'line_item_id': self.line_item_id.id,
@@ -361,6 +387,7 @@ class ProductProductInherit(models.Model):
     product_group_type = fields.Selection([('filt_acc', 'Accessories'),
                                            ('filt_fab', 'Fabric'),
                                            ('filt_fin', 'Finish Goods'),
+                                           ('filt_sim', 'Simple Product'),
                                            ], string='Product Group Type', related='product_tmpl_id.product_group_type')
 
     life_type_id = fields.Many2one('life.type', string='Life Type', related='product_tmpl_id.life_type_id')
@@ -371,4 +398,7 @@ class ProductProductInherit(models.Model):
     accessories = fields.Boolean(string='Accessories', related='product_tmpl_id.accessories')
     fabric = fields.Boolean(string='Fabric', related='product_tmpl_id.fabric')
     finish = fields.Boolean(string='Finish Goods', related='product_tmpl_id.finish')
+    simple = fields.Boolean(string='Simple Product', related='product_tmpl_id.finish')
+
+    candela_code = fields.Char(string='Candela Code', related='product_tmpl_id.candela_code')
 
