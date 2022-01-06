@@ -210,6 +210,10 @@ class AccountMoveInh(models.Model):
     review_by_id = fields.Many2one('res.users', string='Reviewed By')
     approve_by_id = fields.Many2one('res.users', string='Approved By')
 
+    available_partner_bank_ids = fields.Many2many('res.bank', string='Available Partner Bank Ids')
+
+    invoice_date = fields.Date(string='Invoice/Bill Date', index=True, copy=False, default=datetime.today().date())
+
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
         ('to_review', 'Waiting For Review'),

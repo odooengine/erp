@@ -38,6 +38,11 @@
                         class="oe_highlight"
                         groups="manager_all_approvals.group_approve_purchase_order"
                 />
+                <button name="action_reset"
+                        type="object"
+                        states="rejected"
+                        string="Reject"
+                />
             </xpath>
 
             <xpath expr="//field[@name='fiscal_position_id']" position="after">
@@ -86,6 +91,11 @@
                         string="Reject"
                         class="oe_highlight"
                         groups="manager_all_approvals.group_approve_sale_order"
+                />
+                <button name="action_reset"
+                        type="object"
+                        states="rejected"
+                        string="Reject"
                 />
             </xpath>
 
@@ -188,6 +198,19 @@
              <xpath expr="//field[@name='to_check']" position="after">
                 <field name="review_by_id" invisible="1"/>
                 <field name="approve_by_id" invisible="1"/>
+                <field name="available_partner_bank_ids" invisible="1"/>
+             </xpath>
+
+<!--             <xpath expr="//field[@name='invoice_date']" position="attributes">-->
+<!--                 <attribute name="attrs">{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt'))], 'readonly': [('state', 'not in', ('draft', 'to_review'))]}</attribute>-->
+<!--             </xpath>-->
+
+<!--             <xpath expr="//field[@name='invoice_date']" position="attributes">-->
+<!--                 <attribute name="attrs">{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))], 'readonly': [('state', 'not in', ('draft', 'to_review'))]}</attribute>-->
+<!--             </xpath>-->
+
+             <xpath expr="//field[@name='invoice_date']" position="attributes">
+                 <attribute name="attrs">{'readonly': [('state', 'not in', ('draft', 'to_review'))]}</attribute>
              </xpath>
 
              <xpath expr="//header/button[@name='preview_invoice']" position="attributes">
