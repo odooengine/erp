@@ -4,7 +4,7 @@
         <field name="name">age.group.form</field>
         <field name="model">age.group</field>
         <field name="arch" type="xml">
-            <form string="Age Group">
+            <form string="Sub Category">
                 <sheet>
                     <group>
                         <group>
@@ -44,7 +44,7 @@
     <!--  Main Actions-->
 
     <record id="action_age_group_view" model="ir.actions.act_window">
-        <field name="name">Age Group</field>
+        <field name="name">Sub Category</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">age.group</field>
         <field name="view_mode">tree,form</field>
@@ -59,7 +59,7 @@
     <!--  Main Menus-->
 
     <menuitem id="menu_age_group"
-              name="Age Group"
+              name="Sub Category"
               parent="stock.menu_stock_config_settings"
               action="action_age_group_view"
     />

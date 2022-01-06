@@ -11,7 +11,7 @@ from odoo import api, fields, models, _
 
 class AgeGroup(models.Model):
     _name = 'age.group'
-    _description = 'Age Group'
+    _description = 'Sub Category'
     _rec_name = 'name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -107,7 +107,7 @@ class LifeType(models.Model):
 
 class ItemSubCategory(models.Model):
     _name = 'item.sub.category'
-    _description = 'Item Sub Category'
+    _description = 'Sub Class'
     _rec_name = 'name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -117,7 +117,7 @@ class ItemSubCategory(models.Model):
 
 class ItemCategory(models.Model):
     _name = 'item.category'
-    _description = 'Item Category'
+    _description = 'Class'
     _rec_name = 'name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -152,7 +152,7 @@ class ProductTemplateInherit(models.Model):
                                            ('filt_sim', 'Simple Product'),
                                            ], string='Product Group Type')
 
-    age_group_id = fields.Many2one('age.group', string='Age Group')
+    age_group_id = fields.Many2one('age.group', string='Sub Category')
     calender_season_id = fields.Many2one('calender.season', string='Season')
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric')
     line_item_id = fields.Many2one('line.item', string='Line Item')
@@ -179,8 +179,8 @@ class ProductTemplateInherit(models.Model):
                                  ], string='Sub Department')
 
     life_type_id = fields.Many2one('life.type', string='Life Type')
-    item_sub_cat_id = fields.Many2one('item.sub.category', string='Item Sub Category')
-    item_cat_id = fields.Many2one('item.category', string='Item Category')
+    item_sub_cat_id = fields.Many2one('item.sub.category', string='Sub Class')
+    item_cat_id = fields.Many2one('item.category', string='Class')
     engine_year_id = fields.Many2one('engine.year', string='Year')
 
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
@@ -360,7 +360,7 @@ class ProductTemplateInherit(models.Model):
 class ProductProductInherit(models.Model):
     _inherit = 'product.product'
 
-    age_group_id = fields.Many2one('age.group', string='Age Group', related='product_tmpl_id.age_group_id')
+    age_group_id = fields.Many2one('age.group', string='Sub Category', related='product_tmpl_id.age_group_id')
     calender_season_id = fields.Many2one('calender.season', string='Season', related='product_tmpl_id.calender_season_id')
     class_fabric_id = fields.Many2one('class.fabric', string='Fabric', related='product_tmpl_id.class_fabric_id')
     line_item_id = fields.Many2one('line.item', string='Line Item', related='product_tmpl_id.line_item_id')
@@ -391,8 +391,8 @@ class ProductProductInherit(models.Model):
                                            ], string='Product Group Type', related='product_tmpl_id.product_group_type')
 
     life_type_id = fields.Many2one('life.type', string='Life Type', related='product_tmpl_id.life_type_id')
-    item_sub_cat_id = fields.Many2one('item.sub.category', string='Item Sub Category', related='product_tmpl_id.item_sub_cat_id')
-    item_cat_id = fields.Many2one('item.category', string='Item Category', related='product_tmpl_id.item_cat_id')
+    item_sub_cat_id = fields.Many2one('item.sub.category', string='Sub Class', related='product_tmpl_id.item_sub_cat_id')
+    item_cat_id = fields.Many2one('item.category', string='Class', related='product_tmpl_id.item_cat_id')
     engine_year_id = fields.Many2one('engine.year', string='Year', related='product_tmpl_id.engine_year_id')
 
     accessories = fields.Boolean(string='Accessories', related='product_tmpl_id.accessories')

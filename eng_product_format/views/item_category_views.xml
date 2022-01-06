@@ -4,7 +4,7 @@
         <field name="name">item.category.form</field>
         <field name="model">item.category</field>
         <field name="arch" type="xml">
-            <form string="Item Category">
+            <form string="Class">
                 <sheet>
                     <group>
                         <group>
@@ -47,7 +47,7 @@
     <!--  Main Actions-->
 
     <record id="action_item_category_view" model="ir.actions.act_window">
-        <field name="name">Item Category</field>
+        <field name="name">Class</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">item.category</field>
         <field name="view_mode">tree,form</field>
@@ -62,7 +62,7 @@
     <!--  Main Menus-->
 
     <menuitem id="menu_item_category"
-              name="Item Category"
+              name="Class"
               parent="stock.menu_stock_config_settings"
               action="action_item_category_view"
     />
