@@ -41,7 +41,7 @@
                 <button name="action_reset"
                         type="object"
                         states="rejected"
-                        string="Reject"
+                        string="Set to Draft"
                 />
             </xpath>
 
@@ -95,7 +95,7 @@
                 <button name="action_reset"
                         type="object"
                         states="rejected"
-                        string="Reject"
+                        string="Set to Draft"
                 />
             </xpath>
 
