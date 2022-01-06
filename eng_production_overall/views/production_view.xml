@@ -5,22 +5,29 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="stock.view_template_property_form" />
         <field name="arch" type="xml">
-             <xpath expr="//field[@name='property_stock_inventory']" position="after">
-                <field name="requisition_location_id"/>
+<!--            <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+<!--                <field name="requisition_location_id"/>-->
+<!--            </xpath>-->
+            <xpath expr="//group[@name='stock_property']" position="replace">
+                <group string="Counterpart Locations" name="stock_property" >
+                    <field name="property_stock_production" groups="base.group_no_one"/>
+                    <field name="property_stock_inventory" groups="base.group_no_one"/>
+                    <field name="requisition_location_id"/>
+                </group>
             </xpath>
         </field>
     </record>
 
-<!--    <record id="product_template_form_inh" model="ir.ui.view">-->
-<!--        <field name="name">product.template</field>-->
-<!--        <field name="model">product.template</field>-->
-<!--        <field name="inherit_id" ref="" />-->
-<!--        <field name="arch" type="xml">-->
-<!--             <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
-<!--                <field name="requisition_location_id"/>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
+    <!--    <record id="product_template_form_inh" model="ir.ui.view">-->
+    <!--        <field name="name">product.template</field>-->
+    <!--        <field name="model">product.template</field>-->
+    <!--        <field name="inherit_id" ref="" />-->
+    <!--        <field name="arch" type="xml">-->
+    <!--             <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+    <!--                <field name="requisition_location_id"/>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
 
     <record id="work_center_embellishments" model="ir.ui.view">
         <field name="name">embellishment.workcenter.inherited</field>
