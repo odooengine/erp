@@ -10,7 +10,17 @@ class MrpBomLineInh(models.Model):
 
     class_fabric_id = fields.Many2one('class.fabric', related='product_id.class_fabric_id')
     accessories_type_id = fields.Many2one('accessories.type', related='product_id.accessories_type_id')
+    components_ids = fields.Many2many('product.product', compute='compute_components')
 
+    @api.depends('product_id')
+    def compute_components(self):
+        products = self.env['product.product'].search([])
+        products_list = []
+        for product in products:
+            for route in product.route_ids:
+                if route.name == 'Components':
+                    products_list.append(product.id)
+        self.components_ids = products_list
 
 class MrpBomInh(models.Model):
     _inherit = 'mrp.bom'
@@ -26,6 +36,15 @@ class MrpBomInh(models.Model):
                 if route.name == 'Manufacture':
                     products_list.append(product.id)
         self.product_tmpl_ids = products_list
+
+        products = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
+        empty_id = ''
+        for rec in products:
+            if not rec.product_template_attribute_value_ids:
+                empty_id = rec.id
+        self.product_id = empty_id
+
+
 
 class WorkCenterEmbellishment(models.Model):
     _inherit = 'mrp.workcenter'
@@ -56,7 +75,13 @@ class ReasonLine(models.Model):
     qty = fields.Float('Produced Quantity')
     start_date = fields.Datetime('Start Date')
     paused_date = fields.Datetime('End Date')
-    reason = fields.Char('Reason')
+    reason = fields.Selection([
+        ('wrong', 'Wrong Cutting'),
+        ('burn', 'Burn'),
+        ('hole', 'Hole'),
+        ('shortage', 'Shortage of material during welding'),
+        ('excess', 'Excess of material during welding'),
+    ], string='Reason', default='')
 
 
 class MrpOrderInh(models.Model):
@@ -191,16 +216,16 @@ class MrpInh(models.Model):
     transfer_count = fields.Integer(compute='compute_transfers')
     is_req_created = fields.Boolean()
     req_count = fields.Integer(string="Requisitions", compute='compute_req_count')
-    adjust_count = fields.Integer(string="Adjustment", compute='compute_adjust_count')
+    # adjust_count = fields.Integer(string="Adjustment", compute='compute_adjust_count')
 
     product_ids = fields.Many2many('product.product', compute='compute_products')
     is_transfer_created = fields.Boolean()
-    is_adj_created = fields.Boolean()
-
-    def compute_adjust_count(self):
-        for rec in self:
-            count = self.env['stock.inventory'].search_count([('ref', '=', rec.name)])
-            rec.adjust_count = count
+    # is_adj_created = fields.Boolean()
+    #
+    # def compute_adjust_count(self):
+    #     for rec in self:
+    #         count = self.env['stock.inventory'].search_count([('ref', '=', rec.name)])
+    #         rec.adjust_count = count
 
     @api.depends('product_id')
     def compute_products(self):
@@ -219,16 +244,16 @@ class MrpInh(models.Model):
             count = self.env['material.purchase.requisition'].search_count([('ref', '=', rec.name)])
             rec.req_count = count
 
-    def action_show_adjustment(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Variants Adjustments',
-            'view_id': self.env.ref('stock.view_inventory_tree', False).id,
-            'target': 'current',
-            'domain': [('ref', '=', self.name)],
-            'res_model': 'stock.inventory',
-            'views': [[False, 'tree'], [False, 'form']],
-        }
+    # def action_show_adjustment(self):
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'name': 'Variants Adjustments',
+    #         'view_id': self.env.ref('stock.view_inventory_tree', False).id,
+    #         'target': 'current',
+    #         'domain': [('ref', '=', self.name)],
+    #         'res_model': 'stock.inventory',
+    #         'views': [[False, 'tree'], [False, 'form']],
+    #     }
 
     def action_show_requisitions(self):
         return {
@@ -278,38 +303,34 @@ class MrpInh(models.Model):
                     activities = self.env['mail.activity'].create(create_vals)
 
     def button_mark_done(self):
-        # print(self._context)
-        # if 'active_model' in self._context:
-        #     print('Hello')
-        if 'active_model' not in self._context:
-            for rec in self.check_ids:
-                if rec.quality_state != 'pass':
-                    raise UserError('Quality Checks Are not Passed.')
-            adjustment = self.env['stock.inventory'].search([('ref', '=', self.name)], limit=1)
-            if adjustment:
-                if adjustment.state == 'done':
-                    return super(MrpInh, self).button_mark_done()
-                else:
-                    raise ValidationError('Please Add Adjustment of All Variants.')
-            else:
-                raise ValidationError('Please Add Adjustment of All Variants.')
-        else:
-            return super(MrpInh, self).button_mark_done()
+        # if 'active_model' not in self._context:
+        for rec in self.check_ids:
+            if rec.quality_state != 'pass':
+                raise UserError('Quality Checks Are not Passed.')
+            # adjustment = self.env['stock.inventory'].search([('ref', '=', self.name)], limit=1)
+            # if adjustment:
+            #     if adjustment.state == 'done':
+            #         return super(MrpInh, self).button_mark_done()
+            #     else:
+            #         raise ValidationError('Please Add Adjustment of All Variants.')
+            # else:
+            #     raise ValidationError('Please Add Adjustment of All Variants.')
+        # else:
+        return super(MrpInh, self).button_mark_done()
 
-    def create_adjustment(self):
-        if not self.is_adj_created:
-            variants = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
-            create_vals = {
-                'name': 'Manufacturing Adjustment',
-                'location_ids': [self.location_src_id.id],
-                'product_ids': variants.ids,
-                'company_id': self.env.company.id,
-                'ref': self.name,
-                'date': datetime.today(),
-            }
-            adju = self.env['stock.inventory'].create(create_vals)
-            self.is_adj_created = True
-
+    # def create_adjustment(self):
+    #     if not self.is_adj_created:
+    #         variants = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
+    #         create_vals = {
+    #             'name': 'Manufacturing Adjustment',
+    #             'location_ids': [self.location_dest_id.id],
+    #             'product_ids': variants.ids,
+    #             'company_id': self.env.company.id,
+    #             'ref': self.name,
+    #             'date': datetime.today(),
+    #         }
+    #         adju = self.env['stock.inventory'].create(create_vals)
+    #         self.is_adj_created = True
 
     def action_create_requisition(self):
         product_list = []
@@ -317,27 +338,59 @@ class MrpInh(models.Model):
         for rec in bom:
             product_list.append(rec.product_tmpl_id.id)
         line_vals = []
+        line_vals_new = []
+        src_location_one = ''
+        src_location_two = ''
         for line in self.move_raw_ids:
             if line.product_id.product_tmpl_id.id not in product_list and line.reserved_availability < line.product_uom_qty:
-                line_vals.append((0, 0, {
-                    'requisition_type': 'internal',
-                    'product_id': line.product_id.id,
-                    'description': line.product_id.name,
-                    'qty':  line.product_uom_qty - line.reserved_availability,
-                    'uom': line.product_id.uom_id.id,
-                }))
-                line_vals.append(line_vals)
-        employee = self.env['hr.employee'].search([('user_id', '=', self.user_id.id)])
-        vals = {
-            'company_id': self.env.user.company_id.id,
-            'department_id': employee.department_id.id,
-            'request_date': fields.Date.today(),
-            'requisition_line_ids': line_vals,
-            'dest_location_id': self.location_src_id.id,
-            'ref': self.name,
+                if not line.product_id.requisition_location_id:
+                    line_vals.append((0, 0, {
+                        'requisition_type': 'internal',
+                        'product_id': line.product_id.id,
+                        'description': line.product_id.name,
+                        'qty':  line.product_uom_qty - line.reserved_availability,
+                        'uom': line.product_id.uom_id.id,
+                    }))
+                    line_vals.append(line_vals)
+                    src_location_one = line.product_id.property_stock_production.id
+                else:
+                    line_vals_new.append((0, 0, {
+                        'requisition_type': 'internal',
+                        'product_id': line.product_id.id,
+                        'description': line.product_id.name,
+                        'qty': line.product_uom_qty - line.reserved_availability,
+                        'uom': line.product_id.uom_id.id,
+                    }))
+                    line_vals_new.append(line_vals_new)
+                    src_location_two = line.product_id.requisition_location_id.id
+        employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.user_id.id)])
+        if line_vals:
+            vals = {
+                'company_id': self.env.user.company_id.id,
+                'department_id': employee.department_id.id,
+                'request_date': fields.Date.today(),
+                'requisition_line_ids': line_vals,
+                'dest_location_id': self.location_src_id.id,
+                'location_id': src_location_one,
+                'ref': self.name,
+                }
+            req_one = self.env['material.purchase.requisition'].create(vals)
+            req_one.requisition_confirm()
+            req_one.manager_approve()
+            req_one.user_approve()
+            self.is_req_created = True
+        if line_vals_new:
+            vals_two = {
+                'company_id': self.env.user.company_id.id,
+                'department_id': employee.department_id.id,
+                'request_date': fields.Date.today(),
+                'requisition_line_ids': line_vals_new,
+                'dest_location_id': self.location_src_id.id,
+                'location_id': src_location_two,
+                'ref': self.name,
             }
-        move = self.env['material.purchase.requisition'].create(vals)
-        move.requisition_confirm()
-        move.manager_approve()
-        move.user_approve()
-        self.is_req_created = True
+            req_two = self.env['material.purchase.requisition'].create(vals_two)
+            req_two.requisition_confirm()
+            req_two.manager_approve()
+            req_two.user_approve()
+            self.is_req_created = True

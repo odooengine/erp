@@ -1,5 +1,34 @@
 <odoo>
 
+    <record id="product_template_form_inh" model="ir.ui.view">
+        <field name="name">product.template</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form" />
+        <field name="arch" type="xml">
+<!--            <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+<!--                <field name="requisition_location_id"/>-->
+<!--            </xpath>-->
+            <xpath expr="//group[@name='stock_property']" position="replace">
+                <group string="Counterpart Locations" name="stock_property" >
+                    <field name="property_stock_production" groups="base.group_no_one"/>
+                    <field name="property_stock_inventory" groups="base.group_no_one"/>
+                    <field name="requisition_location_id" options="{'no_open':True,'no_create': True,'no_quick_create':True,'no_create_edit':True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!--    <record id="product_template_form_inh" model="ir.ui.view">-->
+    <!--        <field name="name">product.template</field>-->
+    <!--        <field name="model">product.template</field>-->
+    <!--        <field name="inherit_id" ref="" />-->
+    <!--        <field name="arch" type="xml">-->
+    <!--             <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+    <!--                <field name="requisition_location_id"/>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
     <record id="work_center_embellishments" model="ir.ui.view">
         <field name="name">embellishment.workcenter.inherited</field>
         <field name="model">mrp.workcenter</field>
@@ -50,7 +79,22 @@
             <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="after">
                 <field name="class_fabric_id"/>
                 <field name="accessories_type_id"/>
+                <field name="components_ids" widget="many2many_tags" invisible="1"/>
             </xpath>
+
+            <xpath expr="///field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="///field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+                <attribute name="domain">[('id', 'in', components_ids)]</attribute>
+            </xpath>
+
         </field>
     </record>
 
@@ -84,17 +128,17 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="stock_inventory_form_inh">
-        <field name="name">stock.inventory.form.inh</field>
-        <field name="model">stock.inventory</field>
-        <field name="inherit_id" ref="stock.view_inventory_form"/>
-        <field name="arch" type="xml">
+<!--    <record model="ir.ui.view" id="stock_inventory_form_inh">-->
+<!--        <field name="name">stock.inventory.form.inh</field>-->
+<!--        <field name="model">stock.inventory</field>-->
+<!--        <field name="inherit_id" ref="stock.view_inventory_form"/>-->
+<!--        <field name="arch" type="xml">-->
 
-            <xpath expr="//field[@name='prefill_counted_quantity']" position="after">
-                <field name="ref"/>
-            </xpath>
-        </field>
-    </record>
+<!--            <xpath expr="//field[@name='prefill_counted_quantity']" position="after">-->
+<!--                <field name="ref"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
 
 
     <record model="ir.ui.view" id="mrp_production_form_inh">
@@ -108,7 +152,7 @@
             </xpath>
 
             <xpath expr="//header/button[@name='action_assign']" position="before">
-                <button name="create_adjustment" type="object" string="Add Variants Adj" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'to_close'), ('is_adj_created', '=', True)]}"/>
+<!--                <button name="create_adjustment" type="object" string="Add Variants Adj" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'to_close'), ('is_adj_created', '=', True)]}"/>-->
                 <button name="action_create_requisition" type="object" string="Create Requisition" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'confirmed'), ('is_req_created', '=', True)]}"/>
             </xpath>
 
@@ -116,16 +160,16 @@
                 <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_requisitions">
                     <field string="Requisitions" name="req_count" widget="statinfo" />
                 </button>
-                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_adjustment" attrs="{'invisible': [('adjust_count', '=', 0)]}">
-                    <field string="Adjustment" name="adjust_count" widget="statinfo" />
-                </button>
+<!--                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_adjustment" attrs="{'invisible': [('adjust_count', '=', 0)]}">-->
+<!--                    <field string="Adjustment" name="adjust_count" widget="statinfo" />-->
+<!--                </button>-->
             </xpath>
 
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="is_req_created" invisible="1"/>
                 <field name="product_ids" widget="many2many_tags" invisible="1"/>
                 <field name="is_transfer_created" invisible="1"/>
-                <field name="is_adj_created" invisible="1"/>
+<!--                <field name="is_adj_created" invisible="1"/>-->
             </xpath>
 
             <xpath expr="//field[@name='product_id']" position="attributes">
