@@ -263,6 +263,17 @@ class AccountPaymentInh(models.Model):
     #                           ('reject', 'Reject')
     #                           ], readonly=True, default='draft', copy=False, string="Status")
 
+    def action_show_move_lines(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Move Line',
+            'view_id': self.env.ref('account.view_move_line_tree', False).id,
+            'target': 'current',
+            'domain': [('payment_id', '=', self.id)],
+            'res_model': 'account.move.line',
+            'views': [[False, 'tree'], [False, 'form']],
+        }
+
     def action_post(self):
         self.write({
             'state': 'to_review'
@@ -284,12 +295,169 @@ class AccountPaymentInh(models.Model):
         if self.env.user.has_group('manager_all_approvals.group_approve_payment'):
             self.approve_by_id = self.env.user.id
         rec = super(AccountPaymentInh, self).action_post()
+        if self.is_internal_transfer:
+            self.general_entry()
         return rec
 
     def button_reject(self):
         self.write({
             'state': 'rejected'
         })
+
+    def general_entry(self):
+        if not self.transfer_account_id:
+            raise UserError('Please Add Transfer To Account.')
+        line_ids = []
+        debit_sum = 0.0
+        credit_sum = 0.0
+        move_dict = {
+            'ref': self.name,
+            'journal_id': self.journal_id.id,
+            'partner_id': self.partner_id.id,
+            'date': self.date,
+            # 'state': 'draft',
+        }
+        # for oline in self.move_lines:
+        debit_line = (0, 0, {
+            'name': self.ref,
+            'debit': abs(self.amount),
+            'credit': 0.0,
+            'partner_id': self.partner_id.id,
+            # 'analytic_account_id': oline.analytic_account_id.id,
+            # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+            'account_id': self.destination_account_id.id,
+            'payment_id': self.id,
+        })
+        line_ids.append(debit_line)
+        debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+        credit_line = (0, 0, {
+            'name': self.ref,
+            'date_maturity': self.date,
+            'debit': 0.0,
+            'partner_id': self.partner_id.id,
+            'credit': abs(self.amount),
+            'account_id': self.transfer_account_id.id,
+            'payment_id': self.id,
+        })
+        line_ids.append(credit_line)
+        credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+        print(line_ids)
+        # self.move_id.button_draft()
+        # self.move_id.update({
+        #     'line_ids': line_ids
+        # })
+        move_dict['line_ids'] = line_ids
+        # self.move_id.update({
+        #         'line_ids': line_ids
+        #     })
+        # move_dict['move_id'] = self.move_id.id
+        rec = self.env['account.move'].create(move_dict)
+        for l in rec.line_ids:
+            l.payment_id = self.id
+        rec.action_post()
+        rec.button_review()
+        rec.button_approved()
+        print("General entry created")
+
+    # def _prepare_move_line_default_vals(self, write_off_line_vals=None):
+    #     ''' Prepare the dictionary to create the default account.move.lines for the current payment.
+    #     :param write_off_line_vals: Optional dictionary to create a write-off account.move.line easily containing:
+    #         * amount:       The amount to be added to the counterpart amount.
+    #         * name:         The label to set on the line.
+    #         * account_id:   The account on which create the write-off.
+    #     :return: A list of python dictionary to be passed to the account.move.line's 'create' method.
+    #     '''
+    #     print('Helooooooo')
+    #     self.ensure_one()
+    #     write_off_line_vals = write_off_line_vals or {}
+    #
+    #     if not self.journal_id.payment_debit_account_id or not self.journal_id.payment_credit_account_id:
+    #         raise UserError(_(
+    #             "You can't create a new payment without an outstanding payments/receipts account set on the %s journal.",
+    #             self.journal_id.display_name))
+    #
+    #     # Compute amounts.
+    #     write_off_amount = write_off_line_vals.get('amount', 0.0)
+    #
+    #     if self.payment_type == 'inbound':
+    #         # Receive money.
+    #         counterpart_amount = -self.amount
+    #         write_off_amount *= -1
+    #     elif self.payment_type == 'outbound':
+    #         # Send money.
+    #         counterpart_amount = self.amount
+    #     else:
+    #         counterpart_amount = 0.0
+    #         write_off_amount = 0.0
+    #
+    #     balance = self.currency_id._convert(counterpart_amount, self.company_id.currency_id, self.company_id, self.date)
+    #     counterpart_amount_currency = counterpart_amount
+    #     write_off_balance = self.currency_id._convert(write_off_amount, self.company_id.currency_id, self.company_id, self.date)
+    #     write_off_amount_currency = write_off_amount
+    #     currency_id = self.currency_id.id
+    #
+    #     if self.is_internal_transfer:
+    #         if self.payment_type == 'inbound':
+    #             liquidity_line_name = _('Transfer to %s', self.journal_id.name)
+    #         else: # payment.payment_type == 'outbound':
+    #             liquidity_line_name = _('Transfer from %s', self.journal_id.name)
+    #     else:
+    #         liquidity_line_name = self.payment_reference
+    #
+    #     # Compute a default label to set on the journal items.
+    #
+    #     payment_display_name = {
+    #         'outbound-customer': _("Customer Reimbursement"),
+    #         'inbound-customer': _("Customer Payment"),
+    #         'outbound-supplier': _("Vendor Payment"),
+    #         'inbound-supplier': _("Vendor Reimbursement"),
+    #     }
+    #
+    #     default_line_name = self.env['account.move.line']._get_default_line_name(
+    #         _("Internal Transfer") if self.is_internal_transfer else payment_display_name['%s-%s' % (self.payment_type, self.partner_type)],
+    #         self.amount,
+    #         self.currency_id,
+    #         self.date,
+    #         partner=self.partner_id,
+    #     )
+    #
+    #     line_vals_list = [
+    #         # Liquidity line.
+    #         {
+    #             'name': liquidity_line_name or default_line_name,
+    #             'date_maturity': self.date,
+    #             'amount_currency': -counterpart_amount_currency,
+    #             'currency_id': currency_id,
+    #             'debit': balance < 0.0 and -balance or 0.0,
+    #             'credit': balance > 0.0 and balance or 0.0,
+    #             'partner_id': self.partner_id.id,
+    #             'account_id': self.journal_id.payment_debit_account_id.id if balance < 0.0 else self.journal_id.payment_credit_account_id.id,
+    #         },
+    #         # Receivable / Payable.
+    #         {
+    #             'name': self.payment_reference or default_line_name,
+    #             'date_maturity': self.date,
+    #             'amount_currency': counterpart_amount_currency + write_off_amount_currency if currency_id else 0.0,
+    #             'currency_id': currency_id,
+    #             'debit': balance + write_off_balance > 0.0 and balance + write_off_balance or 0.0,
+    #             'credit': balance + write_off_balance < 0.0 and -balance - write_off_balance or 0.0,
+    #             'partner_id': self.partner_id.id,
+    #             'account_id': self.transfer_account_id.id,
+    #         },
+    #
+    #     ]
+    #     if write_off_balance:
+    #         # Write-off line.
+    #         line_vals_list.append({
+    #             'name': write_off_line_vals.get('name') or default_line_name,
+    #             'amount_currency': -write_off_amount_currency,
+    #             'currency_id': currency_id,
+    #             'debit': write_off_balance < 0.0 and -write_off_balance or 0.0,
+    #             'credit': write_off_balance > 0.0 and write_off_balance or 0.0,
+    #             'partner_id': self.partner_id.id,
+    #             'account_id': write_off_line_vals.get('account_id'),
+    #         })
+    #     return line_vals_list
 
     # def button_approve(self):
     # AccountMove = self.env['account.move'].with_context(default_type='entry')
