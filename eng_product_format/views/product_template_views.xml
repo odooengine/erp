@@ -1,5 +1,16 @@
 <odoo>
 
+    <record id="view_product_template_tree_inherit" model="ir.ui.view">
+        <field name="name">product.template.tree.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="default_code" position="after">
+                <field name="candela_code"/>
+            </field>
+        </field>
+    </record>
+
     <record id="view_product_template_form_inherit" model="ir.ui.view">
         <field name="name">product.template.inherit</field>
         <field name="model">product.template</field>
@@ -36,7 +47,7 @@
                 <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 <field name="engine_year_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
                 <field name="calender_season_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
-                <field name="class_fabric_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
+                <field name="class_fabric_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', fabric_ids)]"/>
                 <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 <field name="item_sub_cat_id" attrs="{'required': [('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
                 <field name="dept_id" required="1" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
@@ -50,7 +61,7 @@
                 <field name="product_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 <field name="life_type_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
-                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}"/>
+                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', accessories_type_ids)]"/>
                 <field name="product_gender"/>
                 <field name="candela_code"/>
 
@@ -60,6 +71,13 @@
                 <field name="product_group_type" invisible="1"/>
                 <field name="is_freeze" invisible="1"/>
                 <field name="my_activity_date_deadline" invisible="1"/>
+
+                <field name="accessories_type_ids" invisible="1"/>
+                <field name="fabric_ids" invisible="1"/>
+<!--                <field name="my_activity_date_deadline" invisible="1"/>-->
+<!--                <field name="my_activity_date_deadline" invisible="1"/>-->
+<!--                <field name="my_activity_date_deadline" invisible="1"/>-->
+<!--                <field name="my_activity_date_deadline" invisible="1"/>-->
 
             </xpath>
 

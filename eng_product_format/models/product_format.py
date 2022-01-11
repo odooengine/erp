@@ -17,6 +17,9 @@ class AgeGroup(models.Model):
 
     name = fields.Char(string='Name', tracking=True)
 
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
+
 
 class CalenderSeason(models.Model):
     _name = 'calender.season'
@@ -26,6 +29,9 @@ class CalenderSeason(models.Model):
 
     name = fields.Char(string='Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
+
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
 
 
 class ClassFabric(models.Model):
@@ -37,6 +43,9 @@ class ClassFabric(models.Model):
     name = fields.Char(string='Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
 
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
+
 
 class LineItem(models.Model):
     _name = 'line.item'
@@ -45,6 +54,9 @@ class LineItem(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Name', tracking=True)
+
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
 
 
 class ProductGroup(models.Model):
@@ -55,6 +67,9 @@ class ProductGroup(models.Model):
 
     name = fields.Char(string='Name', tracking=True)
 
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
+
 
 class SizeRange(models.Model):
     _name = 'size.range'
@@ -63,6 +78,9 @@ class SizeRange(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Name', tracking=True)
+
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
 
 
 class Department(models.Model):
@@ -94,6 +112,16 @@ class AccessoriesType(models.Model):
     name = fields.Char(string='Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
 
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
+
+    def _default_get_company(self):
+        return self.env.company.id
+
+    company_id = fields.Many2one('res.company', 'Company', default=_default_get_company)
+
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+
 
 class LifeType(models.Model):
     _name = 'life.type'
@@ -103,6 +131,9 @@ class LifeType(models.Model):
 
     name = fields.Char(string='Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
+
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
 
 
 class ItemSubCategory(models.Model):
@@ -114,6 +145,9 @@ class ItemSubCategory(models.Model):
     name = fields.Char(string='Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
 
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
+
 
 class ItemCategory(models.Model):
     _name = 'item.category'
@@ -124,6 +158,9 @@ class ItemCategory(models.Model):
     name = fields.Char(string='Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
 
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
+
 
 class EngineYear(models.Model):
     _name = 'engine.year'
@@ -133,6 +170,9 @@ class EngineYear(models.Model):
 
     name = fields.Char(string='Name', tracking=True)
     code = fields.Char(string='Code', tracking=True)
+
+    is_mk = fields.Boolean(string='MK', default=False)
+    is_eng = fields.Boolean(string='Engine', default=False)
 
 
 class ResCompanyInherit(models.Model):
@@ -355,6 +395,37 @@ class ProductTemplateInherit(models.Model):
     #         temp.set('edit', '0')
     #         result['arch'] = etree.tostring(temp)
     #     return result
+
+    accessories_type_ids = fields.Many2many('accessories.type', string='Accessories', compute='compute_accessories_type_ids')
+
+    @api.depends('accessories_type_id')
+    def compute_accessories_type_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                accessories = self.env['accessories.type'].search([('is_eng', '=', True)])
+                self.accessories_type_ids = accessories.ids
+            elif self.env.user.company_ids.id == 2:
+                accessories = self.env['accessories.type'].search([('is_mk', '=', True)])
+                self.accessories_type_ids = accessories.ids
+        elif len(self.env.user.company_ids) > 1:
+            accessories = self.env['accessories.type'].search([])
+            self.accessories_type_ids = accessories.ids
+
+    fabric_ids = fields.Many2many('class.fabric', string='Fabrics',compute='compute_fabric_ids')
+
+    @api.depends('class_fabric_id')
+    def compute_fabric_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                fabrics = self.env['class.fabric'].search([('is_eng', '=', True)])
+                self.fabric_ids = fabrics.ids
+            elif self.env.user.company_ids.id == 2:
+                fabrics = self.env['class.fabric'].search([('is_mk', '=', True)])
+                self.fabric_ids = fabrics.ids
+        elif len(self.env.user.company_ids) > 1:
+            fabrics = self.env['class.fabric'].search([])
+            self.fabric_ids = fabrics.ids
+
 
 
 class ProductProductInherit(models.Model):
