@@ -426,6 +426,65 @@ class ProductTemplateInherit(models.Model):
             fabrics = self.env['class.fabric'].search([])
             self.fabric_ids = fabrics.ids
 
+    life_type_ids = fields.Many2many('life.type', string='Life Types', compute='compute_life_type_ids')
+
+    @api.depends('life_type_id')
+    def compute_life_type_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                life_types = self.env['life.type'].search([('is_eng', '=', True)])
+                self.life_type_ids = life_types.ids
+            elif self.env.user.company_ids.id == 2:
+                life_types = self.env['life.type'].search([('is_mk', '=', True)])
+                self.life_type_ids = life_types.ids
+        elif len(self.env.user.company_ids) > 1:
+            life_types = self.env['life.type'].search([])
+            self.life_type_ids = life_types.ids
+
+    engine_year_ids = fields.Many2many('engine.year', string='Years', compute='compute_engine_year_ids')
+
+    @api.depends('engine_year_id')
+    def compute_engine_year_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                engine_years = self.env['engine.year'].search([('is_eng', '=', True)])
+                self.engine_year_ids = engine_years.ids
+            elif self.env.user.company_ids.id == 2:
+                engine_years = self.env['engine.year'].search([('is_mk', '=', True)])
+                self.engine_year_ids = engine_years.ids
+        elif len(self.env.user.company_ids) > 1:
+            engine_years = self.env['engine.year'].search([])
+            self.engine_year_ids = engine_years.ids
+
+    calender_season_ids = fields.Many2many('calender.season', string='Seasons', compute='compute_calender_season_ids')
+
+    @api.depends('calender_season_id')
+    def compute_calender_season_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                seasons = self.env['calender.season'].search([('is_eng', '=', True)])
+                self.calender_season_ids = seasons.ids
+            elif self.env.user.company_ids.id == 2:
+                seasons = self.env['calender.season'].search([('is_mk', '=', True)])
+                self.calender_season_ids = seasons.ids
+        elif len(self.env.user.company_ids) > 1:
+            seasons = self.env['calender.season'].search([])
+            self.calender_season_ids = seasons.ids
+
+    sub_category_ids = fields.Many2many('item.sub.category', string='Sub Classes', compute='compute_sub_category_ids')
+
+    @api.depends('item_sub_cat_id')
+    def compute_sub_category_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                sub_categories = self.env['item.sub.category'].search([('is_eng', '=', True)])
+                self.sub_category_ids = sub_categories.ids
+            elif self.env.user.company_ids.id == 2:
+                sub_categories = self.env['item.sub.category'].search([('is_mk', '=', True)])
+                self.sub_category_ids = sub_categories.ids
+        elif len(self.env.user.company_ids) > 1:
+            sub_categories = self.env['item.sub.category'].search([])
+            self.sub_category_ids = sub_categories.ids
 
 
 class ProductProductInherit(models.Model):
