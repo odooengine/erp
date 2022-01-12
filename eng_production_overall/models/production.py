@@ -37,12 +37,12 @@ class MrpBomInh(models.Model):
                     products_list.append(product.id)
         self.product_tmpl_ids = products_list
 
-        products = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
-        empty_id = ''
-        for rec in products:
-            if not rec.product_template_attribute_value_ids:
-                empty_id = rec.id
-        self.product_id = empty_id
+        # products = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
+        # empty_id = ''
+        # for rec in products:
+        #     if not rec.product_template_attribute_value_ids:
+        #         empty_id = rec.id
+        # self.product_id = empty_id
 
 
 
