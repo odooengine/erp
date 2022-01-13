@@ -81,7 +81,7 @@
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="line_item_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 <field name="product_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
-                <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', size_range_ids)]"/>
                 <field name="life_type_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', life_type_ids)]"/>
                 <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', accessories_type_ids)]"/>
                 <field name="product_gender"/>
@@ -104,6 +104,7 @@
                 <field name="sub_category_ids" invisible="1"/>
                 <field name="item_category_ids" invisible="1"/>
                 <field name="age_group_ids" invisible="1"/>
+                <field name="size_range_ids" invisible="1"/>
 
             </xpath>
 
