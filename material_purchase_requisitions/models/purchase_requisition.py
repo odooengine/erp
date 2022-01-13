@@ -85,13 +85,18 @@ class MaterialPurchaseRequisition(models.Model):
         readonly=True,
         copy=False,
     )
-    company_id = fields.Many2one(
-        'res.company',
-        string='Company',
-        default=lambda self: self.env.user.company_id,
-        required=True,
-        copy=True,
-    )
+
+    def _default_get_company(self):
+        return self.env.company.id
+
+    company_id = fields.Many2one('res.company', 'Company', default=_default_get_company, required=True)
+    # company_id = fields.Many2one(
+    #     'res.company',
+    #     string='Company',
+    #     # default=lambda self: self.env.user.company_id,
+    #     required=True,
+    #     # copy=True,
+    # )
     location_id = fields.Many2one(
         'stock.location',
         string='Source Location',
