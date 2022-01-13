@@ -66,11 +66,11 @@
                 <attribute name="attrs">{'readonly': [('simple', '=', False)],'required': 0}</attribute>
             </xpath>
             <xpath expr="//field[@name='barcode']" position="after">
-                <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', age_group_ids)]"/>
                 <field name="engine_year_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}" domain="[('id', 'in', engine_year_ids)]"/>
                 <field name="calender_season_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}" domain="[('id', 'in', calender_season_ids)]"/>
                 <field name="class_fabric_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', fabric_ids)]"/>
-                <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', item_category_ids)]"/>
                 <field name="item_sub_cat_id" attrs="{'required': [('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', sub_category_ids)]"/>
                 <field name="dept_id" required="1" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
 <!--                <field name="sub_dept_id" attrs="{'required': [('finish', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}" style="color:blue;"/>-->
@@ -102,7 +102,14 @@
                 <field name="engine_year_ids" invisible="1"/>
                 <field name="calender_season_ids" invisible="1"/>
                 <field name="sub_category_ids" invisible="1"/>
+                <field name="item_category_ids" invisible="1"/>
+                <field name="age_group_ids" invisible="1"/>
 
+            </xpath>
+
+            <xpath expr="//field[@name='responsible_id']" position="before">
+                <field name="is_mrp" invisible="1"/>
+                <field name="is_comp" invisible="1"/>
             </xpath>
 
 <!--            Remove Create Edit-->

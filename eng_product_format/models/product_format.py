@@ -206,16 +206,20 @@ class ProductTemplateInherit(models.Model):
                                        ], string='Product Gender')
 
     dept_id = fields.Selection([('boys', 'Boys'),
-                                 ('girls', 'Girls'),
-                                 ('men', 'Men'),
-                                 ('women', 'Women'),
-                                 ], string='Department')
+                                ('girls', 'Girls'),
+                                ('men', 'Men'),
+                                ('women', 'Women'),
+                                ('unisex', 'Unisex'),
+                                ], string='Department')
 
     sub_dept = fields.Selection([('infant', 'Infant'),
                                  ('toddlers', 'Toddlers'),
                                  ('kids', 'Kids'),
+                                 ('boys', 'Boys'),
+                                 ('girls', 'Girls'),
                                  ('men', 'Men'),
                                  ('women', 'Women'),
+                                 ('unisex', 'Unisex'),
                                  ], string='Sub Department')
 
     life_type_id = fields.Many2one('life.type', string='Life Type')
@@ -237,12 +241,28 @@ class ProductTemplateInherit(models.Model):
     finish = fields.Boolean(string='Finish Goods', default=False)
     simple = fields.Boolean(string='Simple Product', default=True)
 
+    is_mrp = fields.Boolean(string='MRP', default=False)
+    is_comp = fields.Boolean(string='Compo', default=False)
+
     is_freeze = fields.Boolean(string='Freeze', default=False)
 
     pre_seq = fields.Char(string='Pre Sequence')
     pos_seq = fields.Integer(string='Post Sequence', default=1)
 
     candela_code = fields.Char(string='Candela Code')
+
+    @api.onchange('accessories', 'fabric', 'finish')
+    def onchange_booleans(self):
+        for rec in self:
+            if rec.finish == True:
+                rec.is_mrp = True
+            elif not rec.finish == True:
+                rec.is_mrp = False
+            if rec.accessories == True or rec.fabric == True:
+                    rec.is_comp = True
+            elif not rec.accessories == True or rec.fabric == True:
+                rec.is_comp = False
+            rec.product_variant_id.onchange_booleans()
 
     @api.onchange('accessories')
     def onchange_accessories(self):
@@ -486,6 +506,37 @@ class ProductTemplateInherit(models.Model):
             sub_categories = self.env['item.sub.category'].search([])
             self.sub_category_ids = sub_categories.ids
 
+    item_category_ids = fields.Many2many('item.category', string='Classes', compute='compute_item_category_ids')
+
+    @api.depends('item_cat_id')
+    def compute_item_category_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                item_categories = self.env['item.category'].search([('is_eng', '=', True)])
+                self.item_category_ids = item_categories.ids
+            elif self.env.user.company_ids.id == 2:
+                item_categories = self.env['item.category'].search([('is_mk', '=', True)])
+                self.item_category_ids = item_categories.ids
+        elif len(self.env.user.company_ids) > 1:
+            item_categories = self.env['item.category'].search([])
+            self.item_category_ids = item_categories.ids
+
+    age_group_ids = fields.Many2many('age.group', string='Sub Categories', compute='compute_age_group_ids')
+
+    @api.depends('age_group_id')
+    def compute_age_group_ids(self):
+        print('abc')
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                age_groups = self.env['age.group'].search([('is_eng', '=', True)])
+                self.age_group_ids = age_groups.ids
+            elif self.env.user.company_ids.id == 2:
+                age_groups = self.env['age.group'].search([('is_mk', '=', True)])
+                self.age_group_ids = age_groups.ids
+        elif len(self.env.user.company_ids) > 1:
+            age_groups = self.env['age.group'].search([])
+            self.age_group_ids = age_groups.ids
+
 
 class ProductProductInherit(models.Model):
     _inherit = 'product.product'
@@ -505,13 +556,17 @@ class ProductProductInherit(models.Model):
                                 ('girls', 'Girls'),
                                 ('men', 'Men'),
                                 ('women', 'Women'),
+                                ('unisex', 'Unisex'),
                                 ], string='Department', related='product_tmpl_id.dept_id')
 
     sub_dept = fields.Selection([('infant', 'Infant'),
                                  ('toddlers', 'Toddlers'),
                                  ('kids', 'Kids'),
+                                 ('boys', 'Boys'),
+                                 ('girls', 'Girls'),
                                  ('men', 'Men'),
                                  ('women', 'Women'),
+                                 ('unisex', 'Unisex'),
                                  ], string='Sub Department', related='product_tmpl_id.sub_dept')
 
     product_group_type = fields.Selection([('filt_acc', 'Accessories'),
@@ -530,5 +585,18 @@ class ProductProductInherit(models.Model):
     finish = fields.Boolean(string='Finish Goods', related='product_tmpl_id.finish')
     simple = fields.Boolean(string='Simple Product', related='product_tmpl_id.finish')
 
+    is_mrp = fields.Boolean(string='MRP', related='product_tmpl_id.is_mrp')
+    is_comp = fields.Boolean(string='Compo', related='product_tmpl_id.is_comp')
+
     candela_code = fields.Char(string='Candela Code', related='product_tmpl_id.candela_code')
 
+    def onchange_booleans(self):
+        for rec in self:
+            if rec.finish == True:
+                rec.is_mrp = True
+            elif not rec.finish == True:
+                rec.is_mrp = False
+            if rec.accessories == True or rec.fabric == True:
+                    rec.is_comp = True
+            elif not rec.accessories == True or rec.fabric == True:
+                rec.is_comp = False
