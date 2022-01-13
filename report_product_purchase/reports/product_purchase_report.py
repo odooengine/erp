@@ -38,7 +38,12 @@ class POProductReport(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
 
         po_record = self.env["purchase.order"].search([("id","in",docids)])
-        size_attrib = self.env['product.attribute'].search([('name'.lower() ,'=','size')])
+        size_attrib = self.env['product.attribute'].search([])
+#         po_record.order_line.product_id.product_template_attribute_value_ids.filtered(lambda r:(r.attribute_id.name).lower() == 'size' )
+
+        for rec in size_attrib:
+            if rec.name.lower()== 'size':
+                size_attrib = rec 
         if size_attrib:
             size_values= size_attrib.value_ids
             sv_names = size_values.mapped('name')
