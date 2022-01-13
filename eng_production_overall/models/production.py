@@ -237,7 +237,7 @@ class MrpInh(models.Model):
     req_count = fields.Integer(string="Requisitions", compute='compute_req_count')
     # adjust_count = fields.Integer(string="Adjustment", compute='compute_adjust_count')
 
-    product_ids = fields.Many2many('product.product', compute='compute_products')
+    # product_ids = fields.Many2many('product.product', compute='compute_products')
     is_transfer_created = fields.Boolean()
     # is_adj_created = fields.Boolean()
     #
@@ -246,17 +246,20 @@ class MrpInh(models.Model):
     #         count = self.env['stock.inventory'].search_count([('ref', '=', rec.name)])
     #         rec.adjust_count = count
 
-    @api.depends('product_id')
-    def compute_products(self):
-        products = self.env['product.product'].search([])
-        # print(products)
-        products_list = []
-        for product in products:
-            for route in product.route_ids:
-                if route.name == 'Manufacture':
-                    products_list.append(product.id)
-        # print(products_list)
-        self.product_ids = products_list
+    # @api.depends('product_id')
+    # def compute_products(self):
+    #     products = self.env['product.product'].search([('is_mrp', '=', True)])
+    #     self.product_ids = products.ids
+
+    # @api.depends('product_id')
+    # def compute_products(self):
+    #     products = self.env['product.product'].search([])
+    #     products_list = []
+    #     for product in products:
+    #         for route in product.route_ids:
+    #             if route.name == 'Manufacture':
+    #                 products_list.append(product.id)
+    #     self.product_ids = products_list
 
     def compute_req_count(self):
         for rec in self:
@@ -385,7 +388,7 @@ class MrpInh(models.Model):
         employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.user_id.id)])
         if line_vals:
             vals = {
-                'company_id': self.env.user.company_id.id,
+                'company_id': self.company_id.id,
                 'department_id': employee.department_id.id,
                 'request_date': fields.Date.today(),
                 'requisition_line_ids': line_vals,
