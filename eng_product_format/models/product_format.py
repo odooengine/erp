@@ -525,7 +525,6 @@ class ProductTemplateInherit(models.Model):
 
     @api.depends('age_group_id')
     def compute_age_group_ids(self):
-        print('abc')
         if len(self.env.user.company_ids) < 2:
             if self.env.user.company_ids.id == 1:
                 age_groups = self.env['age.group'].search([('is_eng', '=', True)])
@@ -536,6 +535,21 @@ class ProductTemplateInherit(models.Model):
         elif len(self.env.user.company_ids) > 1:
             age_groups = self.env['age.group'].search([])
             self.age_group_ids = age_groups.ids
+
+    size_range_ids = fields.Many2many('size.range', string='Widthes / GSMes', compute='compute_size_range_ids')
+
+    @api.depends('size_range_id')
+    def compute_size_range_ids(self):
+        if len(self.env.user.company_ids) < 2:
+            if self.env.user.company_ids.id == 1:
+                size_ranges = self.env['size.range'].search([('is_eng', '=', True)])
+                self.size_range_ids = size_ranges.ids
+            elif self.env.user.company_ids.id == 2:
+                size_ranges = self.env['size.range'].search([('is_mk', '=', True)])
+                self.size_range_ids = size_ranges.ids
+        elif len(self.env.user.company_ids) > 1:
+            size_ranges = self.env['size.range'].search([])
+            self.size_range_ids = size_ranges.ids
 
 
 class ProductProductInherit(models.Model):
