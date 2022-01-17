@@ -263,6 +263,11 @@ class AccountPaymentInh(models.Model):
     #                           ('reject', 'Reject')
     #                           ], readonly=True, default='draft', copy=False, string="Status")
 
+    @api.onchange('is_internal_transfer')
+    def onchange_internal_transfer(self):
+        if self.is_internal_transfer:
+            self.payment_type = 'outbound'
+
     def action_show_move_lines(self):
         return {
             'type': 'ir.actions.act_window',
@@ -325,7 +330,8 @@ class AccountPaymentInh(models.Model):
             'partner_id': self.partner_id.id,
             # 'analytic_account_id': oline.analytic_account_id.id,
             # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
-            'account_id': self.destination_account_id.id,
+            # 'account_id': self.destination_account_id.id,
+            'account_id': self.transfer_account_id.id,
             'payment_id': self.id,
         })
         line_ids.append(debit_line)
@@ -336,7 +342,8 @@ class AccountPaymentInh(models.Model):
             'debit': 0.0,
             'partner_id': self.partner_id.id,
             'credit': abs(self.amount),
-            'account_id': self.transfer_account_id.id,
+            # 'account_id': self.transfer_account_id.id,
+            'account_id': self.destination_account_id.id,
             'payment_id': self.id,
         })
         line_ids.append(credit_line)
