@@ -253,6 +253,7 @@ class AccountPaymentInh(models.Model):
 
     review_by_id = fields.Many2one('res.users', string='Reviewed By')
     approve_by_id = fields.Many2one('res.users', string='Approved By')
+    transfer_account_id = fields.Many2one('account.account')
 
     # state = fields.Selection([('draft', 'Draft'),
     #                           ('approve', 'Waiting For Approval'),
