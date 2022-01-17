@@ -255,6 +255,19 @@ class AccountPaymentInh(models.Model):
     review_by_id = fields.Many2one('res.users', string='Reviewed By')
     approve_by_id = fields.Many2one('res.users', string='Approved By')
     transfer_account_id = fields.Many2one('account.account')
+    cheque_no = fields.Char('Cheque No', default='')
+
+    @api.constrains('cheque_no')
+    def unique_cheque_no(self):
+        if self.cheque_no:
+            payment = self.env['account.payment'].search([('cheque_no', '=', self.cheque_no)])
+            if len(payment) > 1:
+                raise UserError('Cheque No Already Exist')
+
+    @api.onchange('cheque_no')
+    def set_caps(self):
+        val = str(self.cheque_no)
+        self.cheque_no = val.upper()
 
     # state = fields.Selection([('draft', 'Draft'),
     #                           ('approve', 'Waiting For Approval'),
@@ -272,6 +285,12 @@ class AccountPaymentInh(models.Model):
             record.payment_type = 'outbound'
         return record
 
+    # def write(self, vals):
+    #     record = super(AccountPaymentInh, self).write(vals)
+    #     if self.is_internal_transfer:
+    #         self.payment_type = 'outbound'
+    #     record = super(AccountPaymentInh, self).write(vals)
+    #     return record
 
     @api.onchange('is_internal_transfer')
     def onchange_internal_transfer(self):
@@ -290,6 +309,9 @@ class AccountPaymentInh(models.Model):
         }
 
     def action_post(self):
+        print(self.cheque_no)
+        if self.journal_id.type == 'bank' and not self.cheque_no:
+            raise UserError('Please Enter Valid Cheque No.')
         self.write({
             'state': 'to_review'
         })

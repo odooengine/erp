@@ -250,6 +250,9 @@
              <xpath expr="//field[@name='move_id']" position="after">
                 <field name="transfer_account_id" attrs="{'invisible': [('is_internal_transfer', '=', False)]}"/>
              </xpath>
+             <xpath expr="//field[@name='company_id']" position="after">
+                <field name="cheque_no"/>
+             </xpath>
 
              <xpath expr="//field[@name='payment_type']" position="attributes">
                 <attribute name="attrs">{'readonly': [('is_internal_transfer', '=', True)]}</attribute>
