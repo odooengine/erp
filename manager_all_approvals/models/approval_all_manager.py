@@ -248,6 +248,7 @@ class AccountMoveInh(models.Model):
         })
 
 
+
 class AccountPaymentInh(models.Model):
     _inherit = 'account.payment'
 
@@ -263,6 +264,14 @@ class AccountPaymentInh(models.Model):
     #                           ('cancelled', 'Cancelled'),
     #                           ('reject', 'Reject')
     #                           ], readonly=True, default='draft', copy=False, string="Status")
+
+    @api.model
+    def create(self, vals):
+        record = super(AccountPaymentInh, self).create(vals)
+        if record.is_internal_transfer:
+            record.payment_type = 'outbound'
+        return record
+
 
     @api.onchange('is_internal_transfer')
     def onchange_internal_transfer(self):
