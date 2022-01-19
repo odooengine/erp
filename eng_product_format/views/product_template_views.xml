@@ -1,5 +1,16 @@
 <odoo>
 
+    <record id="product_template_view_search_inherit" model="ir.ui.view">
+            <field name="name">product.template.search.inherit.sale</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="candela_code" string="Candela Code" filter_domain="[('candela_code', 'ilike', self)]"/>
+                </xpath>
+            </field>
+        </record>
+
     <record id="view_product_template_tree_inherit" model="ir.ui.view">
         <field name="name">product.template.tree.inherit</field>
         <field name="model">product.template</field>
@@ -108,10 +119,10 @@
 
             </xpath>
 
-            <xpath expr="//field[@name='responsible_id']" position="before">
-                <field name="is_mrp" invisible="1"/>
-                <field name="is_comp" invisible="1"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='responsible_id']" position="before">-->
+<!--                <field name="is_mrp" invisible="1"/>-->
+<!--                <field name="is_comp" invisible="1"/>-->
+<!--            </xpath>-->
 
 <!--            Remove Create Edit-->
 
