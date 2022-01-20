@@ -67,19 +67,19 @@
         <field name="model">mrp.bom</field>
         <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='product_tmpl_id']" position="attributes">
-                <!--                <attribute name="domain">[('type', 'in', ['product', 'consu']),('type', 'in', ['product', 'consu']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>-->
-                <attribute name="domain">[('id', 'in', product_tmpl_ids)]</attribute>
-            </xpath>
+<!--            <xpath expr="//field[@name='product_tmpl_id']" position="attributes">-->
+<!--                &lt;!&ndash;                <attribute name="domain">[('type', 'in', ['product', 'consu']),('type', 'in', ['product', 'consu']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>&ndash;&gt;-->
+<!--                <attribute name="domain">[('id', 'in', product_tmpl_ids)]</attribute>-->
+<!--            </xpath>-->
 
-            <xpath expr="//field[@name='product_tmpl_id']" position="after">
-                <field name="product_tmpl_ids" widget="many2many_tags" invisible="1"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='product_tmpl_id']" position="after">-->
+<!--                <field name="product_tmpl_ids" widget="many2many_tags" invisible="1"/>-->
+<!--            </xpath>-->
 
             <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="after">
                 <field name="class_fabric_id"/>
                 <field name="accessories_type_id"/>
-                <field name="components_ids" widget="many2many_tags" invisible="1"/>
+<!--                <field name="components_ids" widget="many2many_tags" invisible="1"/>-->
             </xpath>
 
             <xpath expr="///field[@name='product_id']" position="attributes">
@@ -92,7 +92,7 @@
 
             <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="attributes">
                 <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
-                <attribute name="domain">[('id', 'in', components_ids)]</attribute>
+<!--                <attribute name="domain">[('id', 'in', components_ids)]</attribute>-->
             </xpath>
 
         </field>
@@ -193,6 +193,7 @@
 
             <xpath expr="//field[@name='product_id']" position="attributes">
                 <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+<!--                <attribute name="domain">[]</attribute>-->
             </xpath>
 
             <xpath expr="//field[@name='user_id']" position="attributes">
