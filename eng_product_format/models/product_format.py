@@ -241,8 +241,8 @@ class ProductTemplateInherit(models.Model):
     finish = fields.Boolean(string='Finish Goods', default=False)
     simple = fields.Boolean(string='Simple Product', default=True)
 
-    is_mrp = fields.Boolean(string='MRP', default=False)
-    is_comp = fields.Boolean(string='Compo', default=False)
+    # is_mrp = fields.Boolean(string='MRP', default=False)
+    # is_comp = fields.Boolean(string='Compo', default=False)
 
     is_freeze = fields.Boolean(string='Freeze', default=False)
 
@@ -251,18 +251,18 @@ class ProductTemplateInherit(models.Model):
 
     candela_code = fields.Char(string='Candela Code')
 
-    @api.onchange('accessories', 'fabric', 'finish')
-    def onchange_booleans(self):
-        for rec in self:
-            if rec.finish == True:
-                rec.is_mrp = True
-            elif not rec.finish == True:
-                rec.is_mrp = False
-            if rec.accessories == True or rec.fabric == True:
-                    rec.is_comp = True
-            elif not rec.accessories == True or rec.fabric == True:
-                rec.is_comp = False
-            rec.product_variant_id.onchange_booleans()
+    # @api.onchange('accessories', 'fabric', 'finish')
+    # def onchange_booleans(self):
+    #     for rec in self:
+    #         if rec.finish == True:
+    #             rec.is_mrp = True
+    #         elif not rec.finish == True:
+    #             rec.is_mrp = False
+    #         if rec.accessories == True or rec.fabric == True:
+    #                 rec.is_comp = True
+    #         elif not rec.accessories == True or rec.fabric == True:
+    #             rec.is_comp = False
+    #         rec.product_variant_id.onchange_booleans()
 
     @api.onchange('accessories')
     def onchange_accessories(self):
@@ -599,18 +599,18 @@ class ProductProductInherit(models.Model):
     finish = fields.Boolean(string='Finish Goods', related='product_tmpl_id.finish')
     simple = fields.Boolean(string='Simple Product', related='product_tmpl_id.finish')
 
-    is_mrp = fields.Boolean(string='MRP', related='product_tmpl_id.is_mrp')
-    is_comp = fields.Boolean(string='Compo', related='product_tmpl_id.is_comp')
+    # is_mrp = fields.Boolean(string='MRP', related='product_tmpl_id.is_mrp')
+    # is_comp = fields.Boolean(string='Compo', related='product_tmpl_id.is_comp')
 
     candela_code = fields.Char(string='Candela Code', related='product_tmpl_id.candela_code')
 
-    def onchange_booleans(self):
-        for rec in self:
-            if rec.finish == True:
-                rec.is_mrp = True
-            elif not rec.finish == True:
-                rec.is_mrp = False
-            if rec.accessories == True or rec.fabric == True:
-                    rec.is_comp = True
-            elif not rec.accessories == True or rec.fabric == True:
-                rec.is_comp = False
+    # def onchange_booleans(self):
+    #     for rec in self:
+    #         if rec.finish == True:
+    #             rec.is_mrp = True
+    #         elif not rec.finish == True:
+    #             rec.is_mrp = False
+    #         if rec.accessories == True or rec.fabric == True:
+    #                 rec.is_comp = True
+    #         elif not rec.accessories == True or rec.fabric == True:
+    #             rec.is_comp = False
