@@ -59,10 +59,10 @@
                 <field name="accessories_type_id" readonly="1"/>
                 <field name="candela_code" readonly="1"/>
             </xpath>
-<!--            <xpath expr="//field[@name='weight']" position="before">-->
-<!--                <field name="is_mrp" invisible="1"/>-->
-<!--                <field name="is_comp" invisible="1"/>-->
-<!--            </xpath>-->
+            <xpath expr="//field[@name='weight']" position="before">
+                <field name="is_mrp" invisible="1"/>
+                <field name="is_comp" invisible="1"/>
+            </xpath>
         </field>
     </record>
 

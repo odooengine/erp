@@ -241,8 +241,8 @@ class ProductTemplateInherit(models.Model):
     finish = fields.Boolean(string='Finish Goods', default=False)
     simple = fields.Boolean(string='Simple Product', default=True)
 
-    # is_mrp = fields.Boolean(string='MRP', default=False)
-    # is_comp = fields.Boolean(string='Compo', default=False)
+    is_mrp = fields.Boolean(string='MRP', default=False)
+    is_comp = fields.Boolean(string='Compo', default=False)
 
     is_freeze = fields.Boolean(string='Freeze', default=False)
 
@@ -251,18 +251,18 @@ class ProductTemplateInherit(models.Model):
 
     candela_code = fields.Char(string='Candela Code')
 
-    # @api.onchange('accessories', 'fabric', 'finish')
-    # def onchange_booleans(self):
-    #     for rec in self:
-    #         if rec.finish == True:
-    #             rec.is_mrp = True
-    #         elif not rec.finish == True:
-    #             rec.is_mrp = False
-    #         if rec.accessories == True or rec.fabric == True:
-    #                 rec.is_comp = True
-    #         elif not rec.accessories == True or rec.fabric == True:
-    #             rec.is_comp = False
-    #         rec.product_variant_id.onchange_booleans()
+    @api.onchange('accessories', 'fabric', 'finish')
+    def onchange_booleans(self):
+        for rec in self:
+            if rec.finish == True:
+                rec.is_mrp = True
+            elif not rec.finish == True:
+                rec.is_mrp = False
+            if rec.accessories == True or rec.fabric == True:
+                    rec.is_comp = True
+            elif not rec.accessories == True or rec.fabric == True:
+                rec.is_comp = False
+            rec.product_variant_id.onchange_booleans()
 
     @api.onchange('accessories')
     def onchange_accessories(self):
@@ -322,6 +322,8 @@ class ProductTemplateInherit(models.Model):
                     name = ('A' + 'M' + accessory_code + '-' + season_code + year_code + '-')
                 elif vals['dept_id'] == 'women':
                     name = ('A' + 'W' + accessory_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'unisex':
+                    name = ('A' + 'U' + accessory_code + '-' + season_code + year_code + '-')
             elif vals['fabric'] == True:
                 if vals['dept_id'] == 'boys':
                     name = ('B' + life_code + fabric_code + '-' + season_code + year_code + '-')
@@ -331,6 +333,8 @@ class ProductTemplateInherit(models.Model):
                     name = ('M' + life_code + fabric_code + '-' + season_code + year_code + '-')
                 elif vals['dept_id'] == 'women':
                     name = ('W' + life_code + fabric_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'unisex':
+                    name = ('U' + life_code + fabric_code + '-' + season_code + year_code + '-')
             elif vals['finish'] == True:
                 if vals['dept_id'] == 'men' and vals['sub_dept'] == 'men':
                     name = ('M' + 'M' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '1')
@@ -348,6 +352,8 @@ class ProductTemplateInherit(models.Model):
                     name = ('T' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '7')
                 elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'kids':
                     name = ('K' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '8')
+                elif vals['dept_id'] == 'unisex' and vals['sub_dept'] == 'unisex':
+                    name = ('U' + 'U' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '9')
             vals['pre_seq'] = name
 
             product_record = self.env['product.template'].search([('pre_seq', '=', vals['pre_seq'])], order='id desc')
@@ -599,18 +605,18 @@ class ProductProductInherit(models.Model):
     finish = fields.Boolean(string='Finish Goods', related='product_tmpl_id.finish')
     simple = fields.Boolean(string='Simple Product', related='product_tmpl_id.finish')
 
-    # is_mrp = fields.Boolean(string='MRP', related='product_tmpl_id.is_mrp')
-    # is_comp = fields.Boolean(string='Compo', related='product_tmpl_id.is_comp')
+    is_mrp = fields.Boolean(string='MRP', related='product_tmpl_id.is_mrp')
+    is_comp = fields.Boolean(string='Compo', related='product_tmpl_id.is_comp')
 
     candela_code = fields.Char(string='Candela Code', related='product_tmpl_id.candela_code')
 
-    # def onchange_booleans(self):
-    #     for rec in self:
-    #         if rec.finish == True:
-    #             rec.is_mrp = True
-    #         elif not rec.finish == True:
-    #             rec.is_mrp = False
-    #         if rec.accessories == True or rec.fabric == True:
-    #                 rec.is_comp = True
-    #         elif not rec.accessories == True or rec.fabric == True:
-    #             rec.is_comp = False
+    def onchange_booleans(self):
+        for rec in self:
+            if rec.finish == True:
+                rec.is_mrp = True
+            elif not rec.finish == True:
+                rec.is_mrp = False
+            if rec.accessories == True or rec.fabric == True:
+                    rec.is_comp = True
+            elif not rec.accessories == True or rec.fabric == True:
+                rec.is_comp = False
