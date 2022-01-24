@@ -1,6 +1,11 @@
-# from odoo import models, fields, api
+from odoo import models, fields, api
+
+# class StockMoveInh(models.Model):
+#     _inherit = 'stock.move'
 #
-#
+#     def action_clear_lines_show_details(self):
+#         pass
+
 # class StockPickingInh(models.Model):
 #     _inherit = 'stock.picking'
 #

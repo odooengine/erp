@@ -11,7 +11,7 @@ class MrpBomLineInh(models.Model):
     class_fabric_id = fields.Many2one('class.fabric', related='product_id.class_fabric_id')
     accessories_type_id = fields.Many2one('accessories.type', related='product_id.accessories_type_id')
 
-    components_ids = fields.Many2many('product.product', compute='compute_components')
+    components_ids = fields.Many2many('product.product')
 
     @api.depends('product_id')
     def compute_components(self):
@@ -35,7 +35,7 @@ class MrpBomLineInh(models.Model):
 class MrpBomInh(models.Model):
     _inherit = 'mrp.bom'
 
-    product_tmpl_ids = fields.Many2many('product.template', compute='compute_products')
+    product_tmpl_ids = fields.Many2many('product.template')
 
     @api.depends('product_tmpl_id')
     def compute_products(self):
