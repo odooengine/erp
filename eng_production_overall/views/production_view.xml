@@ -147,9 +147,9 @@
         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//field[@name='company_id']" position="after">
-                <field name="allowed_product_ids" invisible="1"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='company_id']" position="after">-->
+<!--                <field name="allowed_product_ids" invisible="1"/>-->
+<!--            </xpath>-->
 
             <xpath expr="//header/button[@name='action_assign']" position="before">
 <!--                <button name="create_adjustment" type="object" string="Add Variants Adj" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'to_close'), ('is_adj_created', '=', True)]}"/>-->
