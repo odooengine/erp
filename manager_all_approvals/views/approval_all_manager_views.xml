@@ -139,7 +139,7 @@
             <xpath expr="//field[@name='company_id']" position="after">
 <!--                <field name="review_by_id" readonly="1"/>-->
                 <field name="approve_by_id" invisible="1"/>
-                <field name="allowed_product_ids" invisible="1"/>
+<!--                <field name="allowed_product_ids" invisible="1"/>-->
             </xpath>
 
         </field>
