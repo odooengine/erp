@@ -361,8 +361,10 @@ class MrpInh(models.Model):
             product_list.append(rec.product_tmpl_id.id)
         line_vals = []
         line_vals_new = []
+        line_vals_three = []
         src_location_one = ''
         src_location_two = ''
+        src_location_three = ''
         for line in self.move_raw_ids:
             if line.product_id.product_tmpl_id.id not in product_list and line.reserved_availability < line.product_uom_qty:
                 if not line.product_id.requisition_location_id:
@@ -376,15 +378,31 @@ class MrpInh(models.Model):
                     line_vals.append(line_vals)
                     src_location_one = line.product_id.property_stock_production.id
                 else:
-                    line_vals_new.append((0, 0, {
-                        'requisition_type': 'internal',
-                        'product_id': line.product_id.id,
-                        'description': line.product_id.name,
-                        'qty': line.product_uom_qty - line.reserved_availability,
-                        'uom': line.product_id.uom_id.id,
-                    }))
-                    line_vals_new.append(line_vals_new)
-                    src_location_two = line.product_id.requisition_location_id.id
+                    if not src_location_two:
+                        src_location_two = line.product_id.requisition_location_id.id
+                    else:
+                        if not src_location_three and line.product_id.requisition_location_id.id != src_location_two:
+                            src_location_three = line.product_id.requisition_location_id.id
+                    if src_location_two == line.product_id.requisition_location_id.id:
+                        line_vals_new.append((0, 0, {
+                            'requisition_type': 'internal',
+                            'product_id': line.product_id.id,
+                            'description': line.product_id.name,
+                            'qty': line.product_uom_qty - line.reserved_availability,
+                            'uom': line.product_id.uom_id.id,
+                        }))
+                        line_vals_new.append(line_vals_new)
+                        src_location_two = line.product_id.requisition_location_id.id
+                    if src_location_three == line.product_id.requisition_location_id.id:
+                        line_vals_three.append((0, 0, {
+                            'requisition_type': 'internal',
+                            'product_id': line.product_id.id,
+                            'description': line.product_id.name,
+                            'qty': line.product_uom_qty - line.reserved_availability,
+                            'uom': line.product_id.uom_id.id,
+                        }))
+                        line_vals_three.append(line_vals_three)
+                        src_location_three = line.product_id.requisition_location_id.id
         employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.user_id.id)])
         if line_vals:
             vals = {
@@ -393,17 +411,17 @@ class MrpInh(models.Model):
                 'request_date': fields.Date.today(),
                 'requisition_line_ids': line_vals,
                 'dest_location_id': self.location_src_id.id,
-                'location_id': src_location_one,
+                # 'location_id': src_location_one,
                 'ref': self.name,
                 }
-            req_one = self.env['material.purchase.requisition'].create(vals)
+            req_one = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals)
             req_one.requisition_confirm()
             req_one.manager_approve()
             req_one.user_approve()
             self.is_req_created = True
         if line_vals_new:
             vals_two = {
-                'company_id': self.env.user.company_id.id,
+                'company_id': self.company_id.id,
                 'department_id': employee.department_id.id,
                 'request_date': fields.Date.today(),
                 'requisition_line_ids': line_vals_new,
@@ -411,8 +429,23 @@ class MrpInh(models.Model):
                 'location_id': src_location_two,
                 'ref': self.name,
             }
-            req_two = self.env['material.purchase.requisition'].create(vals_two)
+            req_two = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals_two)
             req_two.requisition_confirm()
             req_two.manager_approve()
             req_two.user_approve()
+            self.is_req_created = True
+        if line_vals_three:
+            vals_three = {
+                'company_id': self.company_id.id,
+                'department_id': employee.department_id.id,
+                'request_date': fields.Date.today(),
+                'requisition_line_ids': line_vals_three,
+                'dest_location_id': self.location_src_id.id,
+                'location_id': src_location_three,
+                'ref': self.name,
+            }
+            req_three = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals_three)
+            req_three.requisition_confirm()
+            req_three.manager_approve()
+            req_three.user_approve()
             self.is_req_created = True
