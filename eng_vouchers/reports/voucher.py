@@ -9,7 +9,6 @@ from odoo.tools import float_is_zero, float_compare
 
 # class EngAccPayment(models.Model):
 #     _inherit="account.payment"
-<<<<<<< HEAD
 #     
 #     
 #     available_partner_bank_ids = fields.Many2many(
@@ -17,15 +16,6 @@ from odoo.tools import float_is_zero, float_compare
 # #         compute='_compute_available_partner_bank_ids',
 #     )
 #     
-=======
-    
-    
-#     available_partner_bank_ids = fields.Many2many(
-#         comodel_name='res.partner.bank',
-#         compute='_compute_available_partner_bank_ids',
-#     )
-    
->>>>>>> cbcd2c034b19923eec7ed1138cfee7d7b6cf73c9
     
 class AccountEdi(models.Model):
     _inherit = 'account.edi.document'
