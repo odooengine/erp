@@ -247,8 +247,8 @@
                 <field name="review_by_id" invisible="1"/>
                 <field name="approve_by_id" invisible="1"/>
              </xpath>
-             <xpath expr="//field[@name='move_id']" position="after">
-                <field name="transfer_account_id" attrs="{'invisible': [('is_internal_transfer', '=', False)]}"/>
+             <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="transfer_account_id" attrs="{'invisible': [('is_internal_transfer', '=', False)]}" domain="[('id', 'in', account_ids)]"/>
              </xpath>
              <xpath expr="//field[@name='company_id']" position="after">
                 <field name="cheque_no"/>

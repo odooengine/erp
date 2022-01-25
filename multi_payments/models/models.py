@@ -2,7 +2,7 @@
 
 from odoo import models, fields, api
 from odoo import models, fields, api
-from odoo.exceptions import Warning
+from odoo.exceptions import Warning, UserError
 from odoo.exceptions import ValidationError
 import datetime
 import logging
@@ -21,7 +21,7 @@ class multi_payments(models.Model):
     name = fields.Char(string="name")
     s_no = fields.Char(string="Name")
     date = fields.Date(string="Date",track_visibility='onchange')
-    journal_id = fields.Many2one('account.journal',string="Journal",track_visibility='onchange')
+    journal_id = fields.Many2one('account.journal',string="Bank / Cash",track_visibility='onchange')
     amount = fields.Float(string="Amount",track_visibility='onchange')
     journal_item = fields.Many2one('account.move',string="Journal Entry",copy= False,track_visibility='onchange')
     company_id = fields.Many2one('res.company',string="Company",default=lambda self: self.env.company,track_visibility='onchange')
@@ -104,13 +104,15 @@ class multi_payments(models.Model):
             self.create_journal_entry(self.journal_id,self.date,self.s_no,self.company_id.id)
         for lines in self.tree_link_id:
             if self.payment_type == 'inbound':
-                credit_account = lines.partner_id_tree.property_account_receivable_id.id
+                # credit_account = lines.partner_id_tree.property_account_receivable_id.id
+                credit_account = lines.account_id.id
                 debit_account = self.journal_id.default_account_id.id
                 create_debit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,debit_account,lines.amount,0,self.journal_item.id, lines.description)
                 create_credit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,credit_account,0,lines.amount,self.journal_item.id, lines.description)
             if self.payment_type == 'outbound':
                 credit_account = self.journal_id.default_account_id.id
-                debit_account = lines.partner_id_tree.property_account_payable_id.id
+                # debit_account = lines.partner_id_tree.property_account_payable_id.id
+                debit_account = lines.account_id.id
                 create_debit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,debit_account,lines.amount,0,self.journal_item.id, lines.description)
                 create_credit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,credit_account,0,lines.amount,self.journal_item.id, lines.description)
 
@@ -151,6 +153,22 @@ class multi_payments(models.Model):
 
     tree_link_id = fields.One2many('multi.payments.tree', 'tree_link')
 
+    # @api.model
+    # def create(self, vals):
+    #     if len(payment) > 1:
+    #         raise UserError('Cheque No Already Exist')
+    #     res = super(multi_payments, self).create(vals)
+    #     return res
+    #
+    # def unique_cheque_no(self):
+    #     # for record in self:
+    #     #     for record.
+    #     # if self.cheque_no:
+    #     for rec in self:
+    #         payment = self.env['multi.payments'].search([('cheque_no', '=', rec.cheque_no)])
+    #         if len(payment) > 1:
+    #             raise UserError('Cheque No Already Exist')
+
 
 
 
@@ -159,11 +177,19 @@ class multi_payments_tree(models.Model):
     _description = 'multi_payments.multi_payments.tree'
     _rec_name= 'name'
 
-
+    account_id = fields.Many2one('account.account', String="Account")
     name = fields.Char(string="name")
     partner_id_tree = fields.Many2one('res.partner',String="Partner" )
     description = fields.Char(string="Description")
+    cheque_no = fields.Char(string="Cheque No")
     amount = fields.Float(string="Amount")
+
+    @api.constrains('cheque_no')
+    def unique_cheque_no(self):
+        for rec in self:
+            payment = self.env['multi.payments.tree'].search([('cheque_no', '=', rec.cheque_no)])
+            if len(payment) > 1:
+                raise UserError('Cheque No Already Exist')
 
 
     @api.constrains('amount')
@@ -191,4 +217,46 @@ class JouenalEntryLinePayExt(models.Model):
             _logger.info ("IIIIIIIIIIIIIIIIIIIIIIIIIIIII")
             _logger.info (line.id)
             line.name = line.name +" "+line.payments_tree_label
+
+
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
+
+    available_partner_bank_ids = fields.Many2many('res.bank', string='Available Partner Bank Ids')
+    partner_ids = fields.Many2many('res.partner', compute='_compute_partner')
+    account_ids = fields.Many2many('account.account', compute='_compute_partner')
+
+    partner_type = fields.Selection([
+        ('customer', 'Customer'),
+        ('supplier', 'Vendor'),
+        ('int_trnsfr', 'Internal Transfer'),
+        ('othr_pay', 'Other Payment'),
+    ], default='customer', tracking=True, required=True)
+
+    @api.depends('partner_type')
+    def _compute_partner(self):
+        partners = self.env['res.partner'].search([])
+        accounts = self.env['account.account'].search([])
+        if self.partner_type == 'customer':
+            partners = self.env['res.partner'].search([('customer_rank', '>', 0)])
+        elif self.partner_type == 'supplier':
+            partners = self.env['res.partner'].search([('supplier_rank', '>', 0)])
+        elif self.partner_type == 'int_trnsfr':
+            accounts = self.env['account.account'].search([('user_type_id.name', '=', 'Bank and Cash')])
+        elif self.partner_type == 'othr_pay':
+            accounts = self.env['account.account'].search([('user_type_id.name', '!=', 'Bank and Cash')])
+
+        self.partner_ids = partners.ids
+        self.account_ids = accounts.ids
+
+
+    @api.onchange('partner_type')
+    def onchange_partner_type_inh(self):
+        print('Hell')
+        if self.partner_type == 'int_trnsfr':
+            self.is_internal_transfer = True
+        else:
+            self.is_internal_transfer = False
+
+
 

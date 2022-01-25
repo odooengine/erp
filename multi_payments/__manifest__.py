@@ -26,6 +26,7 @@
         'security/ir.model.access.csv',
         "security/security.xml",
         'views/views.xml',
+        'views/payment.xml',
         'views/templates.xml',
         'report/multi_payment_report.xml',
         'report/multi_payment_template.xml',
