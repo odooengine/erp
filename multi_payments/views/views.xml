@@ -39,8 +39,10 @@
                             <page string="Details">
                                 <field name="tree_link_id" attrs="{'readonly': [('state','=','validate')]}">
                                     <tree editable="bottom" nolabel="1">
+                                        <field name="account_id"/>
                                         <field name="partner_id_tree" string='Partner' />
                                         <field name="description" />
+                                        <field name="cheque_no"/>
                                         <field name="amount" />
                                     </tree>
                                 </field>
