@@ -7,30 +7,9 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
 
 
-class EngAccPayment(models.Model):
-    _inherit="account.payment"
-     
-     
-    available_partner_bank_ids = fields.Many2many('res.partner.bank')
-    
-  
-class AccountEdi(models.Model):
-    _inherit = 'account.edi.document'
-
-    def action_export_xml(self):
-        pass    
-    
-
-
 class AccountPaymentInherit(models.Model):
     _inherit = 'account.payment'
-    
-    
-  
 
-    
-    
-    
     journal_type = fields.Selection([
         ('sale', 'Sales'),
         ('purchase', 'Purchase'),
