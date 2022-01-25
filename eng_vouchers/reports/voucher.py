@@ -12,8 +12,7 @@ class EngAccPayment(models.Model):
      
      
     available_partner_bank_ids = fields.Many2many(
-        comodel_name='res.partner.bank',
-        compute='_compute_available_partner_bank_ids',
+        comodel_name='res.bank'
     )
      
     
