@@ -11,9 +11,7 @@ class EngAccPayment(models.Model):
     _inherit="account.payment"
      
      
-    available_partner_bank_ids = fields.Many2many(
-        comodel_name='res.bank'
-    )
+    available_partner_bank_ids = fields.Many2many('res.bank')
     
   
 class AccountEdi(models.Model):
