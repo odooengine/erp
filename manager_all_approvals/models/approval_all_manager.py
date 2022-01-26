@@ -309,7 +309,7 @@ class AccountPaymentInh(models.Model):
 
     def action_post(self):
         if self.journal_id.type == 'bank' and not self.cheque_no:
-            if self.is_internal_tranfer or self.payment_type == 'outbound':
+            if self.is_internal_transfer or self.payment_type == 'outbound':
                 raise UserError('Please Enter Valid Cheque No.')
         self.write({
             'state': 'to_review'
