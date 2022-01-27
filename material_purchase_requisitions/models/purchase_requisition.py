@@ -317,13 +317,12 @@ class MaterialPurchaseRequisition(models.Model):
                     'company_id': rec.company_id.id,
 
                 }
+                print(rec.company_id.name)
                 stock_id = stock_obj.sudo().create(picking_vals)
                 delivery_vals = {
                     'delivery_picking_id': stock_id.id,
                 }
                 rec.write(delivery_vals)
-
-
             po_dict = {}
             if rec.vendor_id:
                 for line in rec.requisition_line_ids:

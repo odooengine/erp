@@ -109,9 +109,11 @@ class MrpOrderInh(models.Model):
     start_date_custom = fields.Datetime('Date Start')
 
     def button_finish(self):
-        transfers = self.env['stock.picking'].search([('origin', '=', self.production_id.name)])
-        if any(line.state != 'done' for line in transfers):
-            raise UserError('Please Confirm all Transfers')
+        # if self._context['active_model'] != 'stock.picking':
+        #     transfers = self.env['stock.picking'].search([('origin', '=', self.production_id.name)])
+        #     if any(line.state != 'done' for line in transfers):
+        #         print(self._context)
+        #         raise UserError('Please Confirm all Transfers')
         return {
             'type': 'ir.actions.act_window',
             'name': 'Done Quantity',
@@ -404,6 +406,9 @@ class MrpInh(models.Model):
                         line_vals_three.append(line_vals_three)
                         src_location_three = line.product_id.requisition_location_id.id
         employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.user_id.id)])
+        print(line_vals)
+        print(line_vals_new)
+        print(line_vals_three)
         if line_vals:
             vals = {
                 'company_id': self.company_id.id,
@@ -420,6 +425,7 @@ class MrpInh(models.Model):
             req_one.user_approve()
             self.is_req_created = True
         if line_vals_new:
+            picking_type = self.env['stock.picking.type'].search([('default_location_src_id', '=', src_location_two), ('code', '=', 'internal')], limit=1)
             vals_two = {
                 'company_id': self.company_id.id,
                 'department_id': employee.department_id.id,
@@ -428,6 +434,7 @@ class MrpInh(models.Model):
                 'dest_location_id': self.location_src_id.id,
                 'location_id': src_location_two,
                 'ref': self.name,
+                'custom_picking_type_id': picking_type.id,
             }
             req_two = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals_two)
             req_two.requisition_confirm()
@@ -435,6 +442,8 @@ class MrpInh(models.Model):
             req_two.user_approve()
             self.is_req_created = True
         if line_vals_three:
+            picking_type_three = self.env['stock.picking.type'].search(
+                [('default_location_src_id', '=', src_location_three), ('code', '=', 'internal')], limit=1)
             vals_three = {
                 'company_id': self.company_id.id,
                 'department_id': employee.department_id.id,
@@ -443,6 +452,7 @@ class MrpInh(models.Model):
                 'dest_location_id': self.location_src_id.id,
                 'location_id': src_location_three,
                 'ref': self.name,
+                'custom_picking_type_id': picking_type_three.id,
             }
             req_three = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals_three)
             req_three.requisition_confirm()
