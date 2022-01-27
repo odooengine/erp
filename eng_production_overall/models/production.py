@@ -197,7 +197,10 @@ class MrpOrderInh(models.Model):
                 # 'quantity_done': qty * line.product_qty,
             }
             stock_move = self.env['stock.move'].create(lines)
-            self.production_id.is_transfer_created = True
+        self.production_id.is_transfer_created = True
+        picking.action_confirm()
+        if picking.state == 'assigned':
+            picking.do_unreserve()
 
     def button_pending(self):
         record = super(MrpOrderInh, self).button_pending()

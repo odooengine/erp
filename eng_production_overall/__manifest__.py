@@ -26,6 +26,7 @@
         'security/ir.model.access.csv',
         'views/production_view.xml',
         'wizard/produced_wizard.xml',
+        'views/picking_views.xml',
     ],
 
 }
