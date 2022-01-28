@@ -258,6 +258,10 @@
                 <attribute name="attrs">{'readonly': [('is_internal_transfer', '=', True)]}</attribute>
              </xpath>
 
+             <xpath expr="//field[@name='destination_account_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', account_ids)]</attribute>
+             </xpath>
+
         </field>
     </record>
 

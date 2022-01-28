@@ -244,10 +244,11 @@ class AccountPayment(models.Model):
         elif self.partner_type == 'int_trnsfr':
             accounts = self.env['account.account'].search([('user_type_id.name', '=', 'Bank and Cash')])
         elif self.partner_type == 'othr_pay':
-            accounts = self.env['account.account'].search([])
+            accounts = self.env['account.account'].search([('user_type_id.name', '!=', 'Bank and Cash')])
 
         self.partner_ids = partners.ids
         self.account_ids = accounts.ids
+
 
     @api.onchange('partner_type')
     def onchange_partner_type_inh(self):

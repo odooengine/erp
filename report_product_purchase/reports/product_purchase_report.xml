@@ -17,7 +17,7 @@
         </record>
         
         <record id="action_report_po_product" model="ir.actions.report">
-            <field name="name">product purchase report</field>
+            <field name="name">Product purchase report</field>
             <field name="model">purchase.order</field>
             <field name="binding_model_id" ref="purchase.model_purchase_order"/>
             <field name="report_type">qweb-pdf</field>
