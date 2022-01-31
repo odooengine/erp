@@ -19,7 +19,7 @@
     'version': '14.0.0.4',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'product', 'mail'],
+    'depends': ['base', 'stock', 'product', 'mail', 'stock_account'],
 
     # always loaded
     'data': [
@@ -39,6 +39,7 @@
         'views/product_product_views.xml',
         'views/product_template_views.xml',
         'views/size_views.xml',
+        'views/stock_views.xml',
         # 'views/sub_department_views.xml',
         'views/year_views.xml',
     ],
