@@ -184,12 +184,12 @@ class multi_payments_tree(models.Model):
     cheque_no = fields.Char(string="Cheque No")
     amount = fields.Float(string="Amount")
 
-    @api.constrains('cheque_no')
-    def unique_cheque_no(self):
-        for rec in self:
-            payment = self.env['multi.payments.tree'].search([('cheque_no', '=', rec.cheque_no)])
-            if len(payment) > 1:
-                raise UserError('Cheque No Already Exist')
+#    @api.constrains('cheque_no')
+#    def unique_cheque_no(self):
+#        for rec in self:
+#            payment = self.env['multi.payments.tree'].search([('cheque_no', '=', rec.cheque_no)])
+#            if len(payment) > 1:
+#                raise UserError('Cheque No Already Exist')
 
 
     @api.constrains('amount')
