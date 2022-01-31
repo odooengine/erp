@@ -335,6 +335,8 @@ class ProductTemplateInherit(models.Model):
                     name = ('A' + 'M' + accessory_code + '-' + season_code + year_code + '-')
                 elif vals['dept_id'] == 'women':
                     name = ('A' + 'W' + accessory_code + '-' + season_code + year_code + '-')
+                elif vals['dept_id'] == 'unisex':
+                    name = ('A' + 'U' + accessory_code + '-' + season_code + year_code + '-')
             elif vals['fabric'] == True:
                 if vals['dept_id'] == 'boys':
                     name = ('B' + life_code + fabric_code + '-' + season_code + year_code + '-')
@@ -361,6 +363,8 @@ class ProductTemplateInherit(models.Model):
                     name = ('T' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '7')
                 elif vals['dept_id'] == 'girls' and vals['sub_dept'] == 'kids':
                     name = ('K' + 'G' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '8')
+                elif vals['dept_id'] == 'unisex' and vals['sub_dept'] == 'unisex':
+                    name = ('U' + 'U' + fabric_code + sub_cat_code + '-' + life_code + year_code + season_code + '-' + '9')
             vals['pre_seq'] = name
 
             product_record = self.env['product.template'].search([('pre_seq', '=', vals['pre_seq'])], order='id desc')
