@@ -37,11 +37,11 @@ class multi_payments(models.Model):
     voucher_type_o = fields.Selection([
         ('cpv', 'Cash Payment Voucher'),
         ('bpv', 'Bank Payment Voucher'),
-        ],track_visibility='onchange')
+        ],track_visibility='onchange',readonly=True)
     voucher_type_i = fields.Selection([
         ('crv', 'Cash Receipt Voucher'),
         ('brv', 'Bank Receipt Voucher'),
-        ],track_visibility='onchange')
+        ],track_visibility='onchange',readonly=True)
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -56,6 +56,22 @@ class multi_payments(models.Model):
             'res_model': 'account.move.line',
             'domain': [('move_id','=',self.journal_item.id)]
         }
+
+    @api.onchange('journal_id')
+    def change_journal(self):
+        if self.journal_id.name == 'Bank':
+            print(self.journal_id.name)
+            self.voucher_type_o = 'bpv'
+        else:
+            self.voucher_type_o = 'cpv'
+
+    @api.onchange('journal_id')
+    def cha_journal(self):
+        if self.journal_id.name == 'Bank':
+            print(self.journal_id.name)
+            self.voucher_type_i = 'brv'
+        else:
+            self.voucher_type_i = 'crv'
 
     def set_multi_payments_links(self):
         records = self.search([('state','=','validate'),('id','>',490)], order='id', limit=100)
