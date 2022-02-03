@@ -1,0 +1,44 @@
+<odoo>
+    <menuitem
+            name="Sale Invoice"
+            id="account.menu_action_move_out_invoice_type"
+            parent="account.menu_finance_receivables"
+           />
+    <menuitem
+            name="Credit Note"
+            id="account.menu_action_move_out_refund_type"
+            parent="account.menu_finance_receivables"
+           />
+    <menuitem
+            name="Customer List"
+            id="account.menu_account_customer"
+            parent="account.menu_finance_receivables"
+           />
+     <menuitem
+            name="Purchase Invoice"
+            id="account.menu_action_move_in_invoice_type"
+            parent="account.menu_finance_payables"
+           />
+     <menuitem
+            name="Debit Note"
+            id="account.menu_action_move_in_refund_type"
+            parent="account.menu_finance_payables"
+           />
+     <menuitem
+            name="Vendor Lists"
+            id="account.menu_account_supplier"
+            parent="account.menu_finance_payables"
+           />
+    <menuitem
+            name="Journal Voucher"
+            id="account.menu_action_move_journal_line_form"
+            parent="account.menu_finance_entries"
+           />
+    <menuitem
+            name="Payment/Reciept Vouchers"
+            id="account.menu_action_account_payments_receivable"
+            action="account.action_account_payments"
+            parent="account.menu_finance_entries"
+            sequence = "2"
+           />
+</odoo>

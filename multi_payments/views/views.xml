@@ -104,7 +104,7 @@
             <field name="res_model">multi.payments</field>
             <field name="view_mode">tree,form</field>
         </record>
-        <menuitem name="Multi Payments" id="arrival_port_main" parent="account.menu_finance_receivables" action="multi_payments_module" sequence="1" groups="multi_payments" />
+        <menuitem name="Multi Payments" id="arrival_port_main" parent="account.menu_finance_entries" action="multi_payments_module" sequence="1" groups="multi_payments" />
 
 
 
