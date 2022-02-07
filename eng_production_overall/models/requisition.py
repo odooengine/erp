@@ -9,6 +9,7 @@ class MaterialPurchaseRequisitionInh(models.Model):
 
     requisition_product_lines = fields.One2many('requisition.product.lines', 'req_product_id')
     vendor_id = fields.Many2one('res.partner')
+    # mrp_id = fields.Many2one('mrp.production')
 
     def action_add_vendors(self):
         if self.vendor_id:

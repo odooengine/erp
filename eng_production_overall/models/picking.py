@@ -6,8 +6,12 @@ from odoo import models, fields, api
 #     def action_clear_lines_show_details(self):
 #         pass
 
-# class StockPickingInh(models.Model):
-#     _inherit = 'stock.picking'
+
+class StockPickingInh(models.Model):
+    _inherit = 'stock.picking'
+
+    product_ref_id = fields.Many2one('product.product')
+    product_tmpl_ref_id = fields.Many2one('product.template')
 #
 #     mo_count = fields.Integer(default=0, compute='compute_mo')
 #     show_create_mo = fields.Boolean()

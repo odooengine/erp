@@ -194,6 +194,7 @@ class MaterialPurchaseRequisition(models.Model):
     )
 
     vendor_id = fields.Many2one('res.partner')
+    mrp_id = fields.Many2one('mrp.production')
     tech_pack = fields.Char('Tech Pack')
 
     @api.model
@@ -305,6 +306,7 @@ class MaterialPurchaseRequisition(models.Model):
                     raise Warning(_('Select Destination location under the picking details.'))
                 #                 if not rec.employee_id.dest_location_id.id or not rec.employee_id.department_id.dest_location_id.id:
                 #                     raise Warning(_('Select Destination location under the picking details.'))
+
                 picking_vals = {
                     'partner_id': rec.employee_id.sudo().address_home_id.id,
                     # 'min_date' : fields.Date.today(),
@@ -315,6 +317,8 @@ class MaterialPurchaseRequisition(models.Model):
                     'custom_requisition_id': rec.id,
                     'origin': rec.name,
                     'company_id': rec.company_id.id,
+                    'product_ref_id': rec.mrp_id.product_id.id,
+                    'product_tmpl_ref_id': rec.mrp_id.product_id.product_tmpl_id.id,
 
                 }
                 print(rec.company_id.name)

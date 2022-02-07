@@ -68,7 +68,7 @@ class MrpBomInh(models.Model):
 class WorkCenterEmbellishment(models.Model):
     _inherit = 'mrp.workcenter'
 
-    wk_embellish = fields.Boolean(string='Embellishment', default=False)
+    wk_embellish = fields.Boolean(string='Embellishment', default=False, copy=False)
     src_location_id = fields.Many2one('stock.location', string='Source location')
     dest_location_id = fields.Many2one('stock.location', string='Destination location')
     partner_id = fields.Many2one('res.partner', string='Partner')
@@ -238,14 +238,14 @@ class MrpInh(models.Model):
     produced_lines = fields.One2many('produced.qty.line', 'mrp_id')
     reason_lines = fields.One2many('reason.line', 'mrp_id')
     transfer_count = fields.Integer(compute='compute_transfers')
-    is_req_created = fields.Boolean()
+    is_req_created = fields.Boolean(copy=False)
     req_count = fields.Integer(string="Requisitions", compute='compute_req_count')
     # adjust_count = fields.Integer(string="Adjustment", compute='compute_adjust_count')
 
     # product_ids = fields.Many2many('product.product', compute='compute_products')
-    is_transfer_created = fields.Boolean()
+    is_transfer_created = fields.Boolean(copy=False)
     # is_adj_created = fields.Boolean()
-    #
+
     # def compute_adjust_count(self):
     #     for rec in self:
     #         count = self.env['stock.inventory'].search_count([('ref', '=', rec.name)])
@@ -421,6 +421,7 @@ class MrpInh(models.Model):
                 'dest_location_id': self.location_src_id.id,
                 # 'location_id': src_location_one,
                 'ref': self.name,
+                'mrp_id': self.id,
                 }
             req_one = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals)
             req_one.requisition_confirm()
@@ -438,6 +439,7 @@ class MrpInh(models.Model):
                 'location_id': src_location_two,
                 'ref': self.name,
                 'custom_picking_type_id': picking_type.id,
+                'mrp_id': self.id,
             }
             req_two = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals_two)
             req_two.requisition_confirm()
@@ -456,6 +458,7 @@ class MrpInh(models.Model):
                 'location_id': src_location_three,
                 'ref': self.name,
                 'custom_picking_type_id': picking_type_three.id,
+                'mrp_id': self.id,
             }
             req_three = self.env['material.purchase.requisition'].with_context(default_company_id=self.env.user.company_id.id).create(vals_three)
             req_three.requisition_confirm()

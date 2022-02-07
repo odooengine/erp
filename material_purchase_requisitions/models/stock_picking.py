@@ -2,8 +2,12 @@
 
 from odoo import models, fields
 
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
+
+    # product_ref = fields.Many2one('product.product')
+    # product_tmpl_ref = fields.Many2one('product.template')
 
     custom_requisition_id = fields.Many2one(
         'material.purchase.requisition',
@@ -11,6 +15,7 @@ class StockPicking(models.Model):
         readonly=True,
         copy=True
     )
+
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
