@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-    
+
         <record id="material_purchase_requisition_form_view" model="ir.ui.view">
             <field name="name">material.purchase.requisition.form.view</field>
             <field name="model">material.purchase.requisition</field>
@@ -16,39 +16,40 @@
                         <button name="requisition_reject" type="object" string="Reject" groups="material_purchase_requisitions.group_purchase_requisition_department,material_purchase_requisitions.group_purchase_requisition_user" states="dept_confirm,approve,ir_approve" />
                         <button name="action_cancel" type="object" states="draft" string="Cancel" groups="base.group_user"/>
                         <button name="reset_draft" type="object" string="Reset to Draft" states="cancel,reject,receive" class="btn-primary"/>
-                        <field name="state" widget="statusbar" string="confirm"  
-                                        statusbar_visible="draft,dept_confirm,ir_approve,approve,stock,receive"/>
+                        <field name="state" widget="statusbar" string="confirm"
+                               statusbar_visible="draft,dept_confirm,ir_approve,approve,stock,receive"/>
                     </header>
                     <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" icon="fa-truck"
-                                name="show_picking" string="Internal Picking" groups="base.group_user"/>
-                        <button class="oe_stat_button" type="object" icon="fa-book"
-                                name="action_show_po" string="Purchase Order"/>
-                    </div>
-                    <div class="oe_title">
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" icon="fa-truck"
+                                    name="show_picking" string="Internal Picking" groups="base.group_user"/>
+                            <button class="oe_stat_button" type="object" icon="fa-book"
+                                    name="action_show_po" string="Purchase Order"/>
+                        </div>
                         <div class="oe_title">
-                        <h1>
-                            <field name="name"/><br/>
-                        </h1>
-                    </div>
-                    </div>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="name"/><br/>
+                                </h1>
+                            </div>
+                        </div>
                         <group>
-                                <group>
-                                    <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                    <field name="department_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                    <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                    <field name="requisiton_responsible_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                    <field name="tech_pack" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                </group>
-                                <group>
-                                    <field name="request_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                    <field name="receive_date" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
-                                    <field name="date_end" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
-                                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
+                            <group>
+                                <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="department_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="requisiton_responsible_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="tech_pack" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </group>
+                            <group>
+                                <field name="request_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="receive_date" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
+                                <field name="date_end" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
+                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
                                 <field name="vendor_id" domain="[('supplier_rank', '>', 0)]" options="{'no_create': True, 'no_edit' : True}"/>
-                                </group>
-                             </group>
+                                <field name="mrp_id" options="{'no_create': True, 'no_edit' : True}" attrs="{'invisible': [('mrp_id', '=', False)]}"/>
+                            </group>
+                        </group>
                         <notebook>
                             <page string="Requisitions Lines">
                                 <field name="requisition_line_ids" attrs="{'readonly': [('state', 'in', ['cancel','receive'])]}">
@@ -68,9 +69,9 @@
                             <page groups="material_purchase_requisitions.group_purchase_requisition_user,stock.group_stock_user" string="Picking Details" attrs="{'readonly': [['state', 'in', ['done']]]}">
                                 <group>
                                     <group>
-                                            <field name="location_id"
-                                                   groups="material_purchase_requisitions.group_purchase_requisition_user,stock.group_stock_user" 
-                                                   domain="[('usage','!=', 'view')]" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
+                                        <field name="location_id"
+                                               groups="material_purchase_requisitions.group_purchase_requisition_user,stock.group_stock_user"
+                                               domain="[('usage','!=', 'view')]" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
                                     </group>
                                     <group>
                                         <field name="dest_location_id" groups="material_purchase_requisitions.group_purchase_requisition_user,stock.group_stock_user" attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}"/>
@@ -92,11 +93,11 @@
                                         <field name="managerapp_date"/>
                                         <field name="userrapp_date"/>
                                         <field name="userreject_date"/>
-<!--                                        <field name="user_id"/>-->
+                                        <!--                                        <field name="user_id"/>-->
                                     </group>
                                 </group>
                             </page>
-                    </notebook>
+                        </notebook>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
@@ -105,7 +106,7 @@
                 </form>
             </field>
         </record>
-        
+
         <record id="material_purchase_requisition_tree_view" model="ir.ui.view">
             <field name="name">material.purchase.requisition.view.tree</field>
             <field name="model">material.purchase.requisition</field>
@@ -122,7 +123,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <record id="material_purchase_requisition_search_view" model="ir.ui.view">
             <field name="name">material.purchase.requisition search</field>
             <field name="model">material.purchase.requisition</field>
@@ -164,17 +165,17 @@
                 </search>
             </field>
         </record>
-        
+
         <record model="ir.actions.act_window" id="action_material_purchase_requisition">
             <field name="name">Purchase Requisitions</field>
             <field name="res_model">material.purchase.requisition</field>
             <!--<field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
-        
+
         <menuitem id="menu_purchase_requisition" name="Requisitions" groups="base.group_user"  web_icon="material_purchase_requisitions,static/description/icon.png"/>
         <menuitem id="menu_item_purchase_requisition" name="Purchase Requisition" parent="menu_purchase_requisition"/>
         <menuitem id="menu_action_purchase_requisition" name="Purchase Requisitions" parent="menu_item_purchase_requisition" action="action_material_purchase_requisition"/>
-        
+
     </data>
 </odoo>
