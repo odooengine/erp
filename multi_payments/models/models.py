@@ -59,19 +59,19 @@ class multi_payments(models.Model):
 
     @api.onchange('journal_id')
     def change_journal(self):
-        if self.journal_id.name == 'Bank':
-            print(self.journal_id.name)
+        # if self.journal_id.name == 'Bank':
+        if self.journal_id.type == 'bank':
             self.voucher_type_o = 'bpv'
         else:
             self.voucher_type_o = 'cpv'
 
-    @api.onchange('journal_id')
-    def cha_journal(self):
-        if self.journal_id.name == 'Bank':
-            print(self.journal_id.name)
-            self.voucher_type_i = 'brv'
-        else:
-            self.voucher_type_i = 'crv'
+    # @api.onchange('journal_id')
+    # def cha_journal(self):
+    #     if self.journal_id.name == 'Bank':
+    #         print(self.journal_id.name)
+    #         self.voucher_type_i = 'brv'
+    #     else:
+    #         self.voucher_type_i = 'crv'
 
     def set_multi_payments_links(self):
         records = self.search([('state','=','validate'),('id','>',490)], order='id', limit=100)
