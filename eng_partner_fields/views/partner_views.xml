@@ -9,6 +9,7 @@
                 <group>
                     <group>
                         <field name="partner_type"/>
+                        <field name="customer_type" attrs="{'invisible': [('partner_type', 'not in', ['customer'])]}" widget="radio"/>
                     </group>
                 </group>
             </xpath>
