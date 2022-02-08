@@ -199,7 +199,6 @@ class multi_payments_tree(models.Model):
     description = fields.Char(string="Description")
     cheque_no = fields.Char(string="Cheque No")
     amount = fields.Float(string="Amount")
-    analytic_account_id = fields.Many2one('account.analytic.account', String="Analytic Account")
 
 #    @api.constrains('cheque_no')
 #    def unique_cheque_no(self):
