@@ -11,11 +11,9 @@ class PartnerInherit(models.Model):
 
     partner_type = fields.Selection([('customer', 'Customer'),
                               ('vendor', 'Vendor'),
+                              ('frenchise', 'Frenchise'),
+                              ('owned', 'Owned'),
                               ], string='Partner Type')
-
-    customer_type = fields.Selection([('frenchise', 'Frenchise'),
-                                     ('owned', 'Owned'),
-                                     ], string='Customer Type')
 
     supplier_code = fields.Char(string = 'Supplier Code') 
     supplier_ntn = fields.Char(string = 'Supplier NTN#')
