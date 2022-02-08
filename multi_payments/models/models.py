@@ -242,6 +242,7 @@ class AccountPayment(models.Model):
     available_partner_bank_ids = fields.Many2many('res.bank', string='Available Partner Bank Ids')
     partner_ids = fields.Many2many('res.partner', compute='_compute_partner')
     account_ids = fields.Many2many('account.account', compute='_compute_partner')
+    analytic_account_id = fields.Many2one('account.analytic.account', String="Analytic Account")
 
     partner_type = fields.Selection([
         ('customer', 'Customer'),

@@ -35,6 +35,14 @@
                 <attribute name="string">Ledger Name(Others)</attribute>
             </xpath>
 
+            <xpath expr="//field[@name='ref']" position="attributes">
+                <attribute name="string">Description</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='journal_type']" position="after">
+                <field name="analytic_account_id"/>
+            </xpath>
+
         </field>
     </record>
 
