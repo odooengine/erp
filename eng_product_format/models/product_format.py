@@ -631,3 +631,40 @@ class ProductProductInherit(models.Model):
     #                 rec.is_comp = True
     #         elif not rec.accessories == True or rec.fabric == True:
     #             rec.is_comp = False
+
+
+class BomLineInherit(models.Model):
+    _inherit = 'mrp.bom.line'
+
+    product_qty = fields.Float(
+        'Quantity', default=1.0,
+        digits=(12, 3),
+        # digits='Product Unit of Measure',
+        required=True)
+
+
+class PoLineInherit(models.Model):
+    _inherit = 'purchase.order.line'
+
+    product_qty = fields.Float(string='Quantity',
+                               digits=(12, 3),
+                               # digits='Product Unit of Measure',
+                               required=True)
+
+
+class PickingLineInherit(models.Model):
+    _inherit = 'stock.move'
+
+    product_uom_qty = fields.Float(
+        'Demand',
+        digits=(12, 3),
+        # digits='Product Unit of Measure',
+        default=0.0, required=True, states={'done': [('readonly', True)]},
+        help="This is the quantity of products from an inventory "
+             "point of view. For moves in the state 'done', this is the "
+             "quantity of products that were actually moved. For other "
+             "moves, this is the quantity of product that is planned to "
+             "be moved. Lowering this quantity does not generate a "
+             "backorder. Changing this quantity on assigned moves affects "
+             "the product reservation, and should be done with care.")
+
