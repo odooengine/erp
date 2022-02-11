@@ -185,9 +185,6 @@ class multi_payments(models.Model):
     #         if len(payment) > 1:
     #             raise UserError('Cheque No Already Exist')
 
-
-
-
 class multi_payments_tree(models.Model):
     _name = 'multi.payments.tree'
     _description = 'multi_payments.multi_payments.tree'
@@ -213,7 +210,6 @@ class multi_payments_tree(models.Model):
     def get_amount_payment(self):
         for rec in self:
             if rec.amount == 0:
-                print('xxxxxxxxxxxxxxxxxxx')
                 raise ValidationError(('"Amount should be greater than 0" '))
 
     tree_link = fields.Many2one('multi.payments')
@@ -248,7 +244,6 @@ class AccountPayment(models.Model):
         ('customer', 'Customer'),
         ('supplier', 'Vendor'),
         ('int_trnsfr', 'Internal Transfer'),
-        ('othr_pay', 'Other Payment'),
     ], default='customer', tracking=True, required=True)
 
     @api.depends('partner_type')
@@ -261,16 +256,14 @@ class AccountPayment(models.Model):
             partners = self.env['res.partner'].search([('supplier_rank', '>', 0)])
         elif self.partner_type == 'int_trnsfr':
             accounts = self.env['account.account'].search([('user_type_id.name', '=', 'Bank and Cash')])
-        elif self.partner_type == 'othr_pay':
-            accounts = self.env['account.account'].search([('user_type_id.name', '!=', 'Bank and Cash')])
+        # elif self.partner_type == 'othr_pay':
+        #     accounts = self.env['account.account'].search([('user_type_id.name', '!=', 'Bank and Cash')])
 
         self.partner_ids = partners.ids
         self.account_ids = accounts.ids
 
-
     @api.onchange('partner_type')
     def onchange_partner_type_inh(self):
-        print('Hell')
         if self.partner_type == 'int_trnsfr':
             self.is_internal_transfer = True
         else:
