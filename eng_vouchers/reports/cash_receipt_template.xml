@@ -26,6 +26,10 @@
                     <div class="row" id="journal_information">
                         <div class="col-8">
                             <div>
+                                <strong>Voucher No. : </strong>
+                                <span t-field="o.name"/>
+                            </div>
+                            <div>
                                 <strong>Journal : </strong>
                                 <span t-field="o.journal_id"/>
                             </div>
@@ -43,7 +47,8 @@
                             </div>
                             <div class="text-left">
                                 <strong>Print Date : </strong>
-                                <span t-esc="datetime.datetime.now().strftime('%m-%d-%Y')"/>
+<!--                                <span t-esc="datetime.datetime.now().strftime('%m-%d-%Y')"/>-->
+                                <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y')"/>
                             </div>
                         </div>
                     </div>
@@ -56,7 +61,7 @@
                             <tr>
                                 <th>Account</th>
                                 <th>&#160;</th>
-                                <th>Label</th>
+                                <th>Description</th>
                                 <!-- <th>Taxes(%)</th> -->
                                  <th>&#160;</th>
                                 <th>Debit</th>
