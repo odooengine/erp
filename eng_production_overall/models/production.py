@@ -107,6 +107,7 @@ class MrpOrderInh(models.Model):
     _inherit = 'mrp.workorder'
 
     start_date_custom = fields.Datetime('Date Start')
+    work_order_no = fields.Char('Work Order No')
 
     def button_finish(self):
         # if self._context['active_model'] != 'stock.picking':
@@ -241,6 +242,7 @@ class MrpInh(models.Model):
     is_req_created = fields.Boolean(copy=False)
     req_count = fields.Integer(string="Requisitions", compute='compute_req_count')
     # adjust_count = fields.Integer(string="Adjustment", compute='compute_adjust_count')
+    work_order_no = fields.Char('Work Order No')
 
     # product_ids = fields.Many2many('product.product', compute='compute_products')
     is_transfer_created = fields.Boolean(copy=False)
