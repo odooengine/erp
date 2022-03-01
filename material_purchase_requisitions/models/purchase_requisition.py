@@ -52,14 +52,14 @@ class MaterialPurchaseRequisition(models.Model):
     department_id = fields.Many2one(
         'hr.department',
         string='Department',
-        required=True,
+        required=False,
         copy=True,
     )
     employee_id = fields.Many2one(
         'hr.employee',
         string='Employee',
         default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1),
-        required=True,
+        required=False,
         copy=True,
     )
     approve_manager_id = fields.Many2one(
