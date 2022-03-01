@@ -38,28 +38,23 @@ class POProductReport(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
 
         po_record = self.env["purchase.order"].search([("id","in",docids)])
-#         size_attrib = self.env['product.attribute'].search([])
-# #         po_record.order_line.product_id.product_template_attribute_value_ids.filtered(lambda r:(r.attribute_id.name).lower() == 'size' )
-# 
-#         for rec in size_attrib:
-#             if rec.name.lower()== 'size':
-#                 size_attrib = rec 
-#         if size_attrib:
-#             size_values= size_attrib.value_ids
-#             sv_names = size_values.mapped('name')
+        size_attrib = self.env['product.attribute'].search([])
+#         po_record.order_line.product_id.product_template_attribute_value_ids.filtered(lambda r:(r.attribute_id.name).lower() == 'size' )
+
+        for rec in size_attrib:
+            if rec.name.lower()== 'size':
+                size_attrib = rec 
+        if size_attrib:
+            size_values= size_attrib.value_ids
+            sv_names = size_values.mapped('name')
         if po_record.order_line:
            
             
-            color_obj = po_record.order_line.product_id.product_template_attribute_value_ids.filtered(lambda r:(r.attribute_id.name).lower() == 'color')  
+            color_obj = po_record.order_line.product_id.product_template_attribute_value_ids.filtered(lambda r:(r.attribute_id.name).lower() == 'color' )  
             color_list = color_obj.mapped('name')
 #           
-
-            size_obj = po_record.order_line.product_id.product_template_attribute_value_ids.filtered(lambda r:(r.attribute_id.name).lower() == 'size') 
-            sv_names = size_obj.mapped('name')    
-          
-             
-            sv_names = list(set(sv_names))
-            
+        
+      
         
         
         val=[]
@@ -104,9 +99,9 @@ class POProductReport(models.AbstractModel):
                     val.append(data_dict)
         return {
                 'po_record':po_record,
-                'size_colspan': len(sv_names)+1,
-#                 'size_values':size_values,
-                'sv_names':sv_names,
+                'size_colspan': len(size_values)+1,
+                'size_values':size_values,
+                'sv_names':size_values.mapped('name'),
                 'color_list':color_list,
                 'val':val,
                 'get_key':self.getKey,

@@ -25,6 +25,7 @@
     # always loaded
     'data': [
         'security/security.xml',
+        'reports/invoice_report.xml',
         'views/approval_all_manager_views.xml',
     ],
 

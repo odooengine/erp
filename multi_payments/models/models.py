@@ -23,6 +23,7 @@ class multi_payments(models.Model):
     date = fields.Date(string="Date",track_visibility='onchange')
     journal_id = fields.Many2one('account.journal',string="Bank / Cash",track_visibility='onchange')
     amount = fields.Float(string="Amount",track_visibility='onchange')
+    operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
     journal_item = fields.Many2one('account.move',string="Journal Entry",copy= False,track_visibility='onchange')
     company_id = fields.Many2one('res.company',string="Company",default=lambda self: self.env.company,track_visibility='onchange')
     payment_type =fields.Selection([
@@ -56,6 +57,12 @@ class multi_payments(models.Model):
             'res_model': 'account.move.line',
             'domain': [('move_id','=',self.journal_item.id)]
         }
+
+    @api.onchange('operating_unit_id')
+    def onchange_operating_unit_id(self):
+        for record in self:
+            for rec in record.tree_link_id:
+                rec.operating_unit_id = record.operating_unit_id.id
 
     @api.onchange('journal_id')
     def change_journal(self):
@@ -193,6 +200,7 @@ class multi_payments_tree(models.Model):
     account_id = fields.Many2one('account.account', String="Account")
     name = fields.Char(string="name")
     partner_id_tree = fields.Many2one('res.partner',String="Partner" )
+    operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit")
     description = fields.Char(string="Description")
     cheque_no = fields.Char(string="Cheque No")
     amount = fields.Float(string="Amount")
