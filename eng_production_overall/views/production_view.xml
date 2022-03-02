@@ -261,7 +261,7 @@
                             <field name="start_date"/>
                             <field name="paused_date"/>
                             <field name="qty" string="Quantity"/>
-                            <field name="reason"/>
+                            <field name="reasons"/>
                         </tree>
                     </field>
                 </page>
