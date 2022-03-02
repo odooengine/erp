@@ -18,7 +18,6 @@ class MrpBomLineInh(models.Model):
         products = self.env['product.product'].search([('is_comp', '=', True)])
         self.components_ids = products.ids
 
-
     # components_ids = fields.Many2many('product.product', compute='compute_components')
 
     # @api.depends('product_id')
@@ -94,13 +93,14 @@ class ReasonLine(models.Model):
     qty = fields.Float('Produced Quantity')
     start_date = fields.Datetime('Start Date')
     paused_date = fields.Datetime('End Date')
-    reason = fields.Selection([
-        ('wrong', 'Wrong Cutting'),
-        ('burn', 'Burn'),
-        ('hole', 'Hole'),
-        ('shortage', 'Shortage of material during welding'),
-        ('excess', 'Excess of material during welding'),
-    ], string='Reason', default='')
+    reasons = fields.Char(ondelete='cascade')
+    # reason = fields.Selection([
+    #     ('wrong', 'Wrong Cutting'),
+    #     ('burn', 'Burn'),
+    #     ('hole', 'Hole'),
+    #     ('shortage', 'Shortage of material during welding'),
+    #     ('excess', 'Excess of material during welding'),
+    # ], string='Reason', default='', ondelete='cascade')
 
 
 class MrpOrderInh(models.Model):
@@ -127,9 +127,9 @@ class MrpOrderInh(models.Model):
     def button_start(self):
         for rec in self:
             pre_order = self.env['mrp.workorder'].search([('id', '=', rec.id-1), ('production_id', '=', rec.production_id.id)])
-            if pre_order:
-                if pre_order.state != 'done':
-                    raise UserError('This workorder is waiting for another operation to get done.')
+            # if pre_order:
+            #     if pre_order.state != 'done':
+            #         raise UserError('This workorder is waiting for another operation to get done.')
             if rec.workcenter_id.wk_embellish:
                 if not rec.production_id.is_transfer_created:
                     rec.action_create_internal_transfer(pre_order)

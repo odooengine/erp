@@ -20,13 +20,12 @@ class ProductQuantityWizard(models.TransientModel):
         if pre_order:
             for pre in pre_order.production_id.produced_lines:
                 if pre.name == pre_order.name and pre.workcenter_id.id == pre_order.workcenter_id.id:
-                    print(pre.qty)
                     qty_producing = qty_producing + pre.qty
         else:
             qty_producing = workorder.production_id.qty_producing
 
-        if self.qty > qty_producing:
-            raise ValidationError('Produced Quantity can not be greater than Quantity to Produce')
+        # if self.qty > qty_producing:
+        #     raise ValidationError('Produced Quantity can not be greater than Quantity to Produce')
 
         qty = 0
         for line in workorder.production_id.produced_lines:
@@ -49,13 +48,14 @@ class QuantityDoneWizard(models.TransientModel):
     _name = 'done.qty.wizard'
 
     qty = fields.Float('Produced Quantity')
-    reason = fields.Selection([
-        ('wrong', 'Wrong Cutting'),
-        ('burn', 'Burn'),
-        ('hole', 'Hole'),
-        ('shortage', 'Shortage of material during welding'),
-        ('excess', 'Excess of material during welding'),
-    ], string='Reason', default='')
+    reasons = fields.Char()
+    # reason = fields.Selection([
+    #     ('wrong', 'Wrong Cutting'),
+    #     ('burn', 'Burn'),
+    #     ('hole', 'Hole'),
+    #     ('shortage', 'Shortage of material during welding'),
+    #     ('excess', 'Excess of material during welding'),
+    # ], string='Reason', default='', ondelete='cascade')
 
     def action_create(self):
         model = self.env.context.get('active_model')
@@ -72,8 +72,8 @@ class QuantityDoneWizard(models.TransientModel):
         else:
             qty_producing = workorder.production_id.qty_producing
 
-        if self.qty > qty_producing:
-            raise ValidationError('Produced Quantity can not be greater than Quantity to Produce')
+        # if self.qty > qty_producing:
+        #     raise ValidationError('Produced Quantity can not be greater than Quantity to Produce')
 
         qty = 0
         for line in workorder.production_id.produced_lines:
@@ -82,14 +82,14 @@ class QuantityDoneWizard(models.TransientModel):
         if self.qty > (qty_producing - qty):
             raise ValidationError('You are trying to produce more quantity than initial demand.')
         if self.qty + qty < qty_producing:
-            if not self.reason:
+            if not self.reasons:
                 raise UserError('Please add reason of rejection.')
             reject = self.env['reason.line'].create({
                 'mrp_id': workorder.production_id.id,
                 'name': workorder.name,
                 'workcenter_id': workorder.workcenter_id.id,
                 'qty': qty_producing - (self.qty + qty),
-                'reason': self.reason,
+                'reasons': self.reasons,
                 'paused_date': datetime.today(),
                 'start_date': workorder.start_date_custom,
             })
