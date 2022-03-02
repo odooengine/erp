@@ -31,8 +31,8 @@ class ProductQuantityWizard(models.TransientModel):
         for line in workorder.production_id.produced_lines:
             if line.name == workorder.name and line.workcenter_id.id == workorder.workcenter_id.id:
                 qty = qty + line.qty
-        if self.qty > (qty_producing - qty):
-            raise ValidationError('You are trying to produce more quantity than initial demand.')
+        # if self.qty > (qty_producing - qty):
+        #     raise ValidationError('You are trying to produce more quantity than initial demand.')
 
         rec = self.env['produced.qty.line'].create({
             'mrp_id': workorder.production_id.id,
@@ -79,8 +79,8 @@ class QuantityDoneWizard(models.TransientModel):
         for line in workorder.production_id.produced_lines:
             if line.name == workorder.name and line.workcenter_id.id == workorder.workcenter_id.id:
                 qty = qty + line.qty
-        if self.qty > (qty_producing - qty):
-            raise ValidationError('You are trying to produce more quantity than initial demand.')
+        # if self.qty > (qty_producing - qty):
+        #     raise ValidationError('You are trying to produce more quantity than initial demand.')
         if self.qty + qty < qty_producing:
             if not self.reasons:
                 raise UserError('Please add reason of rejection.')
