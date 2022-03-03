@@ -46,7 +46,7 @@ class MrpProductionInh(models.Model):
                         if rec_l['product_id'] == line.product_id.id:
                             rec_l['product_uom_qty'] = rec_l['product_uom_qty'] + line.product_uom_qty
                             rec_l['quantity_done'] = rec_l['quantity_done'] + line.quantity_done
-            # record.state = 'merged'
+            record.state = 'merged'
         my_string = ','.join(names)
         final_line_vals = []
         for final_line in line_vals:
