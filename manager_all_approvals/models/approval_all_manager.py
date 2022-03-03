@@ -5,6 +5,18 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
 
 
+class StockMoveLineInh(models.Model):
+    _inherit = 'stock.move.line'
+
+    description = fields.Char()
+
+
+class StockMoveInh(models.Model):
+    _inherit = 'stock.move'
+
+    description = fields.Char()
+
+
 class AccountEdi(models.Model):
     _inherit = 'account.edi.document'
 
@@ -66,6 +78,10 @@ class PurchaseOrderInherit(models.Model):
                 order.write({'state': 'to approve'})
             if order.partner_id not in order.message_partner_ids:
                 order.message_subscribe([order.partner_id.id])
+        for line in self.order_line:
+            line.move_ids.description = line.name
+            for rec_line in line.move_ids.move_line_ids:
+                rec_line.description = line.name
         return True
 
     def button_reject(self):
