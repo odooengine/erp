@@ -128,6 +128,10 @@ class SaleOrderInh(models.Model):
         if self.env.user.has_group('manager_all_approvals.group_approve_sale_order'):
             self.approve_by_id = self.env.user.id
         rec = super(SaleOrderInh, self).action_confirm()
+        for line in self.order_line:
+            line.move_ids.description = line.name
+            for rec_line in line.move_ids.move_line_ids:
+                rec_line.description = line.name
         return rec
 
     def button_reject(self):
@@ -430,6 +434,7 @@ class StockPickingInh(models.Model):
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
         ('rejected', 'Rejected'),
+        ('merged', 'merged'),
     ], string='Status', compute='_compute_state',
         copy=False, index=True, readonly=True, store=True, tracking=True,
         help=" * Draft: The transfer is not confirmed yet. Reservation doesn't apply.\n"
@@ -441,8 +446,6 @@ class StockPickingInh(models.Model):
 
     def button_validate(self):
         for record in self.move_ids_without_package:
-            print(record.quantity_done)
-            print(record.product_uom_qty)
             if record.quantity_done > record.product_uom_qty:
                 raise UserError(_('Receiving Quantity Cannot be Exceeded Than Demanded'))
         self.received_by_id = self.env.user.id
