@@ -12,7 +12,7 @@ from odoo.exceptions import UserError
 class MrpProductionInh(models.Model):
     _inherit = 'stock.picking'
 
-    ref = fields.Char('Source')
+    ref = fields.Char('Merged From')
     # purchase_ids = fields.Many2many('purchase.order')
 
     def action_open_wizard(self):
@@ -46,33 +46,42 @@ class MrpProductionInh(models.Model):
                         if rec_l['product_id'] == line.product_id.id:
                             rec_l['product_uom_qty'] = rec_l['product_uom_qty'] + line.product_uom_qty
                             rec_l['quantity_done'] = rec_l['quantity_done'] + line.quantity_done
-            record.state = 'merged'
+            # record.state = 'merged'
         my_string = ','.join(names)
-        print(line_vals)
         final_line_vals = []
         for final_line in line_vals:
             final_line_vals.append((0, 0, final_line))
-        # vals = {
-        #     'company_id': self.env.user.company_id.id,
-        #     'request_date': fields.Date.today(),
-        #     'dest_location_id': selected_records[0].location_id.id,
-        #     'requisition_line_ids': line_vals,
-        #     'ref': my_string,
-        # }
-        return {
-            'name': 'Transfer',
-            'res_model': 'stock.picking',
-            'views': [[False, "form"]],
-            'type': 'ir.actions.act_window',
-            'context': {'default_move_ids_without_package': final_line_vals,
-                        'default_location_dest_id': selected_records[0].location_dest_id.id,
-                        'default_location_id': selected_records[0].location_id.id,
-                        'default_picking_type_id': selected_records[0].picking_type_id.id,
-                        'default_partner_id': selected_records[0].partner_id.id,
-                        'default_ref': my_string,
-                        'default_request_date': fields.Date.today(),
-                        'default_company_id': self.env.user.company_id.id}
+        vals = {
+            'company_id': self.env.user.company_id.id,
+            # 'request_date': fields.Date.today(),
+            'picking_type_id': selected_records[0].picking_type_id.id,
+            'location_id': selected_records[0].location_id.id,
+            'location_dest_id': selected_records[0].location_dest_id.id,
+            'move_ids_without_package': final_line_vals,
+            'ref': my_string,
         }
+        move = self.env['stock.picking'].create(vals)
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.picking',
+            'res_id': move.id,
+            'view_mode': 'form',
+            'views': [(False, "form")],
+        }
+        # return {
+        #     'name': 'Transfer',
+        #     'res_model': 'stock.picking',
+        #     'views': [[False, "form"]],
+        #     'type': 'ir.actions.act_window',
+        #     'context': {'default_move_ids_without_package': final_line_vals,
+        #                 'default_picking_type_id': selected_records[0].picking_type_id.id,
+        #                 'default_location_dest_id': selected_records[0].location_dest_id.id,
+        #                 'default_location_id': selected_records[0].location_id.id,
+        #                 'default_partner_id': selected_records[0].partner_id.id,
+        #                 'default_ref': my_string,
+        #                 # 'default_request_date': fields.Date.today(),
+        #                 'default_company_id': self.env.user.company_id.id}
+        # }
 
     # def action_open_wizard(self):
     #     selected_ids = self.env.context.get('active_ids', [])
