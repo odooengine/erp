@@ -27,6 +27,7 @@
         'views/views.xml',
         'reports/purchase_report.xml',
         'reports/purchase_template.xml',
+        'reports/purchase_order_report.xml',
     ],
 
 }
