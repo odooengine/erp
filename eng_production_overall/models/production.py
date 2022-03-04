@@ -271,7 +271,8 @@ class MrpInh(models.Model):
 
     @api.onchange('product_id')
     def onchange_product_id_inh(self):
-        self.product_templ = self.product_tmpl_id.name
+        for rec in self:
+            rec.product_templ = rec.product_tmpl_id.name
 
     def compute_req_count(self):
         for rec in self:
