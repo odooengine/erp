@@ -246,6 +246,7 @@ class MrpInh(models.Model):
 
     # product_ids = fields.Many2many('product.product', compute='compute_products')
     is_transfer_created = fields.Boolean(copy=False)
+    product_templ = fields.Char()
     # is_adj_created = fields.Boolean()
 
     # def compute_adjust_count(self):
@@ -267,6 +268,10 @@ class MrpInh(models.Model):
     #             if route.name == 'Manufacture':
     #                 products_list.append(product.id)
     #     self.product_ids = products_list
+
+    @api.onchange('product_id')
+    def onchange_product_id_inh(self):
+        self.product_templ = self.product_tmpl_id.name
 
     def compute_req_count(self):
         for rec in self:
