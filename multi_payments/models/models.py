@@ -247,6 +247,7 @@ class AccountPayment(models.Model):
     partner_ids = fields.Many2many('res.partner', compute='_compute_partner')
     account_ids = fields.Many2many('account.account', compute='_compute_partner')
     analytic_account_id = fields.Many2one('account.analytic.account', String="Analytic Account")
+    operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
 
     partner_type = fields.Selection([
         ('customer', 'Customer'),
@@ -276,6 +277,12 @@ class AccountPayment(models.Model):
             self.is_internal_transfer = True
         else:
             self.is_internal_transfer = False
+
+
+class AccountMoveInh(models.Model):
+    _inherit = 'account.move'
+
+    operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
 
 
 

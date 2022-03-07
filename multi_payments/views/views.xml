@@ -22,10 +22,10 @@
                         </div>
                         <group>
                             <group>
+                                <field name="operating_unit_id"/>
                                 <field name="payment_type" widget="radio" attrs="{'readonly': [('state','=','validate')]}" />
                                 <field name="company_id" readonly='1' />
                                 <field name="amount" readonly='1' force_save='1' />
-                                <field name="operating_unit_id"/>
                             </group>
                             <group>
                                 <field name="date" required='1' attrs="{'readonly': [('state','=','validate')]}" />
@@ -119,6 +119,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='name']" position="after">
                     <field name='payments_tree_label' invisible="1"/>
+                </xpath>
+
+                <xpath expr="//div[hasclass('o_td_label')]" position="before">
+                    <field name='operating_unit_id'/>
                 </xpath>
             </field>
         </record>
