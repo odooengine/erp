@@ -66,7 +66,6 @@ class StockPickingInh(models.Model):
 
     product_ref_id = fields.Many2one('product.product')
     product_tmpl_ref_id = fields.Many2one('product.template')
-    department_id = fields.Many2one('hr.department')
 #
 #     mo_count = fields.Integer(default=0, compute='compute_mo')
 #     show_create_mo = fields.Boolean()
