@@ -194,6 +194,10 @@
 <!--                </button>-->
             </xpath>
 
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="create_date" attrs="{'readonly': [('state', 'in', ['done', 'cancel'])]}"/>
+            </xpath>
+
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="work_order_no"/>
                 <field name="is_req_created" invisible="1"/>
