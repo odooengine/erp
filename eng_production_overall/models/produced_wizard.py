@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError, UserError
 
 class ProductQuantityWizard(models.TransientModel):
     _name = 'produced.qty.wizard'
+    _description = 'Produced Quantity Wizard'
 
     qty = fields.Float('Produced Quantity')
 
@@ -46,6 +47,7 @@ class ProductQuantityWizard(models.TransientModel):
 
 class QuantityDoneWizard(models.TransientModel):
     _name = 'done.qty.wizard'
+    _description = 'Done Quantity Wizard'
 
     qty = fields.Float('Produced Quantity')
     reasons = fields.Char()

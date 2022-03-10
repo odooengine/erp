@@ -10,13 +10,8 @@ class MrpBomLineInh(models.Model):
 
     class_fabric_id = fields.Many2one('class.fabric', related='product_id.class_fabric_id')
     accessories_type_id = fields.Many2one('accessories.type', related='product_id.accessories_type_id')
-    descriptions = fields.Char()
-    components_ids = fields.Many2many('product.product')
 
-    @api.onchange('product_id')
-    def _onchange_product(self):
-        for rec in self:
-            rec.descriptions = rec.product_id.name
+    components_ids = fields.Many2many('product.product')
 
     @api.depends('product_id')
     def compute_components(self):
@@ -80,6 +75,7 @@ class WorkCenterEmbellishment(models.Model):
 
 class ProducedQtyLine(models.Model):
     _name = 'produced.qty.line'
+    _description = 'Produced Quantity Line'
 
     mrp_id = fields.Many2one('mrp.production')
     workcenter_id = fields.Many2one('mrp.workcenter')
@@ -91,6 +87,7 @@ class ProducedQtyLine(models.Model):
 
 class ReasonLine(models.Model):
     _name = 'reason.line'
+    _description = 'Reason Line'
 
     mrp_id = fields.Many2one('mrp.production')
     workcenter_id = fields.Many2one('mrp.workcenter')
@@ -405,7 +402,7 @@ class MrpInh(models.Model):
                         line_vals_new.append((0, 0, {
                             'requisition_type': 'internal',
                             'product_id': line.product_id.id,
-                            'description': line.descriptions,
+                            'description': line.product_id.name,
                             'qty': line.product_uom_qty - line.reserved_availability,
                             'uom': line.product_id.uom_id.id,
                         }))
@@ -415,14 +412,16 @@ class MrpInh(models.Model):
                         line_vals_three.append((0, 0, {
                             'requisition_type': 'internal',
                             'product_id': line.product_id.id,
-                            'description': line.descriptions,
+                            'description': line.product_id.name,
                             'qty': line.product_uom_qty - line.reserved_availability,
                             'uom': line.product_id.uom_id.id,
                         }))
                         line_vals_three.append(line_vals_three)
                         src_location_three = line.product_id.requisition_location_id.id
         employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.user_id.id)])
-
+        print(line_vals)
+        print(line_vals_new)
+        print(line_vals_three)
         if line_vals:
             vals = {
                 'company_id': self.company_id.id,
