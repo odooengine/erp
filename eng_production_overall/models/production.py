@@ -55,6 +55,7 @@ class MrpBomInh(models.Model):
 #                 if route.name == 'Manufacture':
 #                     products_list.append(product.id)
 #         self.product_tmpl_ids = products_list
+
         # products = self.env['product.product'].search([('product_tmpl_id', '=', self.product_tmpl_id.id)])
         # empty_id = ''
         # for rec in products:
