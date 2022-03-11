@@ -258,6 +258,7 @@ class MaterialPurchaseRequisition(models.Model):
         pick_vals = {
             'product_id': line.product_id.id,
             'product_uom_qty': line.qty,
+            'description': line.description,
             'product_uom': line.uom.id,
             'location_id': self.location_id.id,
             'location_dest_id': self.dest_location_id.id,
@@ -275,6 +276,7 @@ class MaterialPurchaseRequisition(models.Model):
             'product_id': line.product_id.id,
             'name': line.product_id.name,
             'product_qty': line.qty,
+            'description': line.description,
             'product_uom': line.uom.id,
             'date_planned': fields.Date.today(),
             'price_unit': line.product_id.standard_price,
@@ -416,6 +418,7 @@ class MaterialPurchaseRequisition(models.Model):
                             # 'product_tmpl_id': record.product_id.product_tmpl_id.id,
                             'name': record.product_id.name,
                             'product_qty': record.qty,
+                            # 'description': line.description,
                             'product_uom': record.uom.id,
                             # 'date_planned': datetime.today().date(),
                             'price_unit': record.product_id.standard_price,

@@ -23,7 +23,6 @@ class MaterialPurchaseRequisitionLine(models.Model):
 #     )
     description = fields.Char(
         string='Description',
-        required=True,
     )
     qty = fields.Float(
         string='Quantity',
@@ -51,7 +50,7 @@ class MaterialPurchaseRequisitionLine(models.Model):
     @api.onchange('product_id')
     def onchange_product_id(self):
         for rec in self:
-            rec.description = rec.product_id.name
+            # rec.description = rec.product_id.name
             rec.uom = rec.product_id.uom_id.id
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

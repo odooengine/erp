@@ -55,6 +55,7 @@ class MaterialPurchaseRequisitionInh(models.Model):
 
 class MaterialPurchaseRequisitionLines(models.Model):
     _name = 'requisition.product.lines'
+    _description = 'Requisition Product Line'
 
     req_product_id = fields.Many2one('material.purchase.requisition')
     product_id = fields.Many2one('product.product')

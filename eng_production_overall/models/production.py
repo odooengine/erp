@@ -75,6 +75,7 @@ class WorkCenterEmbellishment(models.Model):
 
 class ProducedQtyLine(models.Model):
     _name = 'produced.qty.line'
+    _description = 'Produced Quantity Line'
 
     mrp_id = fields.Many2one('mrp.production')
     workcenter_id = fields.Many2one('mrp.workcenter')
@@ -86,6 +87,7 @@ class ProducedQtyLine(models.Model):
 
 class ReasonLine(models.Model):
     _name = 'reason.line'
+    _description = 'Reason Line'
 
     mrp_id = fields.Many2one('mrp.production')
     workcenter_id = fields.Many2one('mrp.workcenter')
