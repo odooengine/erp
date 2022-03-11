@@ -18,6 +18,7 @@
 <!--            </xpath>-->
             <xpath expr="//filter[@name='product']" position="after">
                 <filter string="Product Template" name="product_tmpl" domain="[]" context="{'group_by': 'product_templ'}"/>
+<!--                <filter string="Life Type" name="life_type" domain="[]" context="{'group_by': 'product_id.life_type_id'}"/>-->
             </xpath>
         </field>
     </record>
@@ -91,6 +92,7 @@
         <field name="arch" type="xml">
 
             <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="after">
+                <field name="descriptions" string="Descriptions"/>
                 <field name="class_fabric_id"/>
                 <field name="accessories_type_id"/>
             </xpath>
@@ -109,6 +111,7 @@
 
         </field>
     </record>
+    
 
 
     <record model="ir.ui.view" id="mrp_workorder_form_inh_date">
@@ -119,10 +122,18 @@
 
             <xpath expr="//tree/field[@name='name']" position="before">
                 <field name="work_order_no"/>
+                <field name="life_type" invisible="1"/>
+                <field name="depart" invisible="1"/>
+                <field name="fabric" invisible="1"/>
             </xpath>
 
             <xpath expr="//tree/field[@name='state']" position="before">
                 <field name="start_date_custom"/>
+            </xpath>
+
+            <xpath expr="//tree/field[@name='workcenter_id']" position="after">
+                <field name="qty_producing_1" invisible="1"/>
+                <field name="qty_producing_2"/>
             </xpath>
 
             <xpath expr="///field[@name='workcenter_id']" position="attributes">
@@ -194,10 +205,17 @@
 <!--                </button>-->
             </xpath>
 
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="create_date" attrs="{'readonly': [('state', 'in', ['done', 'cancel'])]}"/>
+            </xpath>
+
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="work_order_no"/>
                 <field name="is_req_created" invisible="1"/>
-                <field name="product_templ"/>
+                <field name="product_templ" invisible="1"/>
+                <field name="life_type" invisible="1"/>
+                <field name="depart" invisible="1"/>
+                <field name="fabric" invisible="1"/>
 <!--                <field name="product_ids" widget="many2many_tags" invisible="1"/>-->
                 <field name="is_transfer_created" invisible="1"/>
 <!--                <field name="is_adj_created" invisible="1"/>-->
@@ -217,6 +235,10 @@
             <!--            <xpath expr="//field[@name='work_order_ids']/tree/field[@name='workcenter_id']" position="attributes">-->
             <!--                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>-->
             <!--            </xpath>-->
+
+            <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='product_id']" position="after">
+                <field name="descriptions"/>
+            </xpath>
 
             <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='product_id']" position="attributes">
                 <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>

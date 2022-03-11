@@ -10,8 +10,13 @@ class MrpBomLineInh(models.Model):
 
     class_fabric_id = fields.Many2one('class.fabric', related='product_id.class_fabric_id')
     accessories_type_id = fields.Many2one('accessories.type', related='product_id.accessories_type_id')
-
+    descriptions = fields.Char()
     components_ids = fields.Many2many('product.product')
+
+    @api.onchange('product_id')
+    def _onchange_product(self):
+        for rec in self:
+            rec.descriptions = rec.product_id.name
 
     @api.depends('product_id')
     def compute_components(self):
@@ -75,7 +80,6 @@ class WorkCenterEmbellishment(models.Model):
 
 class ProducedQtyLine(models.Model):
     _name = 'produced.qty.line'
-    _description = 'Produced Quantity Line'
 
     mrp_id = fields.Many2one('mrp.production')
     workcenter_id = fields.Many2one('mrp.workcenter')
@@ -87,7 +91,6 @@ class ProducedQtyLine(models.Model):
 
 class ReasonLine(models.Model):
     _name = 'reason.line'
-    _description = 'Reason Line'
 
     mrp_id = fields.Many2one('mrp.production')
     workcenter_id = fields.Many2one('mrp.workcenter')
@@ -110,6 +113,17 @@ class MrpOrderInh(models.Model):
 
     start_date_custom = fields.Datetime('Date Start')
     work_order_no = fields.Char('Work Order No')
+
+    life_type = fields.Char()
+    depart = fields.Char('Department')
+    fabric = fields.Char()
+    qty_producing_1 = fields.Float(compute='_compute_qty_producing')
+    qty_producing_2 = fields.Float('Qty Producing')
+
+    def _compute_qty_producing(self):
+        for rec in self:
+            rec.qty_producing_1 = rec.qty_production
+            rec.qty_producing_2 = rec.qty_production
 
     def button_finish(self):
         # if self._context['active_model'] != 'stock.picking':
@@ -249,6 +263,9 @@ class MrpInh(models.Model):
     # product_ids = fields.Many2many('product.product', compute='compute_products')
     is_transfer_created = fields.Boolean(copy=False)
     product_templ = fields.Char()
+    life_type = fields.Char()
+    depart = fields.Char('Department')
+    fabric = fields.Char()
     # is_adj_created = fields.Boolean()
 
     # def compute_adjust_count(self):
@@ -275,6 +292,13 @@ class MrpInh(models.Model):
     def onchange_product_id_inh(self):
         for rec in self:
             rec.product_templ = rec.product_tmpl_id.name
+            rec.life_type = rec.product_id.life_type_id.name
+            rec.depart = rec.product_id.dept_id
+            rec.fabric = rec.product_id.class_fabric_id.name
+            for line in self.workorder_ids:
+                line.life_type = rec.product_id.life_type_id.name
+                line.depart = rec.product_id.dept_id
+                line.fabric = rec.product_id.class_fabric_id.name
 
     def compute_req_count(self):
         for rec in self:
@@ -402,7 +426,7 @@ class MrpInh(models.Model):
                         line_vals_new.append((0, 0, {
                             'requisition_type': 'internal',
                             'product_id': line.product_id.id,
-                            'description': line.product_id.name,
+                            'description': line.descriptions,
                             'qty': line.product_uom_qty - line.reserved_availability,
                             'uom': line.product_id.uom_id.id,
                         }))
@@ -412,16 +436,14 @@ class MrpInh(models.Model):
                         line_vals_three.append((0, 0, {
                             'requisition_type': 'internal',
                             'product_id': line.product_id.id,
-                            'description': line.product_id.name,
+                            'description': line.descriptions,
                             'qty': line.product_uom_qty - line.reserved_availability,
                             'uom': line.product_id.uom_id.id,
                         }))
                         line_vals_three.append(line_vals_three)
                         src_location_three = line.product_id.requisition_location_id.id
         employee = self.env['hr.employee'].sudo().search([('user_id', '=', self.user_id.id)])
-        print(line_vals)
-        print(line_vals_new)
-        print(line_vals_three)
+
         if line_vals:
             vals = {
                 'company_id': self.company_id.id,

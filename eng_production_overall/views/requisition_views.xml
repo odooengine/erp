@@ -15,6 +15,10 @@
 <!--            <field name="mrp_id"/>-->
             </xpath>
 
+<!--            <xpath expr="//field[@name='requisition_line_ids']/tree/field[@name='description']" position="attributes">-->
+<!--                <attribute name="readonly">0</attribute>-->
+<!--            </xpath>-->
+
 <!--            <xpath expr="//notebook/page" position="after">-->
 <!--                <page string="Requisition Products">-->
 <!--                    <field name="requisition_product_lines" readonly="1">-->
