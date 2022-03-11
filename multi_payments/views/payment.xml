@@ -20,10 +20,9 @@
 <!--                <attribute name="domain">{'no_quick_create': True, 'no_create': True, 'no_open': True}</attribute>-->
             </xpath>
 
-            <xpath expr="//field[@name='journal_id']" position="attributes">
-                <attribute name="string">Bank / Cash</attribute>
-                <!--                 available_partner_bank_ids-->
-            </xpath>
+<!--            <xpath expr="//field[@name='journal_id']" position="attributes">-->
+<!--                <attribute name="string">Bank / Cash</attribute>-->
+<!--            </xpath>-->
 
             <xpath expr="//field[@name='ref']" position="after">
                 <field name="available_partner_bank_ids" invisible="1"/>
@@ -43,9 +42,9 @@
                 <field name="analytic_account_id"/>
             </xpath>
 
-            <xpath expr="//field[@name='payment_type']" position="before">
-                <field name="operating_unit_id" readonly="0"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='payment_type']" position="before">-->
+<!--                <field name="operating_unit_id" readonly="0"/>-->
+<!--            </xpath>-->
 
         </field>
     </record>
