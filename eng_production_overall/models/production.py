@@ -236,6 +236,18 @@ class MrpOrderInh(models.Model):
 #
 #     ref = fields.Char('Origin')
 
+class PolineDescript(models.Model):
+    _inherit = "purchase.order.line"
+
+    @api.onchange('product_qty', 'product_uom')
+    def _onchange_quantity(self):
+        prod_des = ''
+        if self.name != False:
+            prod_des = self.name
+        res = super(PolineDescript, self)._onchange_quantity()
+        self.name = prod_des
+        return res
+
 
 class StockInventoryInh(models.Model):
     _inherit = 'stock.inventory'
