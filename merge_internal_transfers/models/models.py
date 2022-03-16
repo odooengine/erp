@@ -13,7 +13,6 @@ class MrpProductionInh(models.Model):
     _inherit = 'stock.picking'
 
     ref = fields.Char('Merged From')
-    department_id = fields.Many2one('hr.department')
     # purchase_ids = fields.Many2many('purchase.order')
 
     def action_open_wizard(self):
@@ -62,6 +61,8 @@ class MrpProductionInh(models.Model):
             'ref': my_string,
         }
         move = self.env['stock.picking'].create(vals)
+        for x in selected_records:
+            x.state = 'merged'
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
