@@ -111,8 +111,6 @@
 
         </field>
     </record>
-    
-
 
     <record model="ir.ui.view" id="mrp_workorder_form_inh_date">
         <field name="name">mrp.workorder.form.inh</field>

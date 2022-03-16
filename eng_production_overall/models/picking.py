@@ -43,10 +43,8 @@ class StockMoveInh(models.Model):
                 move.location_id, move.rule_id and move.rule_id.name or "/",
                 origin, move.company_id, values))
         self.env['procurement.group'].run(procurement_requests, raise_user_error=not self.env.context.get('from_orderpoint'))
-
         move_to_confirm.write({'state': 'confirmed'})
         (move_waiting | move_create_proc).write({'state': 'waiting'})
-
         # assign picking in batch for all confirmed move that share the same details
         for moves in to_assign.values():
             moves._assign_picking()
@@ -69,6 +67,10 @@ class StockPickingInh(models.Model):
     product_ref_id = fields.Many2one('product.product')
     product_tmpl_ref_id = fields.Many2one('product.template')
     department_id = fields.Many2one('hr.department')
+
+    def action_send_merge(self):
+        for rec in self:
+            rec.state = 'merged'
 #
 #     mo_count = fields.Integer(default=0, compute='compute_mo')
 #     show_create_mo = fields.Boolean()
