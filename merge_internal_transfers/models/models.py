@@ -61,6 +61,8 @@ class MrpProductionInh(models.Model):
             'ref': my_string,
         }
         move = self.env['stock.picking'].create(vals)
+        for x in selected_records:
+            x.state = 'merged'
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
