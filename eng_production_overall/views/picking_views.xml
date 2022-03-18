@@ -27,6 +27,12 @@
                 <field name="department_id" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create_edit': True, 'no_create': True}"/>
             </xpath>
 
+            <xpath expr="//button[@name='button_validate']" position="after">
+
+                <button name="action_reset_draft" type="object" string="Reset To Draft" states="confirmed" class="btn-primary"/>
+
+            </xpath>
+
             <xpath expr="//button[@name='button_validate']" position="attributes">
                 <attribute name="attrs">{'invisible': ['|','|',('quality_check_todo', '=', True),('show_validate', '!=', True),('state', '!=', 'assigned')]}</attribute>
             </xpath>
