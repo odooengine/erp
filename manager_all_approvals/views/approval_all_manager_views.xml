@@ -275,6 +275,9 @@
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="move_ids_without_package" string="Description" filter_domain="[('move_ids_without_package.description', 'ilike', self)]"/>
                 </xpath>
+                <xpath expr="//filter[@name='done']" position="after">
+                <filter name="merged" string="Merged" domain="[('state', '=', 'merged')]" help="Draft Moves"/>
+                </xpath>
             </field>
         </record>
 

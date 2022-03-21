@@ -71,11 +71,6 @@ class StockPickingInh(models.Model):
     def action_send_merge(self):
         for rec in self:
             rec.state = 'merged'
-
-    def action_reset_draft(self):
-        self.write({
-            'state': 'draft'
-        })
 #
 #     mo_count = fields.Integer(default=0, compute='compute_mo')
 #     show_create_mo = fields.Boolean()
