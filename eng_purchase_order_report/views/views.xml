@@ -101,7 +101,7 @@
 			</xpath>
 
             <xpath expr="//field[@name='move_ids_without_package']" position="attributes">
-				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft'])]}</attribute>
+				<attribute name="attrs">{'readonly': [('state', 'not in', ['draft','confirmed'])]}</attribute>
 			</xpath>
 
             <xpath expr="//field[@name='user_id']" position="attributes">
