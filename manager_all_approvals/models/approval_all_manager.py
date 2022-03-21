@@ -445,9 +445,9 @@ class StockPickingInh(models.Model):
              " * Cancelled: The transfer has been cancelled.")
 
     def button_validate(self):
-        # for record in self.move_ids_without_package:
-        #     if record.quantity_done > record.product_uom_qty:
-        #         raise UserError(_('Receiving Quantity Cannot be Exceeded Than Demanded'))
+        for record in self.move_ids_without_package:
+            if record.quantity_done > record.product_uom_qty:
+                raise UserError(_('Receiving Quantity Cannot be Exceeded Than Demanded'))
         self.received_by_id = self.env.user.id
         self.write({
             'state': 'approve'
