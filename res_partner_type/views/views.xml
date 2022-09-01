@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_res_partner_type_inherited" model="ir.ui.view">
+            <field name="name">res.partner.inherited</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="model">res.partner</field>
+            <field name="priority">100</field>
+            <field type="xml" name="arch">
+                <xpath expr="//field[@name='name']" position="after">
+                    <group>
+                        <field name="partner_type" required="True"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_partner_type_search_inherited" model="ir.ui.view">
+            <field name="name">res.partner.inherited</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="model">res.partner</field>
+            <field type="xml" name="arch">
+                <search>
+                    <field name="partner_type"/>
+                    <filter string="Employee" name="partner_type" domain="[('partner_type','=','employee')]"/>
+                    <filter string="Customer" name="partner_type" domain="[('partner_type','=','customer')]"/>
+                    <filter string="Local Vendor" name="partner_type" domain="[('partner_type','=','local_vendor')]"/>
+                    <filter string="Import Vendor" name="partner_type" domain="[('partner_type','=','import_vendor')]"/>
+                    <filter name="partner_type" string="Partner Type" context="{'group_by':'partner_type'}"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_account_move_type_search_inherited" model="ir.ui.view">
+            <field name="name">account.move.line.search.inherited</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="model">account.move.line</field>
+            <field type="xml" name="arch">
+                <search>
+                    <field name="partner_id"/>
+                    <filter string="Employee" name="partner_id" domain="[('partner_id.partner_type','=','employee')]"/>
+                    <filter string="Customer" name="partner_id" domain="[('partner_id.partner_type','=','customer')]"/>
+                    <filter string="Local Vendor" name="partner_id" domain="[('partner_id.partner_type','=','local_vendor')]"/>
+                    <filter string="Import Vendor" name="partner_id" domain="[('partner_id.partner_type','=','import_vendor')]"/>
+<!--                    <filter name="partner_id" string="Partner" context="{'group_by':'partner_id'}"/>-->
+                </search>
+            </field>
+        </record>
+
+    </data>
+
+</odoo>

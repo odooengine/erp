@@ -10,11 +10,6 @@
                 <xpath expr="//field[@name='priority']" position="after">
                     <field name="custom_requisition_id"/>
                 </xpath>
-
-<!--                <xpath expr="//field[@name='location_dest_id']" position="after">-->
-<!--                    <field name="product_ref" attrs="{'invisible': [('product_ref', '=', False)]}"/>-->
-<!--                    <field name="product_tmpl_ref" attrs="{'invisible': [('product_ref', '=', False)]}"/>-->
-<!--                </xpath>-->
             </field>
         </record>
         

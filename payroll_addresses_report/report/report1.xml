@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="payroll_wizard_report_id_pdf">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <!--            <div class="article o_report_layout_standard" t-att-data-oe-model="doc and doc._name"-->
+                <!--                 t-att-data-oe-id="doc and doc.id">-->
+                <!--                <t t-call="payroll_addresses_report.payroll_header_footer"/>-->
+                <!--                <t t-foreach="work_addres" t-as="w_adr">-->
+                <div style="font-size:25px; font-weight: bold;" align="center">
+                    <strong>Payroll Report Locations</strong>
+                </div>
+                <div class="row" style="font-size:20px; font-weight: bold;">
+                    <strong>SHAHID MAHMOOD &amp; CO. (PVT) LTD.</strong>
+                </div>
+                <div class="row" style="font-size:16px; font-weight: bold;">
+                    <strong>Payslip period:</strong>
+
+                    <span t-esc="rec_model.date_start"/>
+                    to
+                    <span t-esc="rec_model.date_end"/>
+                </div>
+                <t t-set="total_gross" t-value="0.0"/>
+                <t t-set="total_old_adv" t-value="0.0"/>
+                <t t-set="total_curr_adv" t-value="0.0"/>
+                <t t-set="total_abs_days" t-value="0.0"/>
+                <t t-set="total_days_deduct" t-value="0.0"/>
+                <t t-set="total_old_deduct" t-value="0.0"/>
+                <t t-set="total_curr_deduct" t-value="0.0"/>
+                <t t-set="total_deduct" t-value="0.0"/>
+                <t t-set="total_net" t-value="0.0"/>
+                <!--                <div style="font-size:17px; font-weight: bold;" align="center">-->
+                <!--                    <strong>-->
+                <!--                        <span t-esc="w_adr"/>-->
+                <!--                    </strong>-->
+                <!--                </div>-->
+                <div class="container" width="100%">
+                    <table class="table table-sm" width="100%" style="border-collapse: collapse;">
+                        <thead>
+                            <tr style="font-size:15px;text-align:center;">
+                                <th style="text-align:center;border : 1px solid black;" width="5%">
+                                    <strong>SR</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="25%">
+                                    <strong>Department</strong>
+                                </th>
+                                <!--                                <td/>-->
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Gross Salary</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Old Advance</strong>
+                                </th>
+                                <th style="border : 1px solid black;" class="text-center div_headings" width="8%">
+                                    <strong>Current Advance</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Abs Days</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Days Deduction</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Old Deduction</strong>
+                                </th>
+                                <th style="border : 1px solid black;" class="text-center div_headings" width="8%">
+                                    <strong>Current Deduction</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Total Deduction</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Net Salary</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Cash Employee</strong>
+                                </th>
+                                <th style="border : 1px solid black;" width="8%">
+                                    <strong>Bank Employee</strong>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody style="border : 1px solid black;">
+                            <t t-set="sr" t-value="0"/>
+                            <t t-set="total_gross" t-value="0.0"/>
+                            <t t-set="total_old_adv" t-value="0.0"/>
+                            <t t-set="total_curr_adv" t-value="0.0"/>
+                            <t t-set="total_abs_days" t-value="0.0"/>
+                            <t t-set="total_days_deduct" t-value="0.0"/>
+                            <t t-set="total_old_deduct" t-value="0.0"/>
+                            <t t-set="total_curr_deduct" t-value="0.0"/>
+                            <t t-set="total_deduct" t-value="0.0"/>
+                            <t t-set="total_net" t-value="0.0"/>
+                            <t t-set="total_cash" t-value="0.0"/>
+                            <t t-set="total_bank" t-value="0.0"/>
+                            <t t-foreach="work_addres" t-as="w_adr">
+                                <t t-set="slip" t-value="get_emps(w_adr)"/>
+                                <t t-set="sr" t-value="sr+1"/>
+                                <tr>
+                                    <td class="text-center" style="white-space:nowrap; border : 1px solid black;">
+                                        <span t-esc="sr"/>
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="w_adr"/>
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[1]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_gross" t-value="total_gross+slip[1]"/>
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[2]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_old_adv" t-value="total_old_adv+slip[2]"/>
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[3]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_curr_adv" t-value="total_curr_adv+slip[3]"/>
+
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[4]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_abs_days" t-value="total_abs_days+slip[4]"/>
+
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[5]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_days_deduct" t-value="total_days_deduct+slip[5]" />
+
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[6]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_old_deduct" t-value="total_old_deduct+slip[6]" />
+
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[7]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_curr_deduct" t-value="total_curr_deduct+slip[7]"/>
+
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[8]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_deduct" t-value="total_deduct+slip[8]"/>
+
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <span style="padding:5.5px;" t-esc="slip[9]" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_net" t-value="total_net+slip[9]" />
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <t t-set="cash" t-value="get_cash(w_adr)" />
+                                        <span style="padding:5.5px;" t-esc="cash" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_cash" t-value="total_cash+cash" />
+                                    </td>
+                                    <td style="white-space:nowrap; border : 1px solid black;">
+                                        <t t-set="bank" t-value="get_bank(w_adr)" />
+                                        <span style="padding:5.5px;" t-esc="bank" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                        <t t-set="total_bank" t-value="total_bank+bank" />
+                                    </td>
+
+                                </tr>
+                            </t>
+                            <tr>
+                                <td>
+                                    <span>&#160;</span>
+                                </td>
+                                <td>
+                                    <strong>Total:</strong>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_gross)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_old_adv)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_curr_adv)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_abs_days)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_days_deduct)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_old_deduct)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_curr_deduct)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_deduct)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_net)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_cash)"/>
+                                </td>
+                                <td style="font-weight:bold; text-align:center;  border : 1px solid black;">
+                                    <span t-esc="'{:,.2f}'.format(total_bank)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--                        <p style="page-break-after: always;"/>-->
+                <div class="container row" style="margin-top:4em;margin-left:2em; font-size:15px;">
+                    <div class="col-3">
+                        <strong>Prepared By</strong>
+                        <br/>
+                        -----------------------------
+                    </div>
+                    <div class="col-3">
+                        <strong>Checked By</strong>
+                        <br/>--------------------------
+                    </div>
+
+                    <div class="col-3">
+                        <strong>Head of Department</strong>
+                        <br/>
+                        -----------------------------
+                    </div>
+
+                    <div class="col-3">
+                        <strong>Chief Executive</strong>
+                        <br/>
+                        -----------------------------
+                    </div>
+                </div>
+                <!--                </t>-->
+                <!--            </div>-->
+            </t>
+        </t>
+    </template>
+</odoo>

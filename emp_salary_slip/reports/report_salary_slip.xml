@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- <report
+                id="employee_salary_slip_payroll_report"
+                model="hr.payslip"
+                string="Salary Slip"
+                report_type="xlsx"
+                name="emp_salary_slip.emp_payroll_report"
+                file="Salary Slip Report"
+                attachment_use="False"
+        /> -->
+        <record id="employee_salary_slip_payroll_report" model="ir.actions.report">
+            <field name="name">Salary Slip Report</field>
+            <field name="model">hr.payslip</field>
+            <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">emp_salary_slip.emp_payroll_report</field>
+            <field name="report_file">emp_salary_slip.emp_payroll_report</field>
+            <field name="binding_type">report</field>
+            <!-- <field name="paperformat_id" ref="report_product_purchase.paperformat_report_engine_purchase_order"/> -->
+            <!-- <field name="attachment">'original_vendor_bill.pdf'</field>
+            <field name="attachment_use">True</field> -->
+            <!-- <field name="binding_view_types">form</field> -->
+         </record>
+         
+    
+</odoo>

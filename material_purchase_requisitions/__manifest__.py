@@ -98,6 +98,8 @@ Email notifications to Department Manager, Requisition Manager for approval.
         'stock',
         'hr',
         'purchase',
+        'product_article_finish_no',
+        'smc_overall',
     ],
     'data': [
         'security/security.xml',
@@ -107,6 +109,7 @@ Email notifications to Department Manager, Requisition Manager for approval.
         'data/employee_purchase_approval_template.xml',
         'data/confirm_template_material_purchase.xml',
         'report/purchase_requisition_report.xml',
+        'views/product_template_view.xml',
         'views/purchase_requisition_view.xml',
         'views/hr_employee_view.xml',
         'views/hr_department_view.xml',

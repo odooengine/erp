@@ -1,0 +1,10 @@
+<odoo>
+     <record id="action_smc_invoice_xlsx_report" model="ir.actions.report">
+        <field name="name">Invoice xlsx report</field>
+        <field name="model">account.move</field>
+         <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">invoice_report_xlsx.report_smc_invoice_xlsx_doc</field>
+        <field name="report_file">invoice_report_xlsx.report_smc_invoice_xlsx_doc</field>
+    </record>
+</odoo>

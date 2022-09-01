@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+     <report
+            id="sale_order_ntn_report_pdf"
+            string="Quotation / Order With NTN"
+            model="sale.order"
+            report_type="qweb-pdf"
+            name="sale_home_report.sale_order_ntn_report"
+            file="sale_home_report.sale_order_ntn_report"/>
+
+    <report
+            id="sale_order_hic_report_pdf"
+            string="Quotation / Order-HIC"
+            model="sale.order"
+            report_type="qweb-pdf"
+            name="sale_home_report.sale_order_hic_report"
+            file="sale_home_report.sale_order_hic_report"/>
+
+     <report
+            id="sale_order_hic_ntn_report_pdf"
+            string="Quotation / Order With NTN-HIC"
+            model="sale.order"
+            report_type="qweb-pdf"
+            name="sale_home_report.sale_order_hic_ntn_report"
+            file="sale_home_report.sale_order_hic_report"/>
+
+    <report
+            id="invoice_with_dis_hic_report_pdf"
+            string="Invoice With Discount-HIC"
+            model="account.move"
+            report_type="qweb-pdf"
+            name="sale_home_report.invoice_hic_report"
+            file="sale_home_report.invoice_hic_report"/>
+
+    <report
+            id="invoice_with_dis_ntn_hic_report_pdf"
+            string="Invoice With Discount and NTN-HIC"
+            model="account.move"
+            report_type="qweb-pdf"
+            name="sale_home_report.invoice_hic_ntn_report"
+            file="sale_home_report.invoice_hic_ntn_report"/>
+     <report
+            id="invoice_with_dis_ntn_report_pdf"
+            string="Invoice With Discount and NTN"
+            model="account.move"
+            report_type="qweb-pdf"
+            name="sale_home_report.invoice_ntn_report"
+            file="sale_home_report.invoice_ntn_report"/>
+<!--    <report-->
+<!--            id="delivery_slip_hic_report_pdf"-->
+<!--            string="Delivery Slip-HIC"-->
+<!--            model="stock.picking"-->
+<!--            report_type="qweb-pdf"-->
+<!--            name="sale_home_report.delivery_slip_hic_report"-->
+<!--            file="sale_home_report.delivery_slip_hic_report"/>-->
+     <report
+            id="report_hic_report_pdf"
+            string="Report-HIC"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="sale_home_report.report_hic_report"
+            file="sale_home_report.report_hic_report"/>
+
+     <report
+            id="payment_hic_report_pdf"
+            string="Payment Receipt New-HIC"
+            model="account.payment"
+            report_type="qweb-pdf"
+            name="sale_home_report.payment_hic_report"
+            file="sale_home_report.payment_hic_report"/>
+
+
+</odoo>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="payroll_report_header_footer">
+        <t t-set="company" t-value="res_company"/>
+        <div t-attf-class="header o_company_#{res_company.id}_layout" t-att-style="report_header_style" width="100%">
+            <div class="row" style="font-size:17px;">
+                <div class="col-4">
+                    <span>
+                        <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo" width="80%"/>
+                    </span>
+                </div>
+                <div class="col-8">
+                    <span style="font-weight:bold;">SHAHID MAHMOOD &amp; CO. (PVT) LTD.</span><br/>
+                    <span style="font-weight:bold;">Head Office:</span>&#160;<span t-field="res_company.street"/><br/><span t-field="res_company.email"/>
+                </div>
+            </div>
+            <br/>
+        </div>
+        <!--        <div t-attf-class="article o_report_layout_standard o_company_#{res_company.id}_layout" t-att-data-oe-model="doc and doc._name" t-att-data-oe-id="doc and doc.id" t-att-data-oe-lang="doc and doc.env.context.get('lang')">-->
+        <!--            <div class="pt-5">-->
+        <!--&lt;!&ndash;                <t t-call="web.address_layout"/>&ndash;&gt;-->
+        <!--            </div>-->
+        <!--&lt;!&ndash;            <t t-raw="0"/>&ndash;&gt;-->
+        <!--        </div>-->
+        <div t-attf-class="footer o_standard_footer o_company_#{res_company.id}_layout"  style="margin-top:15px; padding-top:20px;">
+            <div class="text-center" style="border-top: 1px solid black; margin-top:15px; padding-top:15px;">
+                <ul class="list-inline mb4">
+                    <!-- using the list-inline-item class from bootstrap causes weird behaviours in pdf report
+                         adding d-inline class fixes the problem-->
+                    <li t-if="res_company.phone" class="list-inline-item d-inline"><span class="o_force_ltr" t-field="res_company.phone"/></li>
+                    <li t-if="res_company.email" class="list-inline-item d-inline"><span t-field="res_company.email"/></li>
+                    <li t-if="res_company.website" class="list-inline-item d-inline"><span t-field="res_company.website"/></li>
+                    <li t-if="res_company.website" class="list-inline-item d-inline"><span>http://facebook.com/smcgrouppk</span></li>
+                    <li t-if="res_company.website" class="list-inline-item d-inline"><span>http://instagram.com/smcgrouppk</span></li>
+                    <!--                    <li t-if="res_company.vat" class="list-inline-item d-inline"><t t-esc="res_company.country_id.vat_label or 'Tax ID'"/>: <span t-field="res_company.vat"/></li>-->
+                </ul>
+                <div name="financial_infos">
+                    <span t-field="res_company.report_footer"/>
+                </div>
+
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="footer" style="padding-top:0px;border:1px solid black;">
+                         footer
+        </div> -->
+    </template>
+
+    <template id="payroll_pdf_report">
+        <t t-call="web.html_container">
+            <div class="article o_report_layout_standard" t-att-data-oe-model="doc and doc._name"
+                 t-att-data-oe-id="doc and doc.id">
+                <t t-call="xlsx_payroll_report.payroll_report_header_footer"/>
+<!--                <t t-foreach="work_addres" t-as="w_adr">-->
+                    <div style="font-size:25px; font-weight: bold;" align="center">
+                        <strong>Payroll report</strong>
+                    </div>
+                    <div class="row" style="font-size:20px; font-weight: bold;">
+                        <strong>SHAHID MAHMOOD &amp; CO. (PVT) LTD.</strong>
+                    </div>
+                    <div class="row" style="font-size:16px; font-weight: bold;">
+                        <strong>Payslip period:</strong>
+                        <span t-esc="rec_model.date_start" /> to <span t-esc="rec_model.date_end" />
+                    </div>
+                    <t t-set="total_gross" t-value="0.0" />
+                    <t t-set="total_old_adv" t-value="0.0" />
+                    <t t-set="total_curr_adv" t-value="0.0" />
+                    <t t-set="total_abs_days" t-value="0.0" />
+                    <t t-set="total_days_deduct" t-value="0.0" />
+                    <t t-set="total_old_deduct" t-value="0.0" />
+                    <t t-set="total_curr_deduct" t-value="0.0" />
+                    <t t-set="total_deduct" t-value="0.0" />
+                    <t t-set="total_net" t-value="0.0" />
+                    <t t-set="total_bonus" t-value="0.0" />
+                    <div style="font-size:17px; font-weight: bold;" align="center">
+                        <t t-if="work_addres"><strong><span t-esc="work_addres[0]"/></strong><br/></t>
+                        <strong><span t-esc="struct_name"/></strong>
+                    </div>
+                    <div class="container" width="100%">
+                        <table class="table table-sm"  width="100%" style="border-collapse: collapse;">
+                            <thead>
+                                <tr style="font-size:15px;text-align:center;">
+                                    <th style="text-align:center;border : 1px solid black;" width="5%">
+                                        <strong>SR</strong>
+                                    </th>
+                                    <th style="text-align:center;border : 1px solid black;" width="5%">
+                                        <strong>Employee Name</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="25%">
+                                        <strong>Job Title</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Gross Salary</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Old Advance</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" class="text-center div_headings" width="8%">
+                                        <strong>Current Advance</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Abs Days</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Days Deduction</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Old Deduction</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" class="text-center div_headings" width="8%">
+                                        <strong>Current Deduction</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Total Deduction</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Bonus</strong>
+                                    </th>
+                                    <th style="border : 1px solid black;" width="8%">
+                                        <strong>Net Salary</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody style="border : 1px solid black;">
+                                <t t-set="sr" t-value="0"/>
+                                <t t-set="slips" t-value="get_wd_emps(work_addres, data['struct_id'])"/>
+                                <t t-foreach ="slips" t-as="sp">
+                                    <t t-set="sr" t-value="sr+1"/>
+                                    <tr>
+                                        <td class="text-center" style="white-space:nowrap; border : 1px solid black;">
+                                            <span t-esc="sr"/>
+                                        </td>
+                                        <td style="white-space:nowrap; border : 1px solid black;">
+                                            <span style="padding:5.5px;"  class="" t-esc="sp.employee_id.name"/>
+                                        </td>
+                                        <td style="white-space:nowrap;  border : 1px solid black; padding:1.5px;">
+                                            <span style="padding:5.5px;" class="" t-esc="sp.employee_id.job_title"/>
+                                        </td>
+                                        <td class="text-right" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.net_wage_basic)"/>
+                                            <t t-set="total_gross" t-value="total_gross + sp.net_wage_basic" />
+                                        </td>
+                                        <td class="" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.balance)"/>
+                                            <t t-set="total_old_adv" t-value="total_old_adv + sp.balance" />
+                                        </td>
+                                        <td class="" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.current_balance)"/>
+                                            <t t-set="total_curr_adv" t-value="total_curr_adv + sp.current_balance" />
+                                        </td>
+                                        <td class="" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.meal_allowance)"/>
+                                            <t t-set="total_abs_days" t-value="total_abs_days + sp.meal_allowance" />
+                                        </td>
+                                        <td class="" style="padding:1.5px; text-align:center; border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.days_dec)"/>
+                                            <t t-set="total_days_deduct" t-value="total_days_deduct + sp.days_dec" />
+                                        </td>
+                                        <td class="" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.conveyance)"/>
+                                            <t t-set="total_old_deduct" t-value="total_old_deduct + sp.conveyance " />
+                                        </td>
+                                        <td class="" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.mobile_allowance)"/>
+                                            <t t-set="total_curr_deduct" t-value="total_curr_deduct + sp.mobile_allowance" />
+                                        </td>
+                                        <td class="text-right" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.total_deductions)"/>
+                                            <t t-set="total_deduct" t-value="total_deduct + sp.total_deductions" />
+
+                                        </td>
+                                        <td class="text-right" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.bonus)"/>
+                                            <t t-set="total_bonus" t-value="total_bonus + sp.bonus" />
+                                        </td>
+                                        <td class="text-right" style="padding:1.5px; text-align:center;  border : 1px solid black;">
+                                            <span style="padding:5.5px;" class="" t-esc="'{:,.2f}'.format(sp.net_wage_total)"/>
+                                            <t t-set="total_net" t-value="total_net + sp.net_wage_total" />
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td><span>&#160;</span></td>
+                                    <td><span>&#160;</span></td>
+                                    <td><strong>Total:</strong></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_gross)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_old_adv)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_curr_adv)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_abs_days)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_days_deduct)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_old_deduct)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_curr_deduct)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_deduct)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_bonus)"/></td>
+                                    <td style="font-weight:bold; text-align:center;  border : 1px solid black;"><span  t-esc="'{:,.2f}'.format(total_net)"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--                        <p style="page-break-after: always;"/>-->
+                    <div class="container row" style="margin-top:4em;margin-left:2em; font-size:15px;">
+                        <div class="col-3">
+                            <strong>Prepared By</strong><br/>
+                            -----------------------------
+                        </div>
+                        <div class="col-3">
+                            <strong>Checked By</strong>
+                            <br/>--------------------------
+                        </div>
+                        <div class="col-3">
+                            <strong>Head of Department </strong><br/>
+                           -----------------------------
+                        </div>
+                        <div class="col-3">
+                            <strong>Chief Executive</strong><br/>
+                           -----------------------------
+                        </div>
+                    </div>
+<!--                </t>-->
+            </div>
+
+        </t>
+    </template>
+</odoo>
+            

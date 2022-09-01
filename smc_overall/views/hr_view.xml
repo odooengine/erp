@@ -1,0 +1,137 @@
+<odoo>
+
+    <record id="action_payslip_server" model="ir.actions.server">
+        <field name="name">Edit Payslip</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <!--         <field name='groups_id' eval="[(4, ref('account.group_account_invoice'))]"/> -->
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_payslip_wizard()
+        </field>
+    </record>
+
+    <record id="action_payslip_address" model="ir.actions.server">
+        <field name="name">Add Address on Journal Entry</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <!--         <field name='groups_id' eval="[(4, ref('account.group_account_invoice'))]"/> -->
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_add_address()
+        </field>
+    </record>
+
+
+    <record id="view_hr_payslip_form_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.form.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='number']" position="before">
+                <field name="address_id" string="Work Address" context="{'show_address': 1}" options='{"always_reload": True, "highlight_first_line": True}'/>
+                <field name="work_location"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_payslip_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.tree.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//tree" position="attributes">
+                <attribute name="multi_edit">1</attribute>
+            </xpath>
+
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button string="Compute" name="action_compute_deductions" type="object"/>
+                </header>
+            </xpath>
+
+             <xpath expr="//field[@name='net_wage']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+             </xpath>
+
+            <xpath expr="//field[@name='basic_wage']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+             </xpath>
+
+            <xpath expr="//field[@name='number']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+             </xpath>
+
+             <xpath expr="//field[@name='payslip_run_id']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+             </xpath>
+
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+             </xpath>
+
+            <xpath expr="//field[@name='basic_wage']" position="after">
+                <field name='net_wage_basic' readonly="1" sum="Total"/>
+            </xpath>
+
+            <xpath expr="//field[@name='net_wage']" position="before">
+                <field name='current_balance' sum="Total"/>
+                <field name='balance' sum="Total"/>
+                <field name='conveyance' sum="Total"/>
+                <field name='mobile_allowance' sum="Total"/>
+                <field name='meal_allowance' sum="Total"/>
+                <field name='days_dec' readonly="1" sum="Total"/>
+                <field name='total_deductions' decoration-bf="1" readonly="1" sum="Total"/>
+                <field name='bonus' readonly="1" sum="Total"/>
+                <field name='net_wage_total' decoration-bf="1" readonly="1" sum="Total"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_hr_contract_form_inh" model="ir.ui.view">
+        <field name="name">hr.contract.form.inh</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='wage']" position="after">
+                <field name="bonus"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_employee_form_inh" model="ir.ui.view">
+        <field name="name">hr.employee.form.inh</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='work_email']" position="after">
+                <field name="partner_ids" widget="many2many_tags"/>
+            </xpath>
+<!--            <xpath expr="//field[@name='address_id']" position="attributes">-->
+<!--                <attribute name="domain">[('is_employee', '=', True)]</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='address_home_id']" position="attributes">-->
+<!--                <attribute name="domain">[('is_employee', '=', True)]</attribute>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+    <record id="view_hr_employee_tree_inh" model="ir.ui.view">
+        <field name="name">hr.employee.tree.inh</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='job_id']" position="after">
+                <!--                <field name="first_contract_date"/>-->
+                <field name="first_contract_date"/>
+                <field name="wage"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

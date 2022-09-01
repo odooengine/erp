@@ -1,0 +1,96 @@
+<odoo>
+    <template id="advance_current_id_print">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <!--                    class="text-center"-->
+                        <div>
+                            <div class="page">
+                                <div class="oe_structure"/>
+                                <div style="float:right;">
+                                    Printed On:
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                                </div>
+                                <br/>
+                                <h3 class="text-center">
+                                    <span t-field="o.description"/>
+                                </h3>
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                    <table class="table table-bordered" name="employee_lines">
+                                        <t t-set="sr_no" t-value="0"/>
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:left;">
+                                                    <strong>SR #</strong>
+                                                </th>
+                                                <th style="text-align:left;">
+                                                    <strong>EMPLOYEE NAME</strong>
+                                                </th>
+                                                <th style="text-align:left;">
+                                                    <strong>Wage</strong>
+                                                </th>
+                                                <th style="text-align:left;">
+                                                    <strong>Advance</strong>
+                                                </th>
+                                                <th style="text-align:left;">
+                                                    <strong>Signature</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="total_wage" t-value="0"/>
+                                            <t t-set="total_amount" t-value="0"/>
+<!--                                            <t t-set="emp_lines" t-value="o.get_lines()"/>-->
+                                            <t t-foreach="o.employee_lines_id" t-as="line">
+                                                <t t-if="line.amount > 0.0">
+                                                    <tr>
+                                                        <td>
+                                                            <t t-set="sr_no" t-value="sr_no + 1"/>
+                                                            <t t-esc="sr_no"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-field="line.employee_id"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-field="line.wage"/>
+                                                            <t t-set="total_wage"
+                                                               t-value="total_wage+line.wage"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-field="line.amount"/>
+                                                            <t t-set="total_amount"
+                                                               t-value="total_amount+line.amount"/>
+                                                        </td>
+                                                        <td/>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                            <tr>
+                                                <td/>
+                                                <td/>
+                                                <td>
+                                                    <strong>
+                                                        <span t-esc="total_wage" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                                    </strong>
+                                                </td>
+                                                <td>
+                                                    <strong>
+                                                        <span t-esc="total_amount" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

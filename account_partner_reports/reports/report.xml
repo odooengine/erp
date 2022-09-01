@@ -1,0 +1,18 @@
+<odoo>
+    <report id="partner_product_wizard_report"
+            string="Partner Product Report"
+            model="partner.product.wizard"
+            report_type="qweb-pdf"
+            name="account_partner_reports.partner_product_wise_report"
+            file="account_partner_reports.partner_product_wise_report"/>
+
+    <report
+            id="partner_product_wizard_xlsx_report"
+            model="partner.product.wizard"
+            string="Partner Product Report-XLSX"
+            report_type="xlsx"
+            name="account_partner_reports.partner_product_wise_report_xlsx"
+            file="account_partner_reports.partner_product_wise_report_xlsx"
+    />
+
+</odoo>

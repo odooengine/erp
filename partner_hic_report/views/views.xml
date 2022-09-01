@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_hic_ledger_inherited" model="ir.ui.view">
+        <field name="name">partner.ledger.inherited</field>
+        <field name="inherit_id" ref="de_partner_ledger.partner_ledger_wizard_report"/>
+        <field name="model">partner.ledger</field>
+        <field name="priority">100</field>
+        <field type="xml" name="arch">
+            <xpath expr="//footer/button[@name='print_report']" position="after">
+                <button name="partner_hic_report" type="object" string="Print-HIC" class="oe_highlight"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

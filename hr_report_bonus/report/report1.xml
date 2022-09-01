@@ -1,0 +1,158 @@
+<odoo>
+    <template id="bonus_report_id_print">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style>
+                    table, th, td {
+                    border: 3px solid black;
+                    }
+                </style>
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <!--                    class="text-center"-->
+                    <div>
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <div style="float:right;">
+                                Printed On:
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+                            </div>
+                            <br/>
+                            <h3 class="text-center">Bonus Statement</h3>
+                            <br/>
+                            <div align="center">
+                                <t t-foreach="date_wizard" t-as="d">
+                                    <t t-esc="d['word_address_id']['name']"/>
+                                </t>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div class="row">
+                                <table class="table table-bordered">
+                                    <t t-set="sr_no" t-value="0"/>
+                                    <t t-set="total_salary" t-value="0"/>
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:left;border: 1px solid black;">
+                                                <strong>SR #</strong>
+                                            </th>
+                                            <th style="text-align:left;border: 1px solid black;">
+                                                <strong>EMPLOYEE NAME</strong>
+                                            </th>
+                                            <th style="text-align:left;border: 1px solid black;">
+                                                <strong>Designation</strong>
+                                            </th>
+                                            <th style="text-align:left;border: 1px solid black;">
+                                                <strong>Salary</strong>
+                                            </th>
+                                            <!--                                            <th style="text-align:left;border: 1px solid black;">-->
+                                            <!--                                                <strong>Previous Bonus</strong>-->
+                                            <!--                                            </th>-->
+                                            <t t-foreach="date_wizard" t-as="r">
+                                                <t t-if="r['previous_bonus_show'] == True">
+                                                    <th style="text-align:left;border: 1px solid black;">
+                                                        <strong>Previous Bonus</strong>
+                                                    </th>
+                                                </t>
+                                            </t>
+                                            <th style="text-align:left;border: 1px solid black;">
+                                                <strong>Bonus</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="total_wage" t-value="0"/>
+                                        <t t-set="total_bonus" t-value="0"/>
+                                        <t t-set="total_previous_bonus" t-value="0"/>
+                                        <t t-foreach="data.sorted(key=lambda x: x.wage , reverse=True)" t-as="o">
+                                            <tr>
+                                                <td style="text-align:left;border: 1px solid black;">
+                                                    <t t-set="sr_no" t-value="sr_no + 1"/>
+                                                    <t t-esc="sr_no"/>
+                                                </td>
+                                                <td style="text-align:left;border: 1px solid black;">
+                                                    <t t-esc="o['employee_id']['name']"/>
+                                                </td>
+                                                <td style="text-align:left;border: 1px solid black;">
+                                                    <t t-esc="o['employee_id']['job_title']"/>
+                                                </td>
+                                                <td style="text-align:left;border: 1px solid black;">
+                                                    <t t-esc="o['wage']"
+                                                       t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                                       sum="Wage"/>
+                                                    <t t-set="total_wage"
+                                                       t-value="total_wage+o['wage']"/>
+                                                </td>
+                                                <t t-foreach="date_wizard" t-as="r">
+                                                    <t t-if="r['previous_bonus_show'] == True">
+                                                        <td style="text-align:left;border: 1px solid black;">
+                                                            <t t-esc="o['previous_bonus']"
+                                                               t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                            <t t-set="total_previous_bonus"
+                                                               t-value="total_previous_bonus+o['previous_bonus']"/>
+                                                        </td>
+                                                    </t>
+                                                </t>
+                                                <!--                                                <td style="text-align:left;border: 1px solid black;">-->
+                                                <!--                                                    <t t-esc="o['previous_bonus']"-->
+                                                <!--                                                       t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>-->
+                                                <!--                                                    <t t-set="total_previous_bonus"-->
+                                                <!--                                                       t-value="total_previous_bonus+o['previous_bonus']"/>-->
+                                                <!--                                                </td>-->
+                                                <td style="text-align:left;border: 1px solid black;">
+                                                    <t t-esc="o['bonus']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                    <t t-set="total_bonus"
+                                                       t-value="total_bonus+o['bonus']"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td style="text-align:left;border: 1px solid black;">
+                                                <!--                                                    <t t-esc="o['bonus']"/>-->
+                                            </td>
+                                            <td style="text-align:left;border: 1px solid black;">
+                                                <!--                                                    <t t-esc="o['bonus']"/>-->
+                                            </td>
+                                            <td style="text-align:left;border: 1px solid black;">
+                                                <strong>Total:</strong>
+                                            </td>
+                                            <td style="text-align:left;border: 1px solid black;">
+                                                <strong>
+                                                    <span t-esc="total_wage"
+                                                          t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                                </strong>
+                                            </td>
+                                            <t t-foreach="date_wizard" t-as="r">
+                                                <t t-if="r['previous_bonus_show'] == True">
+                                                    <td style="text-align:left;border: 1px solid black;">
+                                                        <strong>
+                                                            <span t-esc="total_previous_bonus"
+                                                                  t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                                        </strong>
+                                                    </td>
+                                                </t>
+                                            </t>
+                                            <!--                                            <td style="text-align:left;border: 1px solid black;">-->
+                                            <!--                                                <strong>-->
+                                            <!--                                                    <span t-esc="total_previous_bonus"-->
+                                            <!--                                                          t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>-->
+                                            <!--                                                </strong>-->
+                                            <!--                                            </td>-->
+                                             <td style="text-align:left;border: 1px solid black;">
+                                                <strong>
+                                                    <span t-esc="total_bonus"
+                                                          t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

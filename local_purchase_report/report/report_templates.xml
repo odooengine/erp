@@ -1,0 +1,123 @@
+<odoo>
+    <template id="test_report_id_print">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div>
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <div class="text-center">
+                                <h3>Local Purchase Report</h3>
+                            </div>
+                            <div class="row">
+                                <table class="table table-sm" name="account_lines_table"
+                                       style="border-bottom:1px solid black;font-size:14px;">
+                                    <t t-set="sr_no" t-value="0"/>
+                                    <thead>
+                                        <tr style="background-color:#d9d8d7;">
+                                            <th>
+                                                SR #
+                                            </th>
+                                            <th>
+                                                <span>Article</span>
+                                            </th>
+                                            <th>
+                                                <span>Sale Agent</span>
+                                            </th>
+                                            <th>
+                                                <span>Client Name</span>
+                                            </th>
+                                            <th>
+                                                <span>QTY</span>
+                                            </th>
+                                            <th>
+                                                <span>Retail</span>
+                                            </th>
+                                            <th>
+                                                <span>Vendor Discount%</span>
+                                            </th>
+                                            <th>
+                                                <span>Local Purchase Amount</span>
+                                            </th>
+                                            <th>
+                                                <span>SMC Discount%</span>
+                                            </th>
+                                            <th>
+                                                <span>SMC Price</span>
+                                            </th>
+                                            <th>
+                                                <span>Total Price</span>
+                                            </th>
+                                            <th>
+                                                <span>Diff</span>
+                                            </th>
+                                            <th>
+                                                <span>Vendor</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="font-size:14px">
+                                        <t t-foreach="result" t-as="o">
+                                            <tr>
+                                                <td style="text-align:left;">
+                                                    <t t-set="sr_no" t-value="sr_no + 1"/>
+                                                    <t t-esc="sr_no"/>
+                                                </td>
+                                                <td style="text-align:left;">
+                                                    <t t-esc="o['product_id']['name']"/>
+                                                </td>
+                                                <t t-foreach="rec" t-as="rec">
+                                                    <td style="text-align:left;">
+                                                        <t t-esc="rec['user_id']['name']"/>
+                                                    </td>
+                                                    <td style="text-align:left;">
+                                                        <t t-esc="rec['partner_id']['name']"/>
+                                                    </td>
+                                                </t>
+                                                <td style="text-align:left;">
+                                                    <t t-esc="o['product_qty']"/>
+                                                </td>
+                                                <td style="text-align:left;">
+                                                    <t t-esc="o['price_unit']"/>
+                                                </td>
+                                                <td style="text-align:left;">
+                                                    <t t-esc="o['discount']"/>
+                                                </td>
+                                                <td style="text-align:left;">
+                                                    <t t-esc="o['price_subtotal']"/>
+                                                </td>
+                                                <t t-foreach="res" t-as="r">
+                                                    <td style="text-align:left;">
+                                                        <t t-esc="r['discount']"/>
+                                                    </td>
+                                                    <td style="text-align:left;">
+                                                        <t t-esc="r['price_unit']"/>
+                                                    </td>
+                                                    <t t-set="value"
+                                                       t-value="((r['price_unit']*o['product_qty'])*r['discount'])/100">
+                                                    </t>
+                                                    <td style="text-align:left;">
+                                                        <t t-esc="value"/>
+                                                    </td>
+                                                    <td style="text-align:left;">
+                                                        <t t-esc="value-(o['price_subtotal'] * o['product_qty'])"/>
+                                                    </td>
+                                                </t>
+                                                <t t-foreach="record" t-as="i">
+                                                    <td style="text-align:left;">
+                                                        <t t-esc="i['partner_id']['name']"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

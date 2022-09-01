@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_payroll_report_inherited" model="ir.ui.view">
+        <field name="name">hr.payslip.run.inherited</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+        <field name="model">hr.payslip.run</field>
+        <field name="priority">100</field>
+        <field type="xml" name="arch">
+<!--            <xpath expr="//header//button[@name='action_draft']" position="after">-->
+<!--                <button name="action_open_payroll_wiz" class="oe_highlight" string="Payroll Report" type="object"/>-->
+<!--            </xpath>-->
+            <xpath expr="/form/header" position="inside">
+                <button id="button_payroll_report" name="action_payroll_report" string="Payroll Report Locations"
+                        class="btn-primary" type="object"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

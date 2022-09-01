@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>  
+
+        <record id="paperformat_payroll_pdf_report" model="report.paperformat">
+            <field name="name">paperformat payroll Report</field>
+            <field name="default" eval="False" />
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">27</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+             <field name="header_spacing">45</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+        id="payroll_report"
+        model="hr.payslip.run"
+        string="Payroll Report"
+        report_type="xlsx"
+        name="xlsx_payroll_report.xlsx_payroll_report"
+        file="Payroll Report"
+        attachment_use="False"
+        />
+
+        <report
+            id="payroll_report_pdf_workcenter_wise"
+            model="hr.payslip.run"
+            string="Payroll Report pdf"
+            report_type="qweb-pdf"
+            name="xlsx_payroll_report.payroll_pdf_report"
+            file="Payroll Report pdf"
+            attachment_use="False"
+            paperformat="paperformat_payroll_pdf_report"
+        />
+
+</odoo>

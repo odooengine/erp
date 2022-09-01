@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report
+            id="attendance_report_pdf"
+            string="Bonus"
+            model="attendance.report"
+            report_type="qweb-pdf"
+            name="hr_attendance_report.attendance_report_id_print"
+            file="hr_attendance_report.attendance_report_id_print"/>
+</odoo>

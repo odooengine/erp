@@ -1,0 +1,31 @@
+<odoo>
+    <record id="local_purchase_form" model="ir.ui.view">
+        <field name="name">local.purchase.form</field>
+        <field name="model">local.purchase</field>
+        <field name="arch" type="xml">
+        <form string="Report">
+            <group class="oe_title">
+                <field name="product_id" options="{'no_create': True}"/>
+            </group>
+            <footer>
+                <button name="report_action" string="PDF Print" class="btn-primary" type="object" />
+                <button string="Cancel" class="btn-secondary" special="cancel"/>
+            </footer>
+        </form>
+        </field>
+    </record>
+    <record id="local_purchase_action" model="ir.actions.act_window">
+        <field name="name">Local Purchase Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">local.purchase</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="local_purchase_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="local_purchase_report"
+              name="Local Purchase Report"
+              parent="product_wise_report.product_wizard_root"
+              action="local_purchase_action"
+              sequence="25"/>
+</odoo>

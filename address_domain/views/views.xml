@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_address_domain_inherited" model="ir.ui.view">
+            <field name="name">res.partner.inherited</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="model">res.partner</field>
+            <field name="priority">100</field>
+            <field type="xml" name="arch">
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="is_address"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+
+</odoo>

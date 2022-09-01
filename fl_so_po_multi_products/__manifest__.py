@@ -1,6 +1,6 @@
 {
     'name': 'SO & PO Multi Product Selection',
-    'version': '14.0.1.0.0',
+    'version': '13.0.1.0.0',
     'category': 'Sales',
     'summary': 'Sale order and Purchase order Multiple Product Selection',
     'description': """
@@ -12,11 +12,10 @@
     'sequence': 1,
     'author': 'Futurelens',
     'website': 'http://thefuturelens.com',
-    'depends': ['base', 'product', 'sale_management', 'purchase', 'material_purchase_requisitions'],
+    'depends': ['base', 'product', 'sale_management', 'purchase', 'product_article_finish_no', 'reserved_quantity'],
     'data': [
         'wizard/select_products_wizard_view.xml',
         'views/sale_views.xml',
-        'views/requisition_views.xml',
         'views/purchase_views.xml',
         'security/ir.model.access.csv'
     ],

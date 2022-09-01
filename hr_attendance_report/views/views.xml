@@ -1,0 +1,81 @@
+<odoo>
+    <data>
+
+        <record id="hr_public_holidays_tree" model="ir.ui.view">
+            <field name="name">public.holidays.tree</field>
+            <field name="model">public.holidays</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_public_holidays_form" model="ir.ui.view">
+            <field name="name">public.holidays.form</field>
+            <field name="model">public.holidays</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                        </group>
+                        <group col="4">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_public_holidays" model="ir.actions.act_window">
+            <field name="name">Public Holidays</field>
+            <field name="res_model">public.holidays</field>
+            <field name="view_id" ref="hr_public_holidays_tree"/>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create Public Holidays!
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="hr_public_holidays_root"
+                name="Public Holidays"
+                parent="hr_attendance.menu_hr_attendance_settings"
+                action="action_hr_public_holidays"
+                sequence="10"
+        />
+
+        <record id="view_user_attendance_tree_inherit" model="ir.ui.view">
+            <field name="name">user.attendance.tree.inherit</field>
+            <field name="model">user.attendance</field>
+            <field name="priority" eval="40"/>
+            <field name="inherit_id" ref="to_attendance_device.view_attendance_data_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="address_id"/>
+                    <field name="department_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_hr_employee_form_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='coach_id']" position="after">
+                    <field name="late_in" />
+                    <field name="late_out" invisible="1"/>
+                    <field name="st"/>
+                    <field name="ot"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

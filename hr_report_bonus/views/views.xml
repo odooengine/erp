@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record id="view_hr_contract_bonus_inherit" model="ir.ui.view">
+            <field name="name">hr.contract.form.inherit</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bonus']" position="after">
+                    <field name="previous_bonus"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

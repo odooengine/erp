@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report
+            id="advance_current_pdf"
+            string="Current Advance Report"
+            model="advance.current"
+            report_type="qweb-pdf"
+            name="hr_current_advance.advance_current_id_print"
+            file="hr_current_advance.advance_current_id_print"/>
+</odoo>

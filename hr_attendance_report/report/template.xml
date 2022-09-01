@@ -1,0 +1,102 @@
+<odoo>
+    <template id="attendance_report_id_print">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <!--                    class="text-center"-->
+                    <div>
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <div style="float:right;">
+                                Printed On:
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y  %H:%M')"/>
+                            </div>
+                            <br/>
+                            <h3 class="text-center">Daily Attendance Statement</h3>
+<!--                            <br/>-->
+                            <div align="center">
+                                <t t-foreach="date_wizard" t-as="d">
+                                    <strong><t t-esc="d['word_address_id']['name']"/></strong>
+                                </t>
+                            </div>
+                            <p><strong>Date: </strong><span t-esc="date_wizard.date_from" t-options="{'widget': 'date'}"/>  <strong>- </strong><span t-esc="date_wizard.date_to" t-options="{'widget': 'date'}"/></p>
+
+                            <div class="row">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:center;border:1px solid black;">
+                                                <strong>Name</strong>
+                                            </th>
+                                            <th style="text-align:center;border:1px solid black;">
+                                                <strong>Shift</strong>
+                                            </th>
+                                            <t t-foreach="days" t-as="day">
+                                                <th style="text-align:center;border:1px solid black;">
+                                                    <strong><span t-esc="day[0]"/></strong><br/>
+                                                    <strong><span t-esc="day[1]"/></strong>
+                                                </th>
+                                            </t>
+                                            <th style="text-align:center;border:1px solid black;">
+                                                <strong>Late In</strong>
+                                            </th>
+                                            <th style="text-align:center;border:1px solid black;">
+                                                <strong>Late Out</strong>
+                                            </th>
+                                            <th style="text-align:center;border:1px solid black;">
+                                                <strong>ST</strong>
+                                            </th>
+                                            <th style="text-align:center;border:1px solid black;">
+                                                <strong>OT</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="departments" t-as="dp">
+                                            <tr><td  t-att-colspan="cols" style="text-align:center;border:1px solid black;background-color:#d4d2d2;font-weight:bold;"><span t-esc="dp.name"/></td></tr>
+                                            <t t-foreach="employees" t-as="emp">
+                                                <t t-if="dp.id == emp.department_id.id">
+                                                    <tr>
+                                                        <td style="text-align:left;border:1px solid black;">
+                                                            <t t-esc="emp.name"/>
+                                                        </td>
+                                                        <td style="text-align:center;border:1px solid black;">
+<!--                                                            <t t-esc="str(emp.shift_id.check_in)+ '-' + str(emp.shift_id.check_out)"/>-->
+                                                            <t t-esc="emp.shift_id.name"/>
+                                                        </td>
+
+                                                        <t t-set="reset" t-value="date_wizard.action_reset(emp)"/>
+
+                                                        <t t-foreach="days" t-as="d">
+                                                            <td style="text-align:center;border:1px solid black;">
+                                                                <span t-esc="date_wizard.get_attendance(d, emp)"/>
+                                                            </td>
+                                                        </t>
+                                                        <td style="text-align:center;border:1px solid black;">
+                                                            <t t-esc="emp.late_in"/>
+                                                        </td>
+                                                        <td style="text-align:center;border:1px solid black;">
+                                                            <t t-esc="emp.late_out"/>
+                                                        </td>
+                                                        <td style="text-align:center;border:1px solid black;">
+                                                            <t t-esc="emp.st*9"/>
+                                                        </td>
+                                                        <td style="text-align:center;border:1px solid black;">
+                                                            <t t-esc="date_wizard.get_overtime(emp)"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+
+                                            </t>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,34 @@
+<odoo>
+  <data>
+
+
+    <record id="view_partner_form_emp_inh" model="ir.ui.view">
+		<field name="name">res.partner.form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form"/>
+		<field name="arch" type="xml">
+
+			<xpath expr="//field[@name='vat']" position="after">
+				<field name="is_employee"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_hr_employee_domain_form_inh" model="ir.ui.view">
+        <field name="name">hr.employee.form.inh</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='address_id']" position="attributes">
+                <attribute name="domain">[('is_employee', '=', True)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='address_home_id']" position="attributes">
+                <attribute name="domain">[('is_employee', '=', True)]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+  </data>
+</odoo>

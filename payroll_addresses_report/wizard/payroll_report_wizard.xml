@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="payroll_wizard_report" model="ir.ui.view">
+        <field name="name">report.wizard.form</field>
+        <field name="model">report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Report">
+                <group>
+                    <field name="partner_id" domain="[('is_address', '=', True)]" options="{'no_quick_create': True, 'no_create_edit' : True}"
+                           widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="print_report" type="object" string="Print PDF" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+     <record id="report_wizard_action" model="ir.actions.act_window">
+        <field name="name">Payroll Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="payroll_wizard_report"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>    

@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+        <record id="hr_shift_tree" model="ir.ui.view">
+            <field name="name">hr.shift.tree</field>
+            <field name="model">hr.shift</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="check_in"/>
+                    <field name="check_out"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_hr_shift_form" model="ir.ui.view">
+            <field name="name">hr.shift.form</field>
+            <field name="model">hr.shift</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="check_in" widget="float_time"/>
+                            <field name="check_out" widget="float_time"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_shift" model="ir.actions.act_window">
+            <field name="name">Shifts</field>
+            <field name="res_model">hr.shift</field>
+            <field name="view_id" ref="hr_shift_tree"/>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    create Shifts!
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem
+                id="hr_shift_root"
+                name="Shifts"
+                parent="hr.menu_human_resources_configuration"
+                action="action_hr_shift"
+                sequence="10"
+        />
+    </data>
+</odoo>

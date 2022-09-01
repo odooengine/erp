@@ -19,5 +19,6 @@ class HrEmployee(models.Model):
         string='Destination Location',
         groups='hr.group_hr_user'
     )
+    is_responsible = fields.Boolean('Is Requisition Responsible')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

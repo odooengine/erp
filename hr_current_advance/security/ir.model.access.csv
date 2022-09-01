@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_advance_current,access.advance.current,model_advance_current,,1,1,1,1
+access_employee_lines,access.employee.lines,model_employee_lines,,1,1,1,1

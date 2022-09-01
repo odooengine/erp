@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_header_hic">
+        <!--        <t t-foreach="docs" t-as="doc">-->
+        <!--        <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />-->
+        <div t-attf-class="header o_company_#{res_company.id}_layout" t-att-style="report_header_style" width="100%">
+            <div class="row" style="font-size:17px;">
+                <div class="col-4">
+                    <span>
+                        <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo" width="80%"/>
+                    </span>
+                </div>
+                <div class="col-8">
+                    <span style="font-weight:bold;">SMC Home Improvement Centre Private Limited</span><br/>
+                    <span style="font-weight:bold;">Head Office:</span>&#160;<span t-field="res_company.street"/><br/><span t-field="res_company.email"/>&#160;&#160;&#160;<span>Customer Services:&#160;</span><span t-field="res_company.cs"/>
+                </div>
+            </div>
+        </div>
+        <div t-attf-class="article o_report_layout_standard o_company_#{res_company.id}_layout" t-att-data-oe-model="doc and doc._name" t-att-data-oe-id="doc and doc.id" t-att-data-oe-lang="doc and doc.env.context.get('lang')">
+            <div class="pt-5">
+                <t t-call="web.address_layout"/>
+            </div>
+            <t t-raw="0"/>
+        </div>
+        <div t-attf-class="footer o_standard_footer o_company_#{res_company.id}_layout"  style="margin-top:15px; padding-top:20px;">
+            <div class="text-center" style="border-top: 1px solid black; margin-top:15px; padding-top:15px;">
+                <ul class="list-inline mb4">
+                    <!-- using the list-inline-item class from bootstrap causes weird behaviours in pdf report
+                         adding d-inline class fixes the problem-->
+                    <!--                    <li t-if="res_company.phone" class="list-inline-item d-inline"><span class="o_force_ltr" t-field="res_company.phone"/></li>-->
+                    <!--                    <li t-if="res_company.email" class="list-inline-item d-inline"><span t-field="res_company.email"/></li>-->
+                    <li t-if="res_company.website" class="list-inline-item d-inline"><span t-field="res_company.website"/></li>
+                    <li t-if="res_company.website" class="list-inline-item d-inline"><span>http://facebook.com/smcgrouppk</span></li>
+                    <li t-if="res_company.website" class="list-inline-item d-inline"><span>http://instagram.com/smcgrouppk</span></li>
+
+                    <!--                    <li t-if="res_company.vat" class="list-inline-item d-inline"><t t-esc="res_company.country_id.vat_label or 'Tax ID'"/>: <span t-field="res_company.vat"/></li>-->
+                </ul>
+
+                <div name="financial_infos">
+                    <span t-field="res_company.report_footer"/>
+                </div>
+
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+        <!--        </t>-->
+    </template>
+
+
+</odoo>

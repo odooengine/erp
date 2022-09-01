@@ -1,0 +1,16 @@
+<odoo>
+
+    <record id="view_crm_leads_form_inh" model="ir.ui.view">
+        <field name="name">crm.leads.inh</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="options">{'no_open': True, 'no_create_edit': True, 'no_create': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 import odoo.addons.decimal_precision as dp
+from odoo.exceptions import Warning, UserError
 
 class MaterialPurchaseRequisitionLine(models.Model):
     _name = "material.purchase.requisition.line"
@@ -23,6 +24,7 @@ class MaterialPurchaseRequisitionLine(models.Model):
 #     )
     description = fields.Char(
         string='Description',
+        required=True,
     )
     qty = fields.Float(
         string='Quantity',
@@ -47,10 +49,23 @@ class MaterialPurchaseRequisitionLine(models.Model):
         default='purchase',
         required=True,
     )
+
+    # capex = fields.Boolean(related='product_id.capex', string='Capex')
+    # non_capex = fields.Boolean(related='product_id.non_capex', string='Non Capex')
+    article_no = fields.Char(related='product_id.article_no')
+    finish_no = fields.Char(related='product_id.finish_no')
+
     @api.onchange('product_id')
     def onchange_product_id(self):
         for rec in self:
-            # rec.description = rec.product_id.name
+            rec.description = rec.product_id.name
             rec.uom = rec.product_id.uom_id.id
 
+
+    @api.onchange('product_id')
+    def onchange_product(self):
+        if self.requisition_id.state in ['line_confirm','approve','stock','receive','cancel','reject']:
+            raise UserError(_('Products can be added in "Draft" state only'))
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
