@@ -1,0 +1,30 @@
+<odoo>
+
+    <record id="paperformat_carpenter"
+                model="report.paperformat">
+                <field name="name">Carpenter Bill A4</field>
+                <field name="default" eval="True"/>
+                <field name="format">A4</field>
+                <field name="page_height">0</field>
+                <field name="page_width">0</field>
+                <field name="orientation">Portrait</field>
+                <field name="margin_top">35</field>
+                <field name="margin_bottom">30</field>
+                <field name="margin_left">5</field>
+                <field name="margin_right">5</field>
+                <field name="header_line" eval="True"/>
+                <field name="header_spacing">30</field>
+                <field name="dpi">90</field>
+        </record>
+
+    <report
+            id="report_carpenter_bill"
+            model="carpenter.bill"
+            string="Carpenter Bill"
+            report_type="qweb-pdf"
+            name="smc_carpenter.carpenter_bill_template"
+            file="smc_carpenter.carpenter_bill_template"
+            paperformat="paperformat_carpenter"
+           />
+
+</odoo>

@@ -1,0 +1,98 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="account_account_form_inh">
+            <field name="name">account.account.form.inh</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='group_id']" position="after">
+                    <field name="is_carpenter_bill"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="res_partner_form_inh">
+            <field name="name">res.partner.form.inh</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="is_carpenter"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr_carpenter_bill_tree" model="ir.ui.view">
+            <field name="name">carpenter.bill.tree</field>
+            <field name="model">carpenter.bill</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="vendor_id" string="Carpenter"/>
+                    <field name="date"/>
+                    <field name="amount_total"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_carpenter_bill_form" model="ir.ui.view">
+            <field name="name">carpenter.bill.form</field>
+            <field name="model">carpenter.bill</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Add Lines" class="oe_highlight" type="object" name="action_add_lines"/>
+                        <button string="Create Bill" type="object" name="action_create_bill" attrs="{'invisible': [('is_created', '=', True)]}"/>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="partner_id" string="Customer" options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="move_ids" string="Invoices" widget="many2many_tags" domain="[('partner_id', '=', partner_id), ('move_type', '=', 'out_invoice')]" options="{'no_create': True, 'no_create_edit' : True}"/>
+                            <field name="vendor_id" string="Carpenter" options="{'no_create': True, 'no_create_edit' : True}" domain="[('is_carpenter', '=', True)]"/>
+                            <field name="date"/>
+                            <field name="move_id" readonly="1" string="Bill"/>
+                            <field name="is_created" invisible="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Lines">
+                                <field name="bill_lines">
+                                    <tree editable="bottom" create="0">
+                                        <field name="partner_id" string="Client Name"/>
+                                        <field name="move_id" string="Invoice No"/>
+                                        <field name="product_id" string="Item"/>
+                                        <field name="quantity" string="SQFT"/>
+                                        <field name="uom_id" string="UOM"/>
+                                        <field name="price_unit" string="Rate"/>
+                                        <field name="subtotal" string="Total" sum="Total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_carpenter_bill" model="ir.actions.act_window">
+            <field name="name">Carpenter Bill</field>
+            <field name="res_model">carpenter.bill</field>
+            <field name="view_id" ref="hr_carpenter_bill_tree"/>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create Carpenter Bill!
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="hr_public_holidays_root"
+                name="Carpenter Bill"
+                parent="account.menu_finance_payables"
+                action="action_carpenter_bill"
+                sequence="100"
+        />
+
+    </data>
+</odoo>

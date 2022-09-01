@@ -1,0 +1,142 @@
+<odoo>
+    <data>
+        <template id="carpenter_bill_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+
+                        <style>
+                            .top_general_head {
+                            font-weight:bold;
+                            }
+                            .data_table_heading th {
+                            border:2px solid grey;
+                            padding-left:2px;
+                            }
+                            .data_table_body td {
+                            border:2px solid grey;
+                            padding-left:2px;
+                            }
+                            .vertical_middle {
+                            text-align:center;
+                            vertical-align:middle;
+                            }
+                            .important_note {
+                            margin-top:200px;
+                            }
+                            .container p, h6 {
+                            font-weight: bold;
+                            }
+                            .margin_top {
+                            margin-top:-20px;
+                            font-size:14px;
+                            }
+                            .last_table {
+                            margin-top:70px;
+
+                            }
+                            .bold {
+                            font-weight:bold;
+                            }
+
+                        </style>
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <div style="font-size:30px; font-weight: bold;" align="center">
+                                <strong>Carpenter Bill</strong>
+                            </div>
+                            <br/>
+                            <div class="oe_structure"/>
+<!--                            <div>-->
+<!--                                <h3><span t-field="o.name"/></h3>-->
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-6">-->
+<!--                                    <strong>Name:</strong>-->
+<!--                                    <span class="m-0" t-field="o.partner_id.name"/>-->
+<!--                                </div>-->
+<!--                                <div class="col-6">-->
+<!--                                    <strong>Mobile:</strong>-->
+<!--                                    <span class="m-0" t-field="o.partner_id.mobile"/>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>
+                                        <strong>Date:</strong>
+                                        <span class="m-0" t-field="o.date"/>
+                                    </span>
+                                </div>
+<!--                                <div class="col-6">-->
+<!--                                    <strong>Address:</strong>-->
+<!--                                    <span class="m-0" t-field="o.partner_id.street"/>-->
+<!--                                </div>-->
+                            </div>
+<!--                            <div class="row">-->
+<!--                                <div class="col-6">-->
+<!--                                    <strong>Salesperson:</strong>-->
+<!--                                    <span class="m-0" t-field="o.user_id.name"/>-->
+<!--                                </div>-->
+<!--                                &lt;!&ndash;                                <div class="col-6">&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                    <strong>Mobile:</strong>&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                    <span class="m-0" t-field="o.partner_id.mobile"/>&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--                            </div>-->
+                            <br/>
+
+                            <table class="table table-sm o_main_table">
+                                <thead >
+                                    <tr>
+                                        <th >Client Name</th>
+                                        <th >Invoice No</th>
+                                        <th >Article No</th>
+                                        <th>UOM</th>
+                                        <th>SQFT</th>
+                                        <th >RATE</th>
+                                        <th >Total</th>
+                                    </tr>
+                                </thead>
+                                <!-- here we will apply the loop-->
+                                <tbody >
+<!--                                    <t t-set="count_id" t-value="0"/>-->
+<!--                                    <t t-set="total_quantity" t-value="0"/>-->
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-foreach="o.bill_lines" t-as="line">
+<!--                                        <t t-set="count_id" t-value="count_id+1"/>-->
+                                        <tr>
+<!--                                            <td class="vertical_middle"> <t t-esc="count_id"/> </td>-->
+                                            <td><span t-field="line.partner_id.name"/></td>
+                                            <td><span t-field="line.move_id.name"/></td>
+                                            <td style="white-space:nowrap;"><span t-field="line.product_id.article_no"/></td>
+
+                                            <td class="text-center"><span t-field="line.quantity"/></td>
+                                            <td class="text-center"><span t-field="line.uom_id.name"/></td>
+                                            <td class="text-center"><span t-field="line.price_unit"/></td>
+                                            <td class="text-center"><span t-field="line.subtotal"/></td>
+
+                                            <t t-set="current_subtotal" t-value="current_subtotal+line.subtotal"/>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td colspan="6" style="font-weight:bold;">TOTAL</td>
+                                        <td class="text-center" style="font-weight:bold;"><span t-esc="current_subtotal"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table width="100%">
+                                <tr>
+                                    <td width="15%" style="font-weight:bold;" >Carpenter Name</td>
+                                    <td width="35%" style="border-bottom:1px solid black;"><span t-esc="o.vendor_id.name"/></td>
+                                    <td width="15%" class="text-center" style="font-weight:bold;">Received By</td>
+                                    <td width="35%">_____________________________________</td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
