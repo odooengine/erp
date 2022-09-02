@@ -1,0 +1,183 @@
+<odoo>
+
+    <record id="product_template_view_search_inherit" model="ir.ui.view">
+            <field name="name">product.template.search.inherit.sale</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="candela_code" string="Candela Code" filter_domain="[('candela_code', 'ilike', self)]"/>
+                </xpath>
+            </field>
+        </record>
+
+    <record id="view_product_template_tree_inherit" model="ir.ui.view">
+        <field name="name">product.template.tree.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="default_code" position="after">
+                <field name="candela_code"/>
+            </field>
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+				<attribute name="readonly">0</attribute>
+			</xpath>
+        </field>
+    </record>
+
+    <record id="view_product_template_search_inherit" model="ir.ui.view">
+        <field name="name">product.template.search.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pricelist_id']" position="after">
+                <field name="candela_code"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--    <record id="view_product_product_search_inherit" model="ir.ui.view">-->
+<!--        <field name="name">product.product.search.inherit</field>-->
+<!--        <field name="model">product.product</field>-->
+<!--        <field name="inherit_id" ref="product.product_search_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='pricelist_id']" position="after">-->
+<!--                <field name="candela_code"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="view_product_template_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='%(product.product_attribute_value_action)d']" position="before">
+                <button name="create_extra_variant" string="Review" type="object" class="btn-primary" invisible="1"/>
+            </xpath>
+            <xpath expr="//div[@name='options']" position="after">
+                <div name="options_types">
+                    <div>
+                        <field name="simple" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+                        <label for="simple"/>
+                    </div>
+                    <div>
+                        <field name="accessories" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+                        <label for="accessories"/>
+                    </div>
+                    <div>
+                        <field name="fabric" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+                        <label for="fabric"/>
+                    </div>
+                    <div>
+                        <field name="finish" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+                        <label for="finish"/>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+<!--                <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>-->
+                <attribute name="attrs">{'readonly': [('simple', '=', False)],'required': 0}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="age_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', age_group_ids)]"/>
+                <field name="engine_year_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}" domain="[('id', 'in', engine_year_ids)]"/>
+                <field name="calender_season_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" attrs="{'readonly': [('is_freeze', '=', True)]}" domain="[('id', 'in', calender_season_ids)]"/>
+                <field name="class_fabric_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', fabric_ids)]"/>
+                <field name="item_cat_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', item_category_ids)]"/>
+                <field name="item_sub_cat_id" attrs="{'required': [('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', sub_category_ids)]"/>
+                <field name="dept_id" required="1" attrs="{'readonly': [('is_freeze', '=', True)]}"/>
+<!--                <field name="sub_dept_id" attrs="{'required': [('finish', '=', True)]}" options="{'no_quick_create': True, 'no_create': True}" style="color:blue;"/>-->
+                <field name="sub_dept" attrs="{'required': [('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}"/>
+                <field name="user_id" invisible="1"/>
+
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="line_item_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="product_group_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                <field name="size_range_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', size_range_ids)]"/>
+                <field name="life_type_id" attrs="{'required': ['|',('fabric', '=', True),('finish', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" domain="[('id', 'in', life_type_ids)]"/>
+                <field name="accessories_type_id" attrs="{'invisible': [('accessories', '=', False)],'required': [('accessories', '=', True)],'readonly': [('is_freeze', '=', True)]}" options="{'no_quick_create': True, 'no_create': True,'no_open': True}" domain="[('id', 'in', accessories_type_ids)]"/>
+                <field name="product_gender"/>
+                <field name="candela_code"/>
+
+                <field name="pre_seq" invisible="1"/>
+                <field name="pos_seq" invisible="1"/>
+
+                <field name="product_group_type" invisible="1"/>
+                <field name="is_freeze" invisible="1"/>
+                <field name="my_activity_date_deadline" invisible="1"/>
+
+<!--                Domain Fields Many2many-->
+
+                <field name="accessories_type_ids" invisible="1"/>
+                <field name="fabric_ids" invisible="1"/>
+                <field name="life_type_ids" invisible="1"/>
+                <field name="engine_year_ids" invisible="1"/>
+                <field name="calender_season_ids" invisible="1"/>
+                <field name="sub_category_ids" invisible="1"/>
+                <field name="item_category_ids" invisible="1"/>
+                <field name="age_group_ids" invisible="1"/>
+                <field name="size_range_ids" invisible="1"/>
+
+            </xpath>
+
+<!--            <xpath expr="//field[@name='responsible_id']" position="before">-->
+<!--                <field name="is_mrp" invisible="1"/>-->
+<!--                <field name="is_comp" invisible="1"/>-->
+<!--            </xpath>-->
+
+<!--            Remove Create Edit-->
+
+            <xpath expr="//field[@name='attribute_line_ids']//tree/field[@name='attribute_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True, 'no_open': True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='attribute_line_ids']//tree/field[@name='value_ids']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='categ_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='taxes_id']" position="attributes">
+				<attribute name="options">{'no_quick_create': True, 'no_create_edit':True}</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='line_item_id']" position="before">
+                <field name="is_editable" invisible="1"/>
+				<field name="company_id" readonly="1"/>
+			</xpath>
+
+            <xpath expr="//field[@name='company_id']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
+        </field>
+    </record>
+
+    <record id="view_product_template_search_form_inherited" model="ir.ui.view">
+        <field name="name">view.product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='categ_id']" position="after">
+                <separator/>
+                <filter string="Product Group Type" name="product_group_type" context="{'group_by':'product_group_type'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_company_form_inherit" model="ir.ui.view">
+        <field name="name">view.res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='favicon']" position="after">
+                <field name="is_editable"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

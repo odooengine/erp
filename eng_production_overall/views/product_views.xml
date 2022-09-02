@@ -1,0 +1,109 @@
+<!--<odoo>-->
+
+<!--    <record model="ir.ui.view" id="view_stock_picking_form_inh">-->
+<!--        <field name="name">stock.picking.form</field>-->
+<!--        <field name="model">stock.picking</field>-->
+<!--        <field name="inherit_id" ref="stock_account.stock_valuation_layer_picking"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//button[@name='action_view_stock_valuation_layers']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_cost</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='partner_id']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_origin</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='origin']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_origin</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record model="ir.ui.view" id="view_stock_picking_form_inherit">-->
+<!--        <field name="name">stock.picking.form</field>-->
+<!--        <field name="model">stock.picking</field>-->
+<!--        <field name="inherit_id" ref="stock.view_picking_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='partner_id']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_origin</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='origin']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_origin</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record model="ir.ui.view" id="view_stock_picking_tree_inh">-->
+<!--        <field name="name">stock.picking.form</field>-->
+<!--        <field name="model">stock.picking</field>-->
+<!--        <field name="inherit_id" ref="stock.vpicktree"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='partner_id']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_origin</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='origin']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_origin</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+
+<!--    <record id="view_product_template_form_inh" model="ir.ui.view">-->
+<!--        <field name="name">product.template.form</field>-->
+<!--        <field name="model">product.template</field>-->
+<!--        <field name="inherit_id" ref="product.product_template_only_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+
+<!--            <xpath expr="//field[@name='standard_price']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_cost</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//label[@for='standard_price']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_cost</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash;			<xpath expr="//field[@name='seller_ids']//tree/field[@name='price']" position="attributes">&ndash;&gt;-->
+<!--            &lt;!&ndash;				<attribute name="groups">production_overall.group_show_cost</attribute>&ndash;&gt;-->
+<!--            &lt;!&ndash;			</xpath>&ndash;&gt;-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="view_product_template_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">product.template.form</field>-->
+<!--        <field name="model">product.template</field>-->
+<!--        <field name="inherit_id" ref="purchase.view_product_supplier_inherit"/>-->
+<!--        <field name="arch" type="xml">-->
+
+<!--            &lt;!&ndash;            <xpath expr="//field[@name='standard_price']" position="attributes">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <attribute name="groups">production_overall.group_show_cost</attribute>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </xpath>&ndash;&gt;-->
+
+<!--            <xpath expr="//page[@name='purchase']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_cost</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record model="ir.ui.view" id="view_product_product_form_inh">-->
+<!--        <field name="name">product.product.form</field>-->
+<!--        <field name="model">product.product</field>-->
+<!--        <field name="inherit_id" ref="product.product_normal_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='standard_price']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_cost</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//label[@for='standard_price']" position="attributes">-->
+<!--                <attribute name="groups">production_overall.group_show_cost</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash;    <record model="ir.ui.view" id="view_stock_picking_form_inh">&ndash;&gt;-->
+<!--    &lt;!&ndash;        <field name="name">stock.picking.form</field>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <field name="model">stock.picking</field>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <field name="inherit_id" ref="stock_account.stock_valuation_layer_picking"/>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <field name="arch" type="xml">&ndash;&gt;-->
+<!--    &lt;!&ndash;            <xpath expr="//button[@name='action_view_stock_valuation_layers']" position="attributes">&ndash;&gt;-->
+<!--    &lt;!&ndash;                <attribute name="groups">production_overall.group_show_cost</attribute>&ndash;&gt;-->
+<!--    &lt;!&ndash;            </xpath>&ndash;&gt;-->
+<!--    &lt;!&ndash;        </field>&ndash;&gt;-->
+<!--    &lt;!&ndash;    </record>&ndash;&gt;-->
+
+<!--</odoo>-->

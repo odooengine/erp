@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="material_purchase_requisition_view_inherit">
+        <field name="name">material.purchase.requisition.view.inherit</field>
+        <field name="model">material.purchase.requisition</field>
+        <field name="inherit_id" ref="material_purchase_requisitions.material_purchase_requisition_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='requisition_line_ids']" position="before">
+                <group>
+                    <button name="%(act_open_select_products_view)d" type="action" string="Select Products"
+                        context="{'default_flag_order': 're'}" attrs="{'invisible': [('state', '!=', 'draft')]}"
+                        class="oe_highlight" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

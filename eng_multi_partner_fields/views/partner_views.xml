@@ -1,0 +1,19 @@
+<odoo>
+
+    <record id="view_partner_form_inherited" model="ir.ui.view">
+        <field name="name">partner.form.inherited</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]" position="before">
+                <group>
+                    <group>
+                        <field name="customer_type" attrs="{'invisible': [('partner_type', 'not in', ['customer'])]}" widget="radio"/>
+                    </group>
+                </group>
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

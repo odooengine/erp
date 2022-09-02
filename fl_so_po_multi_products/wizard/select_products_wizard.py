@@ -25,7 +25,7 @@ class SelectProducts(models.TransientModel):
                     'product_id': product.id,
                     'product_uom': product.uom_id.id,
                     'price_unit': product.lst_price,
-                    'product_uom_qty': product.quantity,
+                    'product_uom_qty': 1,
                     'order_id': order_id.id
                 })
         elif self.flag_order == 'po':
@@ -40,4 +40,14 @@ class SelectProducts(models.TransientModel):
                     'product_qty': 1.0,
                     'display_type': False,
                     'order_id': order_id.id
+                })
+        elif self.flag_order == 're':
+            requisition_id = self.env['material.purchase.requisition'].browse(self._context.get('active_id', False))
+            for product in self.product_ids:
+                self.env['material.purchase.requisition.line'].create({
+                    'product_id': product.id,
+                    'description': product.name,
+                    'uom': product.uom_id.id,
+                    'qty': 1.0,
+                    'requisition_id': requisition_id.id
                 })

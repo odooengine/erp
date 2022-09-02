@@ -1,0 +1,35 @@
+<odoo>
+
+    <record id="view_produced_wizard_form" model="ir.ui.view">
+		<field name="name">Product Quantity</field>
+		<field name="model">produced.qty.wizard</field>
+		<field name="arch" type="xml">
+			<form>
+                <group>
+                    <field name="qty"/>
+                </group>
+				<footer>
+					<button name="action_create" string="Ok" type="object" class="btn-primary"/>
+				</footer>
+			</form>
+		</field>
+    </record>
+
+
+	<record id="view_done_wizard_form" model="ir.ui.view">
+		<field name="name">Done Quantity</field>
+		<field name="model">done.qty.wizard</field>
+		<field name="arch" type="xml">
+			<form>
+                <group col="4">
+                    <field name="qty"/>
+                    <field name="reasons"/>
+                </group>
+				<footer>
+					<button name="action_create" string="Ok" type="object" class="btn-primary"/>
+				</footer>
+			</form>
+		</field>
+    </record>
+
+</odoo>

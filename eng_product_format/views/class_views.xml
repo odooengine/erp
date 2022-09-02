@@ -1,0 +1,76 @@
+<odoo>
+
+    <record id="view_class_fabric_form" model="ir.ui.view">
+        <field name="name">class.fabric.form</field>
+        <field name="model">class.fabric</field>
+        <field name="arch" type="xml">
+            <form string="Fabric">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="code" required="1"/>
+                        </group>
+                        <group>
+                            <field name="is_eng"/>
+                            <field name="is_mk"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_class_fabric_tree" model="ir.ui.view">
+        <field name="name">class.fabric.tree</field>
+        <field name="model">class.fabric</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="is_eng"/>
+                <field name="is_mk"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_class_fabric_search" model="ir.ui.view">
+        <field name="name">class.fabric.search</field>
+        <field name="model">class.fabric</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <!--  Main Actions-->
+
+    <record id="action_class_fabric_view" model="ir.actions.act_window">
+        <field name="name">Fabric</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">class.fabric</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_class_fabric_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record Found. Let's Create..........
+            </p>
+        </field>
+    </record>
+
+    <!--  Main Menus-->
+
+    <menuitem id="menu_class_fabric"
+              name="Fabric"
+              parent="stock.menu_stock_config_settings"
+              action="action_class_fabric_view"
+    />
+
+</odoo>

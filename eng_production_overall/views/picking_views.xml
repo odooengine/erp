@@ -1,0 +1,43 @@
+<odoo>
+
+    <record id="action_merge_server" model="ir.actions.server">
+        <field name="name">Send to Merged State</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code"> if records: action = records.action_send_merge()</field>
+    </record>
+
+    <record id="view_stock_picking_form_inh" model="ir.ui.view">
+        <field name="name">Stock Transfer</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="product_ref_id"/>
+                <field name="product_tmpl_ref_id" string="Product Template"/>
+            </xpath>
+
+            <xpath expr="//field[@name='picking_type_id']" position="replace">
+                <field name="picking_type_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="department_id" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create_edit': True, 'no_create': True}"/>
+            </xpath>
+
+            <xpath expr="//button[@name='button_validate']" position="after">
+
+                <button name="action_reset_draft" type="object" string="Reset To Draft" states="confirmed" class="btn-primary"/>
+
+            </xpath>
+
+            <xpath expr="//button[@name='button_validate']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|','|',('quality_check_todo', '=', True),('show_validate', '!=', True),('state', '!=', 'assigned')]}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

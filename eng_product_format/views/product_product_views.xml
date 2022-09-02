@@ -1,0 +1,69 @@
+<odoo>
+
+    <record id="view_product_product_tree_inherit" model="ir.ui.view">
+        <field name="name">product.product.tree.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="candela_code"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_product_product_form_inherit" model="ir.ui.view">
+        <field name="name">product.product.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="after">
+                <div name="options_types">
+                    <div>
+                        <field name="simple" readonly="1"/>
+                        <label for="simple"/>
+                    </div>
+                    <div>
+                        <field name="accessories" readonly="1"/>
+                        <label for="accessories"/>
+                    </div>
+                    <div>
+                        <field name="fabric" readonly="1"/>
+                        <label for="fabric"/>
+                    </div>
+                    <div>
+                        <field name="finish" readonly="1"/>
+                        <label for="finish"/>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+<!--                <attribute name="attrs">{'readonly': 1,'required': 0}</attribute>-->
+                <attribute name="attrs">{'readonly': [('simple', '=', False)],'required': 0}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="age_group_id" readonly="1"/>
+                <field name="engine_year_id" readonly="1"/>
+                <field name="calender_season_id" readonly="1"/>
+                <field name="class_fabric_id" readonly="1"/>
+                <field name="item_cat_id" readonly="1"/>
+                <field name="item_sub_cat_id" readonly="1"/>
+                <field name="dept_id" readonly="1"/>
+                <field name="sub_dept" readonly="1"/>
+                <field name="product_gender" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="line_item_id" readonly="1"/>
+                <field name="product_group_id" readonly="1"/>
+                <field name="size_range_id" readonly="1"/>
+                <field name="life_type_id" readonly="1"/>
+                <field name="accessories_type_id" readonly="1"/>
+                <field name="candela_code" readonly="1"/>
+            </xpath>
+<!--            <xpath expr="//field[@name='weight']" position="before">-->
+<!--                <field name="is_mrp" invisible="1"/>-->
+<!--                <field name="is_comp" invisible="1"/>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,49 @@
+<odoo>
+
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">Partner Form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]" position="before">
+                <group>
+                    <group>
+                        <field name="partner_type"/>
+<!--                        <field name="customer_type" attrs="{'invisible': [('partner_type', 'not in', ['customer'])]}" widget="radio"/>-->
+                    </group>
+                </group>
+            </xpath>
+            
+            <xpath expr="///field[@name='vat']" position="after">
+                <field name="supplier_ntn" attrs="{'invisible': [('partner_type', 'not in', ['vendor'])]}"/>
+            </xpath>
+            
+            <xpath expr="//group/group[2]/field[@name='category_id']" position="after">
+                <field name="supplier_code" attrs="{'invisible': [('partner_type', 'not in', ['vendor'])]}"/>
+            </xpath>
+
+            <xpath expr="///field[@name='vat']" position="after">
+                <field name="customer_rank" invisible="1"/>
+                <field name="supplier_rank" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='city']" position="attributes">
+				<attribute name="required">1</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='country_id']" position="attributes">
+				<attribute name="required">1</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='mobile']" position="attributes">
+				<attribute name="required">1</attribute>
+			</xpath>
+
+            <xpath expr="//field[@name='street']" position="attributes">
+				<attribute name="required">1</attribute>
+			</xpath>
+            
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,70 @@
+<odoo>
+
+    <record id="view_sub_department_form" model="ir.ui.view">
+        <field name="name">sub.department.form</field>
+        <field name="model">sub.department</field>
+        <field name="arch" type="xml">
+            <form string="Sub Department">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="code" required="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sub_department_tree" model="ir.ui.view">
+        <field name="name">sub.department.tree</field>
+        <field name="model">sub.department</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_sub_department_search" model="ir.ui.view">
+        <field name="name">sub.department.search</field>
+        <field name="model">sub.department</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <!--  Main Actions-->
+
+    <record id="action_sub_department_view" model="ir.actions.act_window">
+        <field name="name">Sub Department</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sub.department</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sub_department_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Record Found. Let's Create..........
+            </p>
+        </field>
+    </record>
+
+    <!--  Main Menus-->
+
+    <menuitem id="menu_sub_department"
+              name="Sub Department"
+              parent="stock.menu_stock_config_settings"
+              action="action_sub_department_view"
+    />
+
+</odoo>
