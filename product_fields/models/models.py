@@ -7,6 +7,16 @@ class StatusProduct(models.Model):
     status = fields.Char(string='Status')
     book_number = fields.Float(string='Book No')
 
+    @api.model
+    def create(self, vals):
+        res = super(StatusProduct, self).create(vals)
+        res.product_tmpl_id.update({
+            'status': res.status,
+            'book_number': res.book_number,
+
+        })
+        return res
+
 
 class StatusProductTemplate(models.Model):
     _inherit = "product.template"
