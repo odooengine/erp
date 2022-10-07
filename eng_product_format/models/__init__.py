@@ -2,3 +2,4 @@
 
 
 from . import product_format
+from . import mrp
