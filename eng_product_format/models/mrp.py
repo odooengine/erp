@@ -36,11 +36,13 @@ class MRPInherit(models.Model):
 
     @api.onchange('product_id')
     def onchange_product_id(self):
-        self.categ_id = self.product_id.categ_id.id
-        self.engine_year_id = self.product_id.engine_year_id.id
-        self.calender_season_id = self.product_id.calender_season_id.id
-        self.class_fabric_id = self.product_id.class_fabric_id.id
-        self.item_cat_id = self.product_id.item_cat_id.id
-        self.dept_id = self.product_id.dept_id
-        self.sub_dept = self.product_id.sub_dept
-        self.life_type_id = self.product_id.life_type_id.id
+        for rec in self:
+            rec.categ_id = rec.product_id.categ_id.id
+            rec.engine_year_id = rec.product_id.engine_year_id.id
+            rec.calender_season_id = rec.product_id.calender_season_id.id
+            rec.class_fabric_id = rec.product_id.class_fabric_id.id
+            rec.item_cat_id = rec.product_id.item_cat_id.id
+            rec.dept_id = rec.product_id.dept_id
+            rec.sub_dept = rec.product_id.sub_dept
+            rec.life_type_id = rec.product_id.life_type_id.id
+
