@@ -15,6 +15,10 @@ class MrpProductionInh(models.Model):
     ref = fields.Char('Merged From')
     # purchase_ids = fields.Many2many('purchase.order')
 
+    merge_lines = fields.One2many('merge.line', 'picking_id')
+
+    is_merge_lines = fields.Boolean(string='Is Merge Line')
+
     def action_open_wizard(self):
         selected_ids = self.env.context.get('active_ids', [])
         selected_records = self.env['stock.picking'].browse(selected_ids)
@@ -29,6 +33,14 @@ class MrpProductionInh(models.Model):
             names.append(record.name)
             # if record.state == ''
             for line in record.move_ids_without_package:
+                record.write({
+                    'merge_lines': [(0, 0, {
+                        'product_id': line.product_id.id,
+                        'name': line.product_id.name,
+                        'product_uom_id': line.product_id.uom_id.id,
+                        'qty': line.product_uom_qty,
+                    })]
+                })
                 if not any(d['product_id'] == line.product_id.id for d in line_vals):
                     line_data = {
                         # 'picking_id': picking.id,
@@ -63,6 +75,7 @@ class MrpProductionInh(models.Model):
         move = self.env['stock.picking'].create(vals)
         for x in selected_records:
             x.state = 'merged'
+        self.fill_merge_lines(move)
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
@@ -70,6 +83,22 @@ class MrpProductionInh(models.Model):
             'view_mode': 'form',
             'views': [(False, "form")],
         }
+
+    def fill_merge_lines(self, move):
+        selected_ids = self.env.context.get('active_ids', [])
+        selected_records = self.env['stock.picking'].browse(selected_ids)
+        for record in selected_records:
+            for line in record.move_ids_without_package:
+                move.write({
+                    'merge_lines': [(0, 0, {
+                        'product_id': line.product_id.id,
+                        'name': line.product_id.name,
+                        'product_uom_id': line.product_id.uom_id.id,
+                        'qty': line.product_uom_qty,
+                    })]
+                })
+        move.is_merge_lines = True
+
         # return {
         #     'name': 'Transfer',
         #     'res_model': 'stock.picking',
@@ -101,3 +130,14 @@ class MrpProductionInh(models.Model):
     #         'view_mode': 'form',
     #     }
 
+
+class StockMergeLine(models.Model):
+    _name = 'merge.line'
+    _description = 'Merge Line'
+
+    picking_id = fields.Many2one('stock.picking')
+
+    product_id = fields.Many2one('product.product', string='Product')
+    name = fields.Text(string='Description', required=True)
+    qty = fields.Float(string='Quantity')
+    product_uom_id = fields.Many2one('uom.uom', string='UOM')
