@@ -93,6 +93,7 @@ class MrpProductionInh(models.Model):
                     'merge_lines': [(0, 0, {
                         'product_id': line.product_id.id,
                         'name': line.product_id.name,
+                        'product_ref_id': line.picking_id.product_ref_id.id,
                         'product_uom_id': line.product_id.uom_id.id,
                         'qty': line.product_uom_qty,
                     })]
@@ -141,3 +142,5 @@ class StockMergeLine(models.Model):
     name = fields.Text(string='Description', required=True)
     qty = fields.Float(string='Quantity')
     product_uom_id = fields.Many2one('uom.uom', string='UOM')
+
+    product_ref_id = fields.Many2one('product.product', string='Product Ref')

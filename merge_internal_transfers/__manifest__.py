@@ -25,6 +25,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'reports/merge_report.xml',
+        'reports/merge_template.xml',
         'views/views.xml',
         'wizard/merge_wizard.xml',
     ],
