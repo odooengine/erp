@@ -228,7 +228,21 @@ class account_move_extend_error(models.Model):
         super(account_move_extend_error, self).write(vals)
         if 'line_ids' in vals:
             self.set_entry_error()
-            return True   
+            return True
+
+    total_payments = fields.Integer(string="Pay Count", compute='_compute_total_payments')
+
+    def action_payment_view(self):
+        return {
+            'name': _('Payments'),
+            'view_mode': 'tree,form',
+            'res_model': 'account.payment',
+            'domain': [('ref', '=', self.name)],
+            'type': 'ir.actions.act_window',
+        }
+
+    def _compute_total_payments(self):
+        self.total_payments = self.env['account.payment'].search_count([('ref', '=', self.name)])
 
     def set_entry_error(self):
         if self.move_type == 'entry':
