@@ -565,7 +565,7 @@ class MrpInh(models.Model):
                 'currency_id': 165,
                 'date': datetime.today(),
                 'move_type': 'entry',
-                'state': 'posted',
+                'state': 'draft',
             }
             d_acc = self.env['account.account'].search([('name', '=', 'Finished Goods')])
             c_acc = self.env['account.account'].search([('name', '=', 'Work In Process')])
