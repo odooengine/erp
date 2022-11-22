@@ -389,6 +389,7 @@ class MrpInh(models.Model):
             # else:
             #     raise ValidationError('Please Add Adjustment of All Variants.')
         # else:
+        self.action_general_entry()
         return super(MrpInh, self).button_mark_done()
 
     # def create_adjustment(self):
@@ -509,3 +510,93 @@ class MrpInh(models.Model):
             req_three.manager_approve()
             req_three.user_approve()
             self.is_req_created = True
+
+    # Manufacturing Order Journal Entry
+
+    # def create_journal_entry(self):
+    #     lines = []
+    #     amt = 0
+    #     for j in self.maintenance_lines_id:
+    #         if j.type == 'product':
+    #             amt += j.total
+    #             move_dict = {
+    #                 'ref': self.maintenance_ref,
+    #                 # 'branch_id': self.branch_id.id,
+    #                 'move_type': 'entry',
+    #                 'journal_id': int(
+    #                     self.env['ir.config_parameter'].get_param('vehicle_maintenance.journal_expense_id')),
+    #                 'date': self.vehicle_in,
+    #                 'state': 'draft',
+    #             }
+    #             debit_line = (0, 0, {
+    #                 'name': 'Non Pool Vehicle For Maintenance',
+    #                 'debit': j.total,
+    #                 'credit': 0.0,
+    #                 'partner_id': self.vehicle_id.vendor_id.id,
+    #                 'account_id': self.vehicle_id.vendor_id.property_account_payable_id.id,
+    #                 'analytic_account_id': self.vehicle_id.analytical_account_id.id,
+    #             })
+    #             lines.append(debit_line)
+    #             credit_line = (0, 0, {
+    #                 'name': 'Non Pool Vehicle For Maintenance',
+    #                 'debit': 0.0,
+    #                 # 'partner_id': r.partner_id.id,
+    #                 'credit': j.total,
+    #                 'account_id': int(
+    #                     self.env['ir.config_parameter'].get_param('vehicle_maintenance.account_non_pool_expense_id')),
+    #                 'analytic_account_id': self.vehicle_id.analytical_account_id.id,
+    #             })
+    #             lines.append(credit_line)
+    #             move_dict['line_ids'] = lines
+    #     move = self.env['account.move'].create(move_dict)
+    #     print("non pooolllllllllllll", move)
+    #     self.journal_entry_id = move.id
+    #     move.action_post()
+
+    def action_general_entry(self):
+        line_ids = []
+        debit_sum = 0.0
+        credit_sum = 0.0
+        total = 0
+        for rec in self:
+            move_dict = {
+                'ref': rec.name,
+                'journal_id': 11,
+                'currency_id': 165,
+                'date': datetime.today(),
+                'move_type': 'entry',
+                'state': 'draft',
+            }
+            d_acc = self.env['account.account'].search([('name', '=', 'Finished Goods')])
+            c_acc = self.env['account.account'].search([('name', '=', 'Work In Process')])
+            print(d_acc)
+            print(c_acc)
+            for line in rec.move_raw_ids:
+                total = total + (line.product_id.standard_price * line.quantity_done)
+            debit_line = (0, 0, {
+                'name': 'Finished Goods',
+                'debit': abs(total),
+                'credit': 0.0,
+                # 'partner_id': partner.id,
+                'currency_id': 165,
+                'account_id': d_acc.id,
+            })
+            line_ids.append(debit_line)
+            debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+            credit_line = (0, 0, {
+                'name': 'Work InProcess',
+                'debit': 0.0,
+                'credit': abs(total),
+                # 'partner_id': partner.id,
+                'currency_id': 165,
+                'account_id': c_acc.id,
+            })
+            line_ids.append(credit_line)
+            credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+        if line_ids:
+            move_dict['line_ids'] = line_ids
+            move = self.env['account.move'].create(move_dict)
+            line_ids = []
+            print("General entry created")
+
+
