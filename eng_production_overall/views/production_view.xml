@@ -193,16 +193,16 @@
             <xpath expr="//header/button[@name='action_assign']" position="before">
 <!--                <button name="create_adjustment" type="object" string="Add Variants Adj" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'to_close'), ('is_adj_created', '=', True)]}"/>-->
                 <button name="action_create_requisition" type="object" string="Create Requisition" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'confirmed'), ('is_req_created', '=', True)]}"/>
-<!--                <button name="action_general_entry" type="object" string="Create JV"/>-->
+                <button name="action_general_entry" type="object" string="Create JV" invisible="1"/>
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_requisitions">
                     <field string="Requisitions" name="req_count" widget="statinfo" />
                 </button>
-<!--                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_adjustment" attrs="{'invisible': [('adjust_count', '=', 0)]}">-->
-<!--                    <field string="Adjustment" name="adjust_count" widget="statinfo" />-->
-<!--                </button>-->
+                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_move_view" attrs="{'invisible': [('move_count', '=', 0)]}">
+                    <field string="Journal Vouchers" name="move_count" widget="statinfo" />
+                </button>
             </xpath>
 
             <xpath expr="//field[@name='user_id']" position="before">
@@ -311,6 +311,18 @@
                     </field>
                 </page>
 
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_account_move_form_inh" model="ir.ui.view">
+        <field name="name">account.move</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="mo_id"/>
             </xpath>
 
         </field>
