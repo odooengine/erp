@@ -562,6 +562,7 @@ class MrpInh(models.Model):
             move_dict = {
                 'ref': rec.name,
                 'journal_id': 11,
+                'mo_id': self.id,
                 'currency_id': 165,
                 'date': datetime.today(),
                 'move_type': 'entry',
@@ -597,6 +598,31 @@ class MrpInh(models.Model):
             move_dict['line_ids'] = line_ids
             move = self.env['account.move'].create(move_dict)
             line_ids = []
+            move.button_approved()
             print("General entry created")
+
+    move_count = fields.Integer(compute='get_move_count')
+
+    def get_move_count(self):
+        for rec in self:
+            count = self.env['account.move'].search_count([('mo_id', '=', self.id)])
+            rec.move_count = count
+
+    def action_move_view(self):
+        return {
+            'name': ('Journal Vouchers'),
+            'domain': [('mo_id', '=', self.id)],
+            'view_type': 'form',
+            'res_model': 'account.move',
+            'view_id': False,
+            'view_mode': 'tree,form',
+            'type': 'ir.actions.act_window',
+        }
+
+
+class AccountMoveInh(models.Model):
+    _inherit = 'account.move'
+
+    mo_id = fields.Many2one('mrp.production', string='MO REF')
 
 
