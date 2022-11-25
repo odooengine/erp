@@ -1,5 +1,15 @@
 <odoo>
 
+    <record id="action_add_entry_server" model="ir.actions.server">
+      <field name="name">Action Create Entries</field>
+      <field name="model_id" ref="mrp.model_mrp_production"/>
+      <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+      <field name="state">code</field>
+      <field name="code"> if records: action = records.server_action_general_entry()</field>
+    </record>
+
+
+
     <record id="action_add_temp_server" model="ir.actions.server">
       <field name="name">Add Template Name</field>
       <field name="model_id" ref="mrp.model_mrp_production"/>
