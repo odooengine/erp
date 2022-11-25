@@ -554,11 +554,11 @@ class MrpInh(models.Model):
     #     move.action_post()
 
     def action_general_entry(self):
-        line_ids = []
-        debit_sum = 0.0
-        credit_sum = 0.0
-        total = 0
         for rec in self:
+            line_ids = []
+            debit_sum = 0.0
+            credit_sum = 0.0
+            total = 0
             move_dict = {
                 'ref': rec.name,
                 'journal_id': 11,
@@ -618,6 +618,55 @@ class MrpInh(models.Model):
             'view_mode': 'tree,form',
             'type': 'ir.actions.act_window',
         }
+
+    def server_action_general_entry(self):
+        for rec in self:
+            if rec.state == 'done':
+                entry = self.env['account.move'].search([('mo_id', '=', rec.id)])
+                if not entry:
+                    line_ids = []
+                    debit_sum = 0.0
+                    credit_sum = 0.0
+                    total = 0
+                    move_dict = {
+                        'ref': rec.name,
+                        'journal_id': 11,
+                        'mo_id': rec.id,
+                        'currency_id': 165,
+                        'date': datetime.today(),
+                        'move_type': 'entry',
+                        'state': 'draft',
+                    }
+                    d_acc = self.env['account.account'].search([('name', '=', 'Finished Goods')])
+                    c_acc = self.env['account.account'].search([('name', '=', 'Work In Process')])
+                    for line in rec.move_raw_ids:
+                        total = total + (line.product_id.standard_price * line.quantity_done)
+                    debit_line = (0, 0, {
+                        'name': 'Finished Goods',
+                        'debit': abs(total),
+                        'credit': 0.0,
+                        # 'partner_id': partner.id,
+                        'currency_id': 165,
+                        'account_id': d_acc.id,
+                    })
+                    line_ids.append(debit_line)
+                    debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+                    credit_line = (0, 0, {
+                        'name': 'Work InProcess',
+                        'debit': 0.0,
+                        'credit': abs(total),
+                        # 'partner_id': partner.id,
+                        'currency_id': 165,
+                        'account_id': c_acc.id,
+                    })
+                    line_ids.append(credit_line)
+                    credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+                    if line_ids:
+                        move_dict['line_ids'] = line_ids
+                        move = self.env['account.move'].create(move_dict)
+                        line_ids = []
+                        move.button_approved()
+                        print("General entry created")
 
 
 class AccountMoveInh(models.Model):
