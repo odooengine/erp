@@ -1,12 +1,12 @@
 <odoo>
 
-    <record id="action_add_entry_server" model="ir.actions.server">
-      <field name="name">Action Create Entries</field>
-      <field name="model_id" ref="mrp.model_mrp_production"/>
-      <field name="binding_model_id" ref="mrp.model_mrp_production"/>
-      <field name="state">code</field>
-      <field name="code"> if records: action = records.server_action_general_entry()</field>
-    </record>
+<!--    <record id="action_add_entry_server" model="ir.actions.server">-->
+<!--      <field name="name">Action Create Entries</field>-->
+<!--      <field name="model_id" ref="mrp.model_mrp_production"/>-->
+<!--      <field name="binding_model_id" ref="mrp.model_mrp_production"/>-->
+<!--      <field name="state">code</field>-->
+<!--      <field name="code"> if records: action = records.server_action_general_entry()</field>-->
+<!--    </record>-->
 
 
 
@@ -203,16 +203,16 @@
             <xpath expr="//header/button[@name='action_assign']" position="before">
 <!--                <button name="create_adjustment" type="object" string="Add Variants Adj" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'to_close'), ('is_adj_created', '=', True)]}"/>-->
                 <button name="action_create_requisition" type="object" string="Create Requisition" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'confirmed'), ('is_req_created', '=', True)]}"/>
-                <button name="action_general_entry" type="object" string="Create JV" invisible="1"/>
+<!--                <button name="action_general_entry" type="object" string="Create JV" invisible="1"/>-->
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_requisitions">
                     <field string="Requisitions" name="req_count" widget="statinfo" />
                 </button>
-                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_move_view" attrs="{'invisible': [('move_count', '=', 0)]}">
-                    <field string="Journal Vouchers" name="move_count" widget="statinfo" />
-                </button>
+<!--                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_move_view" attrs="{'invisible': [('move_count', '=', 0)]}">-->
+<!--                    <field string="Journal Vouchers" name="move_count" widget="statinfo" />-->
+<!--                </button>-->
             </xpath>
 
             <xpath expr="//field[@name='user_id']" position="before">
@@ -336,6 +336,15 @@
             </xpath>
 
         </field>
+    </record>
+
+    <record id="action_unpost_entries_server" model="ir.actions.server">
+        <field name="name">UnPost Entries</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_account_move" />
+        <field name="binding_model_id" ref="model_account_move" />
+        <field name="state">code</field>
+        <field name="code">action = records.action_unpost_entries()</field>
     </record>
 
 </odoo>

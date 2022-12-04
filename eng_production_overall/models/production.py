@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import datetime
 from odoo.exceptions import ValidationError, UserError
 
@@ -141,17 +141,27 @@ class MrpOrderInh(models.Model):
         }
 
     def button_start(self):
-        for rec in self:
-            pre_order = self.env['mrp.workorder'].search([('id', '=', rec.id-1), ('production_id', '=', rec.production_id.id)])
-            # if pre_order:
-            #     if pre_order.state != 'done':
-            #         raise UserError('This workorder is waiting for another operation to get done.')
-            if rec.workcenter_id.wk_embellish:
-                if not rec.production_id.is_transfer_created:
-                    rec.action_create_internal_transfer(pre_order)
-                    rec.action_create_internal_transfer_second(pre_order)
-            record = super(MrpOrderInh, rec).button_start()
-            rec.start_date_custom = datetime.today()
+        flag = False
+        reqs = self.env['material.purchase.requisition'].search([('mrp_id', '=', self.production_id.id)])
+        print(reqs)
+        for req in reqs:
+            if req.state != 'receive':
+                flag = True
+            if flag:
+                raise UserError(_('Receive the Requisition'))
+            else:
+                for rec in self:
+                    pre_order = self.env['mrp.workorder'].search([('id', '=', rec.id-1), ('production_id', '=', rec.production_id.id)])
+                    # if pre_order:
+                    #     if pre_order.state != 'done':
+                    #         raise UserError('This workorder is waiting for another operation to get done.')
+                    if rec.workcenter_id.wk_embellish:
+                        if not rec.production_id.is_transfer_created:
+                            rec.action_create_internal_transfer(pre_order)
+                            rec.action_create_internal_transfer_second(pre_order)
+                    record = super(MrpOrderInh, rec).button_start()
+                    rec.start_date_custom = datetime.today()
+
 
     def action_create_internal_transfer(self, pre_order):
         qty = 0
@@ -389,7 +399,7 @@ class MrpInh(models.Model):
             # else:
             #     raise ValidationError('Please Add Adjustment of All Variants.')
         # else:
-        self.action_general_entry()
+        # self.action_general_entry()
         return super(MrpInh, self).button_mark_done()
 
     # def create_adjustment(self):
@@ -570,27 +580,27 @@ class MrpInh(models.Model):
             }
             d_acc = self.env['account.account'].search([('name', '=', 'Finished Goods')])
             c_acc = self.env['account.account'].search([('name', '=', 'Work In Process')])
-            print(d_acc)
-            print(c_acc)
             for line in rec.move_raw_ids:
                 total = total + (line.product_id.standard_price * line.quantity_done)
+                cr_acc = line.location_dest_id.valuation_out_account_id
             debit_line = (0, 0, {
-                'name': 'Finished Goods',
+                'name': rec.product_id.categ_id.property_stock_valuation_account_id.name,
                 'debit': abs(total),
                 'credit': 0.0,
                 # 'partner_id': partner.id,
                 'currency_id': 165,
-                'account_id': d_acc.id,
+                # 'account_id': d_acc.id,
+                'account_id': rec.product_id.categ_id.property_stock_valuation_account_id.id,
             })
             line_ids.append(debit_line)
             debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
             credit_line = (0, 0, {
-                'name': 'Work InProcess',
+                'name': cr_acc.name,
                 'debit': 0.0,
                 'credit': abs(total),
                 # 'partner_id': partner.id,
                 'currency_id': 165,
-                'account_id': c_acc.id,
+                'account_id': cr_acc.id,
             })
             line_ids.append(credit_line)
             credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
@@ -601,23 +611,23 @@ class MrpInh(models.Model):
             move.button_approved()
             print("General entry created")
 
-    move_count = fields.Integer(compute='get_move_count')
+    # move_count = fields.Integer(compute='get_move_count')
 
-    def get_move_count(self):
-        for rec in self:
-            count = self.env['account.move'].search_count([('mo_id', '=', self.id)])
-            rec.move_count = count
+    # def get_move_count(self):
+    #     for rec in self:
+    #         count = self.env['account.move'].search_count([('mo_id', '=', self.id)])
+    #         rec.move_count = count
 
-    def action_move_view(self):
-        return {
-            'name': ('Journal Vouchers'),
-            'domain': [('mo_id', '=', self.id)],
-            'view_type': 'form',
-            'res_model': 'account.move',
-            'view_id': False,
-            'view_mode': 'tree,form',
-            'type': 'ir.actions.act_window',
-        }
+    # def action_move_view(self):
+    #     return {
+    #         'name': ('Journal Vouchers'),
+    #         'domain': [('mo_id', '=', self.id)],
+    #         'view_type': 'form',
+    #         'res_model': 'account.move',
+    #         'view_id': False,
+    #         'view_mode': 'tree,form',
+    #         'type': 'ir.actions.act_window',
+    #     }
 
     def server_action_general_entry(self):
         for rec in self:
@@ -673,5 +683,68 @@ class AccountMoveInh(models.Model):
     _inherit = 'account.move'
 
     mo_id = fields.Many2one('mrp.production', string='MO REF')
+
+    def action_unpost_entries(self):
+        for record in self:
+            # if record.state == 'posted':
+            record.button_draft()
+            record.button_cancel()
+
+
+# class StockPickingInh(models.Model):
+#     _inherit = 'stock.picking'
+#
+#     def button_validate(self):
+#         # res = super(StockPickingInh, self).button_validate()
+#         self.action_general_entry()
+#         # return res
+#
+#     def action_general_entry(self):
+#         for rec in self:
+#             line_ids = []
+#             debit_sum = 0.0
+#             credit_sum = 0.0
+#             total = 0
+#             move_dict = {
+#                 'ref': rec.name,
+#                 'journal_id': 11,
+#                 'currency_id': 165,
+#                 'date': datetime.today(),
+#                 'move_type': 'entry',
+#                 'state': 'draft',
+#             }
+#             # d_acc = self.env['account.account'].search([('name', '=', 'Finished Goods')])
+#             # c_acc = self.env['account.account'].search([('name', '=', 'Work In Process')])
+#             for line in rec.move_ids_without_package:
+#                 total = total + (line.product_id.standard_price * line.quantity_done)
+#                 db_acc = line.product_id.categ_id.property_stock_account_output_categ_id
+#                 cr_acc = line.product_id.categ_id.property_stock_valuation_account_id
+#             debit_line = (0, 0, {
+#                 'name': db_acc.name,
+#                 'debit': abs(total),
+#                 'credit': 0.0,
+#                 # 'partner_id': partner.id,
+#                 'currency_id': 165,
+#                 # 'account_id': d_acc.id,
+#                 'account_id': db_acc.id,
+#             })
+#             line_ids.append(debit_line)
+#             debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+#             credit_line = (0, 0, {
+#                 'name': cr_acc.name,
+#                 'debit': 0.0,
+#                 'credit': abs(total),
+#                 # 'partner_id': partner.id,
+#                 'currency_id': 165,
+#                 'account_id': cr_acc.id,
+#             })
+#             line_ids.append(credit_line)
+#             credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+#         if line_ids:
+#             move_dict['line_ids'] = line_ids
+#             move = self.env['account.move'].create(move_dict)
+#             line_ids = []
+#             move.button_approved()
+#             print("General entry created")
 
 
