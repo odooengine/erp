@@ -310,8 +310,8 @@ class ProductTemplateInherit(models.Model):
     @api.model
     def create(self, vals):
         vals['is_freeze'] = True
-        if vals['standard_price'] == 0:
-            vals['standard_price'] = 1
+        # if vals['standard_price'] == 0:
+        #     vals['standard_price'] = 1
         if not vals['simple']:
             accessory_record = self.env['accessories.type'].browse(vals['accessories_type_id'])
             accessory_code = str(accessory_record.code)
