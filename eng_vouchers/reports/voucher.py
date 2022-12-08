@@ -56,3 +56,55 @@ class AccountPaymentInherit(models.Model):
     def dict_values(self):
         res = dict(self.env['account.journal']._fields['type'].selection).get(self.journal_type)
         return res
+
+
+class AccPayRegInh(models.TransientModel):
+    _inherit = 'account.payment.register'
+
+    cheque_no = fields.Char(string="Cheque No")
+
+    @api.onchange('cheque_no')
+    def set_caps(self):
+        val = str(self.cheque_no)
+        self.cheque_no = val.upper()
+
+    def _create_payments(self):
+        res = super(AccPayRegInh, self)._create_payments()
+        res.update({'cheque_no': self.cheque_no})
+        return res
+
+#     def _post_payments(self, to_process, edit_mode=False):
+#         """ Post the newly created payments.
+#         :param to_process:  A list of python dictionary, one for each payment to create, containing:
+#                             * create_vals:  The values used for the 'create' method.
+#                             * to_reconcile: The journal items to perform the reconciliation.
+#                             * batch:        A python dict containing everything you want about the source journal items
+#                                             to which a payment will be created (see '_get_batches').
+#         :param edit_mode:   Is the wizard in edition mode.
+#         """
+#         payments = self.env['account.payment']
+#         for vals in to_process:
+#             payments |= vals['payment']
+#         payments.action_post()
+#         payments.button_review()
+#         payments.button_approved()
+# #
+# #     def _reconcile_payments(self, to_process, edit_mode=False):
+# #         """ Reconcile the payments.
+# #
+# #         :param to_process:  A list of python dictionary, one for each payment to create, containing:
+# #                             * create_vals:  The values used for the 'create' method.
+# #                             * to_reconcile: The journal items to perform the reconciliation.
+# #                             * batch:        A python dict containing everything you want about the source journal items
+# #                                             to which a payment will be created (see '_get_batches').
+# #         :param edit_mode:   Is the wizard in edition mode.
+# #         """
+# #         domain = [('account_internal_type', 'in', ('receivable', 'payable')), ('reconciled', '=', False)]
+# #         for vals in to_process:
+# #             payment_lines = vals['payment'].line_ids.filtered_domain(domain)
+# #             lines = vals['to_reconcile']
+# #
+# #             for account in payment_lines.account_id:
+# #                 (payment_lines + lines)\
+# #                     .filtered_domain([('account_id', '=', account.id), ('reconciled', '=', False)])\
+# #                     .reconcile()
