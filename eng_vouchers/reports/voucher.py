@@ -26,9 +26,9 @@ class EngAccPayment(models.Model):
             res_partner_bank_id = self.env['res.partner.bank'].search([],limit=1)[0]
             if pay.payment_type == 'inbound':
 
-                pay.available_partner_bank_ids = res_partner_bank_id#pay.journal_id.bank_account_id
+                pay.available_partner_bank_ids = res_partner_bank_id.id#pay.journal_id.bank_account_id
             else:
-                pay.available_partner_bank_ids = res_partner_bank_id
+                pay.available_partner_bank_ids = res_partner_bank_id.id
 #                 pay.partner_id.bank_ids\
 #                         .filtered(lambda x: x.company_id.id in (False, pay.company_id.id))._origin
 
@@ -38,7 +38,7 @@ class EngAccPayment(models.Model):
         for pay in self:
             res_partner_bank_id = self.env['res.partner.bank'].search([],limit=1)[0]
 #             if pay.partner_bank_id not in pay.available_partner_bank_ids._origin:
-            pay.partner_bank_id = res_partner_bank_id
+            pay.partner_bank_id = res_partner_bank_id.id
 
 
 class AccountEdi(models.Model):
