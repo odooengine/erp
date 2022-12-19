@@ -6,19 +6,19 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
 
-class EngAccPaymentrr(models.TransientModel):
-    _inherit="account.payment.register"
-
-    available_partner_bank_ids = fields.Many2many('res.bank',
-
-    )
-
-class EngAccPayment(models.Model):
-    _inherit="account.payment"
-
-    available_partner_bank_ids = fields.Many2many('res.bank',
-
-    )
+# class EngAccPaymentrr(models.TransientModel):
+#     _inherit="account.payment.register"
+#
+#     available_partner_bank_ids = fields.Many2many('res.bank',
+#
+#     )
+#
+# class EngAccPayment(models.Model):
+#     _inherit="account.payment"
+# 
+#     available_partner_bank_ids = fields.Many2many('res.bank',
+#
+#     )
 #
 #     @api.depends('partner_id', 'company_id', 'payment_type')
 #     def _compute_available_partner_bank_ids(self):
