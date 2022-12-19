@@ -6,24 +6,18 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
 
-# class EngAccPaymentrr(models.TransientModel):
-#     _inherit="account.payment.register"
-#
-#     available_partner_bank_ids = fields.Many2many('res.partner.bank',
-#
-#     )
-#
+
 class EngAccPayment(models.Model):
     _inherit="account.payment"
 
-    available_partner_bank_ids = fields.Many2many('res.partner.bank',
-
+    available_partner_bank_ids = fields.Many2many('res.bank',
+        compute='_compute_available_partner_bank_ids',
     )
 
     @api.depends('partner_id', 'company_id', 'payment_type')
     def _compute_available_partner_bank_ids(self):
         for pay in self:
-            res_partner_bank_id = self.env['res.partner.bank'].search([],limit=1)[0]
+            res_partner_bank_id = self.env['res.bank'].search([],limit=1)[0]
             if pay.payment_type == 'inbound':
 
                 pay.available_partner_bank_ids = res_partner_bank_id.id#pay.journal_id.bank_account_id
