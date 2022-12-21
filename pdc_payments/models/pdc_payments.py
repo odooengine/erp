@@ -80,7 +80,7 @@ class PDCPayment(models.Model):
                     'pdc_registered_id': self.id,
                 }
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Registered',
                     'debit': record.payment_amount,
                     'credit': 0.0,
                     'partner_id': record.partner_id.id,
@@ -88,7 +88,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Registered',
                     'debit': 0.0,
                     'partner_id': record.partner_id.id,
                     'credit': record.payment_amount,
@@ -108,7 +108,7 @@ class PDCPayment(models.Model):
                     'pdc_registered_id': self.id,
                 }
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Registered',
                     'debit': 0.0,
                     'credit': record.payment_amount,
                     'partner_id': record.partner_id.id,
@@ -116,7 +116,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Registered',
                     'debit': record.payment_amount,
                     'partner_id': record.partner_id.id,
                     'credit': 0.0,
@@ -141,7 +141,7 @@ class PDCPayment(models.Model):
                     'pdc_bounce_id': self.id,
                 }
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Bounced',
                     'debit': record.payment_amount,
                     'credit': 0.0,
                     'partner_id': record.partner_id.id,
@@ -149,7 +149,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Bounced',
                     'debit': 0.0,
                     'partner_id': record.partner_id.id,
                     'credit': record.payment_amount,
@@ -169,7 +169,7 @@ class PDCPayment(models.Model):
                     'pdc_bounce_id': self.id,
                 }
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Bounced',
                     'debit': 0.0,
                     'credit': record.payment_amount,
                     'partner_id': record.partner_id.id,
@@ -177,7 +177,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Bounced',
                     'debit': record.payment_amount,
                     'partner_id': record.partner_id.id,
                     'credit': 0.0,
@@ -202,7 +202,7 @@ class PDCPayment(models.Model):
                     'pdc_cleared_id': self.id,
                 }
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': 0.0,
                     'credit':  record.payment_amount,
                     'partner_id': record.partner_id.id,
@@ -210,7 +210,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': record.payment_amount,
                     'partner_id': record.partner_id.id,
                     'credit': 0.0,
@@ -218,7 +218,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(credit_line)
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': record.payment_amount,
                     'credit': 0.0,
                     'partner_id': record.partner_id.id,
@@ -226,7 +226,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': 0.0,
                     'partner_id': record.partner_id.id,
                     'credit': record.payment_amount,
@@ -247,7 +247,7 @@ class PDCPayment(models.Model):
                     'pdc_cleared_id': self.id,
                 }
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': record.payment_amount,
                     'credit': 0.0,
                     'partner_id': record.partner_id.id,
@@ -255,7 +255,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': 0.0,
                     'partner_id': record.partner_id.id,
                     'credit': record.payment_amount,
@@ -263,7 +263,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(credit_line)
                 debit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': 0.0,
                     'credit': record.payment_amount,
                     'partner_id': record.partner_id.id,
@@ -271,7 +271,7 @@ class PDCPayment(models.Model):
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
-                    'name': 'PDC Payments',
+                    'name': 'PDC Payments Cleared',
                     'debit': record.payment_amount,
                     'partner_id': record.partner_id.id,
                     'credit': 0.0,
