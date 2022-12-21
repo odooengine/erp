@@ -19,13 +19,14 @@
                         string="Create PDC Payment"
                         type="object"
                         class="oe_highlight"
-                        attrs="{'invisible':['|',('move_type','not in',['in_invoice', 'out_invoice']), ('state','not in',['posted'])]}"
+                        attrs="{'invisible':['|','|',('move_type','not in',['in_invoice', 'out_invoice']), ('state','not in',['posted']), ('is_pdc_created','=',True)]}"
                 />
             </xpath>
             <xpath expr="//field[@name='journal_id']" position="after">
                 <field name="pdc_registered_id" invisible="1"/>
                 <field name="pdc_bounce_id" invisible="1"/>
                 <field name="pdc_cleared_id" invisible="1"/>
+                <field name="is_pdc_created" invisible="1"/>
             </xpath>
         </field>
         </record>

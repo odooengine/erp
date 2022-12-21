@@ -84,7 +84,7 @@ class PDCPayment(models.Model):
                     'debit': record.payment_amount,
                     'credit': 0.0,
                     'partner_id': record.partner_id.id,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_bnk_customer')),
+                    'account_id': self.env.company.pdc_bnk_customer.id
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -92,7 +92,7 @@ class PDCPayment(models.Model):
                     'debit': 0.0,
                     'partner_id': record.partner_id.id,
                     'credit': record.payment_amount,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_receivable')),
+                    'account_id': self.env.company.pdc_receivable.id
                 })
                 lines.append(credit_line)
                 move_dict['line_ids'] = lines
@@ -112,7 +112,7 @@ class PDCPayment(models.Model):
                     'debit': 0.0,
                     'credit': record.payment_amount,
                     'partner_id': record.partner_id.id,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_bnk_vendor')),
+                    'account_id': self.env.company.pdc_bnk_vendor.id
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -120,7 +120,7 @@ class PDCPayment(models.Model):
                     'debit': record.payment_amount,
                     'partner_id': record.partner_id.id,
                     'credit': 0.0,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_payable')),
+                    'account_id': self.env.company.pdc_payable.id
                 })
                 lines.append(credit_line)
                 move_dict['line_ids'] = lines
@@ -145,7 +145,7 @@ class PDCPayment(models.Model):
                     'debit': record.payment_amount,
                     'credit': 0.0,
                     'partner_id': record.partner_id.id,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_receivable')),
+                    'account_id': self.env.company.pdc_receivable.id,
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -153,7 +153,7 @@ class PDCPayment(models.Model):
                     'debit': 0.0,
                     'partner_id': record.partner_id.id,
                     'credit': record.payment_amount,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_bnk_customer')),
+                    'account_id': self.env.company.pdc_bnk_customer.id,
                 })
                 lines.append(credit_line)
                 move_dict['line_ids'] = lines
@@ -173,7 +173,7 @@ class PDCPayment(models.Model):
                     'debit': 0.0,
                     'credit': record.payment_amount,
                     'partner_id': record.partner_id.id,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_payable')),
+                    'account_id': self.env.company.pdc_payable.id,
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -181,7 +181,7 @@ class PDCPayment(models.Model):
                     'debit': record.payment_amount,
                     'partner_id': record.partner_id.id,
                     'credit': 0.0,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_bnk_vendor')),
+                    'account_id': self.env.company.pdc_bnk_vendor.id,
                 })
                 lines.append(credit_line)
                 move_dict['line_ids'] = lines
@@ -206,7 +206,7 @@ class PDCPayment(models.Model):
                     'debit': 0.0,
                     'credit':  record.payment_amount,
                     'partner_id': record.partner_id.id,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_bnk_customer')),
+                    'account_id': self.env.company.pdc_bnk_customer.id
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -214,7 +214,7 @@ class PDCPayment(models.Model):
                     'debit': record.payment_amount,
                     'partner_id': record.partner_id.id,
                     'credit': 0.0,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_receivable')),
+                    'account_id': self.env.company.pdc_receivable.id
                 })
                 lines.append(credit_line)
                 debit_line = (0, 0, {
@@ -251,7 +251,7 @@ class PDCPayment(models.Model):
                     'debit': record.payment_amount,
                     'credit': 0.0,
                     'partner_id': record.partner_id.id,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_bnk_vendor')),
+                    'account_id': self.env.company.pdc_bnk_vendor.id
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -259,7 +259,7 @@ class PDCPayment(models.Model):
                     'debit': 0.0,
                     'partner_id': record.partner_id.id,
                     'credit': record.payment_amount,
-                    'account_id': int(self.env['ir.config_parameter'].get_param('pdc_payments.pdc_payable')),
+                    'account_id': self.env.company.pdc_payable.id
                 })
                 lines.append(credit_line)
                 debit_line = (0, 0, {
@@ -380,6 +380,7 @@ class AccountMove(models.Model):
     pdc_registered_id = fields.Many2one('pdc.payment')
     pdc_bounce_id = fields.Many2one('pdc.payment')
     pdc_cleared_id = fields.Many2one('pdc.payment')
+    is_pdc_created = fields.Boolean()
 
     pdc_count = fields.Integer(string="PDC", compute='_compute_pdc_count')
 

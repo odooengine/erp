@@ -39,7 +39,7 @@ class PDCPaymentWizard(models.TransientModel):
                     'journal_id': record.journal_id.id,
                     'move_id': rec.id,
                     'date_payment': record.date_payment,
-                    'destination_account_id': record.journal_id.default_account_id.id,
+                    'destination_account_id': record.destination_account_id.id,
                     'currency_id': record.currency_id.id,
                     'payment_amount': record.payment_amount,
                     'cheque_no': record.cheque_no,
@@ -52,7 +52,7 @@ class PDCPaymentWizard(models.TransientModel):
                     'journal_id': record.journal_id.id,
                     'move_id': rec.id,
                     'date_payment': record.date_payment,
-                    'destination_account_id': record.journal_id.default_account_id.id,
+                    'destination_account_id': record.destination_account_id.id,
                     'currency_id': record.currency_id.id,
                     'payment_amount': record.payment_amount,
                     'cheque_no': record.cheque_no,
@@ -60,3 +60,4 @@ class PDCPaymentWizard(models.TransientModel):
                 }
                 record = self.env['pdc.payment'].create(vals)
 
+        rec.is_pdc_created = True
