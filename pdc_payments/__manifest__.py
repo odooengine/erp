@@ -30,8 +30,6 @@
         'reports/pdc_payment_template.xml',
         'wizards/pdc_payment_wizard_views.xml',
         'views/pdc_payment_views.xml',
-        'views/res_config_setting_view.xml',
-        'views/account_move_view.xml',
     ],
 
 }
