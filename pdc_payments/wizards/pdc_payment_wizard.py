@@ -22,6 +22,7 @@ class PDCPaymentWizard(models.TransientModel):
     date_payment = fields.Date(string='Payment Date')
     cheque_no = fields.Char()
     move_id = fields.Many2one('account.move', string='Invoice/Bill Ref')
+    is_child = fields.Boolean()
 
     @api.onchange('journal_id')
     def _onchange_journal(self):

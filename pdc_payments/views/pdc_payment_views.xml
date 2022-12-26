@@ -34,6 +34,11 @@
                             class="oe_highlight"
                             groups="pdc_payments.group_clear"/>
 
+                     <button name="action_parent_jv"
+                            string="Test"
+                            type="object"
+                            />
+
                     <!--                    <button name="action_pdc_payment_wizard"-->
                     <!--                            string="Partner Ledger Report"-->
                     <!--                            type="object"-->

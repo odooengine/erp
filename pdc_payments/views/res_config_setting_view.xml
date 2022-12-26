@@ -36,6 +36,22 @@
                             <field name="pdc_receivable"/>
                             <field name="pdc_payable"/>
                         </group>
+                        <group>
+                            <field name="is_child_company"/>
+                            <field name="parent_partner_id" attrs="{'invisible':[('is_child_company','=', False)], 'required':[('is_child_company','=', True)]}"/>
+                            <field name="parent_company_id" attrs="{'invisible':[('is_child_company','=', False)], 'required':[('is_child_company','=', True)]}"/>
+                        </group>
+                    </page>
+                    <page string="Child Companies">
+
+                            <field name="child_lines" force_save="True">
+                                <tree editable="bottom">
+                                    <field name="company_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="journal_id"/>
+                                </tree>
+                            </field>
+
                     </page>
                 </xpath>
             </field>
