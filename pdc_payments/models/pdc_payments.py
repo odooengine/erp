@@ -47,6 +47,7 @@ class PDCPayment(models.Model):
 
     move_id = fields.Many2one('account.move', string='Invoice/Bill Ref')
     cheque_no = fields.Char()
+    is_child = fields.Boolean(default=lambda self:self.env.company.is_child_company)
 
     def check_balance(self):
         partner_ledger = self.env['account.move.line'].search(
@@ -332,7 +333,7 @@ class PDCPayment(models.Model):
                     'debit': 0.0,
                     'credit': record.payment_amount,
                     'partner_id': partner.id,
-                    'account_id': partner.property_account_receivable_id.id,
+                    'account_id': journal.payment_credit_account_id.id
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -340,7 +341,7 @@ class PDCPayment(models.Model):
                     'debit': record.payment_amount,
                     # 'partner_id': line.partner_id.id,
                     'credit': 0.0,
-                    'account_id': journal.payment_credit_account_id.id
+                    'account_id': partner.property_account_receivable_id.id
                 })
                 lines.append(credit_line)
                 move_dict['line_ids'] = lines
