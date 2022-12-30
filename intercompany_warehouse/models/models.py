@@ -5,7 +5,13 @@ from odoo.exceptions import UserError
 class PurchaseOrderInh(models.Model):
     _inherit = 'purchase.order'
 
-    custom_warehouse_id = fields.Many2one('stock.warehouse',)
+    # custom_warehouse_id = fields.Many2one('stock.warehouse',)
+    warehouse_custom = fields.Selection(
+        [("112", "	112/Stock"),
+         ("115", "	115/Stock")],
+        string="Warehouse",
+        required=True,
+    )
 
     def _prepare_sale_order_data(self, name, partner, company, direct_delivery_address):
         """ Generate the Sales Order values from the PO
@@ -19,10 +25,9 @@ class PurchaseOrderInh(models.Model):
             :rtype direct_delivery_address : res.partner record
         """
         self.ensure_one()
-        print('kkk')
         partner_addr = partner.sudo().address_get(['invoice', 'delivery', 'contact'])
         # warehouse = company.warehouse_id and company.warehouse_id.company_id.id == company.id and company.warehouse_id or False
-        warehouse = self.env['stock.warehouse'].search([('company_id', '=', company.id),('code', '=', self.custom_warehouse_id.code)])
+        warehouse = self.env['stock.warehouse'].search([('company_id', '=', company.id),('code', '=', self.warehouse_custom)])
         if not warehouse:
             raise UserError(_('Configure correct warehouse for company(%s) from Menu: Settings/Users/Companies', company.name))
         return {
