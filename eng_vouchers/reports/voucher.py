@@ -35,7 +35,7 @@ class EngAccPayment(models.Model):
     def _compute_partner_bank_id(self):
         ''' The default partner_bank_id will be the first available on the partner. '''
         for pay in self:
-            res_partner_bank_id = self.env['res.partner.bank'].search([],limit=1)
+            res_partner_bank_id = self.env['res.partner.bank'].search([('company_id', '=', self.company_id.id)],limit=1)
 #             if pay.partner_bank_id not in pay.available_partner_bank_ids._origin:
             pay.partner_bank_id = res_partner_bank_id.id
 

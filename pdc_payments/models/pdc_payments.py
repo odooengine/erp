@@ -47,6 +47,7 @@ class PDCPayment(models.Model):
 
     move_id = fields.Many2one('account.move', string='Invoice/Bill Ref')
     cheque_no = fields.Char()
+    is_child = fields.Boolean(default=lambda self:self.env.company.is_child_company)
 
     def check_balance(self):
         partner_ledger = self.env['account.move.line'].search(
@@ -266,8 +267,8 @@ class PDCPayment(models.Model):
                     'name': 'PDC Payments Cleared',
                     'debit': 0.0,
                     'credit': record.payment_amount,
-                    'partner_id': record.partner_id.id,
-                    'account_id': record.destination_account_id.id,
+                    'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
+                    'account_id': self.env.company.parent_partner_id.property_account_payable_id.id if self.env.company.is_child_company else record.destination_account_id.id,
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
@@ -302,9 +303,49 @@ class PDCPayment(models.Model):
 
     def button_cleared(self):
         self.action_cleared_jv()
+        self.action_parent_jv()
         self.write({
             'state': 'cleared'
         })
+
+    def action_parent_jv(self):
+        lines = []
+        for record in self:
+            if self.env.company.is_child_company and self.env.company.parent_company_id:
+                line = self.env.company.parent_company_id.child_lines.filtered(lambda i:i.partner_id.name == self.env.company.name)
+                # print(line.journal_id.name)
+                journal = self.env['account.journal'].with_context(default_company_id=self.env.company.parent_company_id.id).with_company(self.env.company.parent_company_id.id
+).sudo().search([('id', '=', line.journal_id.id)])
+                partner = self.env['res.partner'].with_context(default_company_id=self.env.company.parent_company_id.id).with_company(self.env.company.parent_company_id.id
+).sudo().search([('id', '=', line.partner_id.id)])
+                # company_rec = self.env['res.company']._find_company_from_partner(line.partner_id.id)
+                move_dict = {
+                    'ref': record.name,
+                    'move_type': 'entry',
+                    'journal_id': journal.id,
+                    # 'partner_id': line.partner_id.id,
+                    'date': record.date_payment,
+                    'state': 'draft',
+                    # 'pdc_registered_id': self.id,
+                }
+                debit_line = (0, 0, {
+                    'name': 'PDC Payments',
+                    'debit': 0.0,
+                    'credit': record.payment_amount,
+                    'partner_id': partner.id,
+                    'account_id': journal.payment_credit_account_id.id
+                })
+                lines.append(debit_line)
+                credit_line = (0, 0, {
+                    'name': 'PDC Payments',
+                    'debit': record.payment_amount,
+                    # 'partner_id': line.partner_id.id,
+                    'credit': 0.0,
+                    'account_id': partner.property_account_receivable_id.id
+                })
+                lines.append(credit_line)
+                move_dict['line_ids'] = lines
+                move = self.env['account.move'].with_context(default_company_id=self.env.company.parent_company_id.id, default_journal_id=line.sudo().journal_id.id).with_company(self.env.company.parent_company_id.id).create(move_dict)
 
     def action_get_registered_jv(self):
         return {
@@ -395,6 +436,7 @@ class AccountMove(models.Model):
                         'default_date_payment': self.invoice_date_due,
                         'default_currency_id': self.currency_id.id,
                         'default_move_id': self.id,
+                        'default_is_child': True if self.env.company.is_child_company else False,
                         'default_pdc_type': 'received' if self.move_type == 'out_invoice' else 'sent',
                         },
             'res_model': 'pdc.payment.wizard',
