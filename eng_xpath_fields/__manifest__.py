@@ -19,11 +19,11 @@
     'version': '14.0.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'purchase', 'stock', 'sale_stock'],
+    'depends': ['base', 'sale', 'purchase', 'stock', 'sale_stock', 'mrp', 'account'],
 
     # always loaded
     'data': [
-        'views/stock_sale_purchase_views.xml',
+        'views/stock_sale_purchase_account_mrp_views.xml',
     ],
 
 }

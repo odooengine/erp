@@ -1,5 +1,67 @@
 <odoo>
 
+<!--    <record id="action_add_entry_server" model="ir.actions.server">-->
+<!--      <field name="name">Action Create Entries</field>-->
+<!--      <field name="model_id" ref="mrp.model_mrp_production"/>-->
+<!--      <field name="binding_model_id" ref="mrp.model_mrp_production"/>-->
+<!--      <field name="state">code</field>-->
+<!--      <field name="code"> if records: action = records.server_action_general_entry()</field>-->
+<!--    </record>-->
+
+
+
+    <record id="action_add_temp_server" model="ir.actions.server">
+      <field name="name">Add Template Name</field>
+      <field name="model_id" ref="mrp.model_mrp_production"/>
+      <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+      <field name="state">code</field>
+      <field name="code"> if records: action = records.onchange_product_id_inh()</field>
+    </record>
+
+    <record id="mrp_production_form_search_inh" model="ir.ui.view">
+        <field name="name">mrp.production.search.inh</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
+        <field name="arch" type="xml">
+<!--            <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+<!--                <field name="requisition_location_id"/>-->
+<!--            </xpath>-->
+            <xpath expr="//filter[@name='product']" position="after">
+                <filter string="Product Template" name="product_tmpl" domain="[]" context="{'group_by': 'product_templ'}"/>
+<!--                <filter string="Life Type" name="life_type" domain="[]" context="{'group_by': 'product_id.life_type_id'}"/>-->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_form_inh" model="ir.ui.view">
+        <field name="name">product.template</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form" />
+        <field name="arch" type="xml">
+<!--            <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+<!--                <field name="requisition_location_id"/>-->
+<!--            </xpath>-->
+            <xpath expr="//group[@name='stock_property']" position="replace">
+                <group string="Counterpart Locations" name="stock_property" >
+                    <field name="property_stock_production" groups="base.group_no_one"/>
+                    <field name="property_stock_inventory" groups="base.group_no_one"/>
+                    <field name="requisition_location_id" options="{'no_open':True,'no_create': True,'no_quick_create':True,'no_create_edit':True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!--    <record id="product_template_form_inh" model="ir.ui.view">-->
+    <!--        <field name="name">product.template</field>-->
+    <!--        <field name="model">product.template</field>-->
+    <!--        <field name="inherit_id" ref="" />-->
+    <!--        <field name="arch" type="xml">-->
+    <!--             <xpath expr="//field[@name='property_stock_inventory']" position="after">-->
+    <!--                <field name="requisition_location_id"/>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
     <record id="work_center_embellishments" model="ir.ui.view">
         <field name="name">embellishment.workcenter.inherited</field>
         <field name="model">mrp.workcenter</field>
@@ -33,6 +95,32 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="mrp_bom_form_inh_date">
+        <field name="name">mrp.bom.form.inh</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="after">
+                <field name="descriptions" string="Descriptions"/>
+                <field name="class_fabric_id"/>
+                <field name="accessories_type_id"/>
+            </xpath>
+
+            <xpath expr="///field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="///field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+            </xpath>
+
+        </field>
+    </record>
 
     <record model="ir.ui.view" id="mrp_workorder_form_inh_date">
         <field name="name">mrp.workorder.form.inh</field>
@@ -40,8 +128,20 @@
         <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
         <field name="arch" type="xml">
 
+            <xpath expr="//tree/field[@name='name']" position="before">
+                <field name="work_order_no"/>
+                <field name="life_type" invisible="1"/>
+                <field name="depart" invisible="1"/>
+                <field name="fabric" invisible="1"/>
+            </xpath>
+
             <xpath expr="//tree/field[@name='state']" position="before">
                 <field name="start_date_custom"/>
+            </xpath>
+
+            <xpath expr="//tree/field[@name='workcenter_id']" position="after">
+                <field name="qty_producing_1" invisible="1"/>
+                <field name="qty_producing_2"/>
             </xpath>
 
             <xpath expr="///field[@name='workcenter_id']" position="attributes">
@@ -51,6 +151,44 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="material_purchase_requisition_form_inh">
+        <field name="name">material.purchase.requisition.form.inh</field>
+        <field name="model">material.purchase.requisition</field>
+        <field name="inherit_id" ref="material_purchase_requisitions.material_purchase_requisition_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='analytic_account_id']" position="after">
+                <field name="ref"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--    <record model="ir.ui.view" id="stock_inventory_form_inh">-->
+<!--        <field name="name">stock.inventory.form.inh</field>-->
+<!--        <field name="model">stock.inventory</field>-->
+<!--        <field name="inherit_id" ref="stock.view_inventory_form"/>-->
+<!--        <field name="arch" type="xml">-->
+
+<!--            <xpath expr="//field[@name='prefill_counted_quantity']" position="after">-->
+<!--                <field name="ref"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record model="ir.ui.view" id="mrp_production_tree_inh">
+        <field name="name">mrp.production.tree.inh</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='company_id']" position="before">
+                <field name="work_order_no"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
 
     <record model="ir.ui.view" id="mrp_production_form_inh">
         <field name="name">mrp.production.form.inh</field>
@@ -58,9 +196,45 @@
         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//field[@name='company_id']" position="after">
-                <field name="allowed_product_ids" invisible="1"/>
+<!--            <xpath expr="//field[@name='company_id']" position="after">-->
+<!--                <field name="allowed_product_ids" invisible="1"/>-->
+<!--            </xpath>-->
+
+            <xpath expr="//header/button[@name='action_assign']" position="before">
+<!--                <button name="create_adjustment" type="object" string="Add Variants Adj" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'to_close'), ('is_adj_created', '=', True)]}"/>-->
+                <button name="action_create_requisition" type="object" string="Create Requisition" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'confirmed'), ('is_req_created', '=', True)]}"/>
+<!--                <button name="action_general_entry" type="object" string="Create JV" invisible="1"/>-->
             </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_show_requisitions">
+                    <field string="Requisitions" name="req_count" widget="statinfo" />
+                </button>
+<!--                <button class="oe_stat_button" icon="fa-wrench" type="object" name="action_move_view" attrs="{'invisible': [('move_count', '=', 0)]}">-->
+<!--                    <field string="Journal Vouchers" name="move_count" widget="statinfo" />-->
+<!--                </button>-->
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="create_date" attrs="{'readonly': [('state', 'in', ['done', 'cancel'])]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="work_order_no"/>
+                <field name="is_req_created" invisible="1"/>
+                <field name="product_templ" invisible="1"/>
+                <field name="life_type" invisible="1"/>
+                <field name="depart" invisible="1"/>
+                <field name="fabric" invisible="1"/>
+<!--                <field name="product_ids" widget="many2many_tags" invisible="1"/>-->
+                <field name="is_transfer_created" invisible="1"/>
+<!--                <field name="is_adj_created" invisible="1"/>-->
+            </xpath>
+
+<!--            <xpath expr="//field[@name='product_id']" position="attributes">-->
+<!--                <attribute name="domain">[('id', 'in', product_ids)]</attribute>-->
+<!--            </xpath>-->
+
 
             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
                 <button type="object" name="action_view_transfers" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('transfer_count', '=', 0)]}">
@@ -72,12 +246,17 @@
             <!--                <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>-->
             <!--            </xpath>-->
 
+            <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='product_id']" position="after">
+                <field name="descriptions"/>
+            </xpath>
+
             <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='product_id']" position="attributes">
                 <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
             </xpath>
 
             <xpath expr="//field[@name='product_id']" position="attributes">
                 <attribute name="options">{'no_quick_create': True, 'no_create_edit' : True, 'no_create': True}</attribute>
+<!--                <attribute name="domain">[]</attribute>-->
             </xpath>
 
             <xpath expr="//field[@name='user_id']" position="attributes">
@@ -137,7 +316,7 @@
                             <field name="start_date"/>
                             <field name="paused_date"/>
                             <field name="qty" string="Quantity"/>
-                            <field name="reason"/>
+                            <field name="reasons"/>
                         </tree>
                     </field>
                 </page>
@@ -145,6 +324,27 @@
             </xpath>
 
         </field>
+    </record>
+
+    <record id="view_account_move_form_inh" model="ir.ui.view">
+        <field name="name">account.move</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="mo_id"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="action_unpost_entries_server" model="ir.actions.server">
+        <field name="name">UnPost Entries</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_account_move" />
+        <field name="binding_model_id" ref="model_account_move" />
+        <field name="state">code</field>
+        <field name="code">action = records.action_unpost_entries()</field>
     </record>
 
 </odoo>

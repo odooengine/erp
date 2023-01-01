@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_fill_booleans_tmpl_server" model="ir.actions.server">
+        <field name="name">Fill Template Booleans</field>
+        <field name="sequence">1</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_product_template" />
+        <field name="binding_model_id" ref="model_product_template" />
+        <field name="state">code</field>
+        <field name="code">
+                if records: action = records.onchange_booleans()
+        </field>
+    </record>
+
+    <record id="action_fill_cost_tmpl_server" model="ir.actions.server">
+        <field name="name">Fill Cost Price</field>
+        <field name="sequence">1</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_product_template" />
+        <field name="binding_model_id" ref="model_product_template" />
+        <field name="state">code</field>
+        <field name="code">
+                if records: action = records.fill_cost()
+        </field>
+    </record>
+
+    <record id="action_fill_products_values_server" model="ir.actions.server">
+        <field name="name">Fill Product Values</field>
+        <field name="sequence">1</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_mrp_production" />
+        <field name="binding_model_id" ref="model_mrp_production" />
+        <field name="state">code</field>
+        <field name="code">
+                if records: action = records.onchange_product_id()
+        </field>
+    </record>
+
+<!--    <record id="action_fill_booleans_vrnt_server" model="ir.actions.server">-->
+<!--        <field name="name">Fill Variant Booleans</field>-->
+<!--        <field name="sequence">1</field>-->
+<!--        <field name="type">ir.actions.server</field>-->
+<!--        <field name="model_id" ref="model_product_product" />-->
+<!--        <field name="binding_model_id" ref="model_product_product" />-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">-->
+<!--                if records: action = records.onchange_booleans()-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>

@@ -20,11 +20,12 @@
     'sequence': 1,
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'purchase', 'sale', 'mrp', 'account'],
+    'depends': ['base', 'purchase', 'sale', 'mrp', 'account', 'multi_payments'],
 
     # always loaded
     'data': [
         'security/security.xml',
+        'reports/invoice_report.xml',
         'views/approval_all_manager_views.xml',
     ],
 

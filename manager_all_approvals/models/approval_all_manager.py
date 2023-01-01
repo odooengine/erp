@@ -5,6 +5,18 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_is_zero, float_compare
 
 
+class StockMoveLineInh(models.Model):
+    _inherit = 'stock.move.line'
+
+    description = fields.Char()
+
+
+class StockMoveInh(models.Model):
+    _inherit = 'stock.move'
+
+    description = fields.Char()
+
+
 class AccountEdi(models.Model):
     _inherit = 'account.edi.document'
 
@@ -66,6 +78,10 @@ class PurchaseOrderInherit(models.Model):
                 order.write({'state': 'to approve'})
             if order.partner_id not in order.message_partner_ids:
                 order.message_subscribe([order.partner_id.id])
+        for line in self.order_line:
+            line.move_ids.description = line.name
+            for rec_line in line.move_ids.move_line_ids:
+                rec_line.description = line.name
         return True
 
     def button_reject(self):
@@ -112,6 +128,10 @@ class SaleOrderInh(models.Model):
         if self.env.user.has_group('manager_all_approvals.group_approve_sale_order'):
             self.approve_by_id = self.env.user.id
         rec = super(SaleOrderInh, self).action_confirm()
+        for line in self.order_line:
+            line.move_ids.description = line.name
+            for rec_line in line.move_ids.move_line_ids:
+                rec_line.description = line.name
         return rec
 
     def button_reject(self):
@@ -125,7 +145,7 @@ class MRPProductionInh(models.Model):
 
     # review_by_id = fields.Many2one('res.users', string='Reviewed By')
     approve_by_id = fields.Many2one('res.users', string='Approved By')
-
+#
     state = fields.Selection([
         ('draft', 'Draft'),
         ('approve', 'Waiting For Approval'),
@@ -253,6 +273,20 @@ class AccountPaymentInh(models.Model):
 
     review_by_id = fields.Many2one('res.users', string='Reviewed By')
     approve_by_id = fields.Many2one('res.users', string='Approved By')
+    transfer_account_id = fields.Many2one('account.account')
+    cheque_no = fields.Char('Cheque No', default='')
+
+    @api.constrains('cheque_no')
+    def unique_cheque_no(self):
+        if self.cheque_no:
+            payment = self.env['account.payment'].search([('cheque_no', '=', self.cheque_no)])
+            if len(payment) > 1:
+                raise UserError('Cheque No Already Exist')
+
+    @api.onchange('cheque_no')
+    def set_caps(self):
+        val = str(self.cheque_no)
+        self.cheque_no = val.upper()
 
     # state = fields.Selection([('draft', 'Draft'),
     #                           ('approve', 'Waiting For Approval'),
@@ -263,7 +297,40 @@ class AccountPaymentInh(models.Model):
     #                           ('reject', 'Reject')
     #                           ], readonly=True, default='draft', copy=False, string="Status")
 
+    @api.model
+    def create(self, vals):
+        record = super(AccountPaymentInh, self).create(vals)
+        if record.is_internal_transfer:
+            record.payment_type = 'outbound'
+        return record
+
+    # def write(self, vals):
+    #     record = super(AccountPaymentInh, self).write(vals)
+    #     if self.is_internal_transfer:
+    #         self.payment_type = 'outbound'
+    #     record = super(AccountPaymentInh, self).write(vals)
+    #     return record
+
+    @api.onchange('is_internal_transfer')
+    def onchange_internal_transfer(self):
+        if self.is_internal_transfer:
+            self.payment_type = 'outbound'
+
+    def action_show_move_lines(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Move Line',
+            'view_id': self.env.ref('account.view_move_line_tree', False).id,
+            'target': 'current',
+            'domain': [('payment_id', '=', self.id)],
+            'res_model': 'account.move.line',
+            'views': [[False, 'tree'], [False, 'form']],
+        }
+
     def action_post(self):
+        if self.journal_id.type == 'bank' and not self.cheque_no:
+            if self.is_internal_transfer or self.payment_type == 'outbound':
+                raise UserError('Please Enter Valid Cheque No.')
         self.write({
             'state': 'to_review'
         })
@@ -284,6 +351,8 @@ class AccountPaymentInh(models.Model):
         if self.env.user.has_group('manager_all_approvals.group_approve_payment'):
             self.approve_by_id = self.env.user.id
         rec = super(AccountPaymentInh, self).action_post()
+        if self.is_internal_transfer:
+            self.general_entry()
         return rec
 
     def button_reject(self):
@@ -291,58 +360,62 @@ class AccountPaymentInh(models.Model):
             'state': 'rejected'
         })
 
-    # def button_approve(self):
-    # AccountMove = self.env['account.move'].with_context(default_type='entry')
-    # for rec in self:
-    #
-    #     if rec.state != 'approve':
-    #         raise UserError(_("Only a draft payment can be posted."))
-    #
-    #     if any(inv.state != 'posted' for inv in rec.invoice_ids):
-    #         raise ValidationError(_("The payment cannot be processed because the invoice is not open!"))
-    #
-    #     # keep the name in case of a payment reset to draft
-    #     if not rec.name:
-    #         # Use the right sequence to set the name
-    #         if rec.payment_type == 'transfer':
-    #             sequence_code = 'account.payment.transfer'
-    #         else:
-    #             if rec.partner_type == 'customer':
-    #                 if rec.payment_type == 'inbound':
-    #                     sequence_code = 'account.payment.customer.invoice'
-    #                 if rec.payment_type == 'outbound':
-    #                     sequence_code = 'account.payment.customer.refund'
-    #             if rec.partner_type == 'supplier':
-    #                 if rec.payment_type == 'inbound':
-    #                     sequence_code = 'account.payment.supplier.refund'
-    #                 if rec.payment_type == 'outbound':
-    #                     sequence_code = 'account.payment.supplier.invoice'
-    #         rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
-    #         if not rec.name and rec.payment_type != 'transfer':
-    #             raise UserError(_("You have to define a sequence for %s in your company.") % (sequence_code,))
-    #
-    #     moves = AccountMove.create(rec._prepare_payment_moves())
-    #     moves.filtered(lambda move: move.journal_id.post_at != 'bank_rec').post()
-    #
-    #     # Update the state / move before performing any reconciliation.
-    #     move_name = self._get_move_name_transfer_separator().join(moves.mapped('name'))
-    #     rec.write({'state': 'posted', 'move_name': move_name})
-    #
-    #     if rec.payment_type in ('inbound', 'outbound'):
-    #         # ==== 'inbound' / 'outbound' ====
-    #         if rec.invoice_ids:
-    #             (moves[0] + rec.invoice_ids).line_ids \
-    #                 .filtered(
-    #                 lambda line: not line.reconciled and line.account_id == rec.destination_account_id and not (
-    #                             line.account_id == line.payment_id.writeoff_account_id and line.name == line.payment_id.writeoff_label)) \
-    #                 .reconcile()
-    #     elif rec.payment_type == 'transfer':
-    #         # ==== 'transfer' ====
-    #         moves.mapped('line_ids') \
-    #             .filtered(lambda line: line.account_id == rec.company_id.transfer_account_id) \
-    #             .reconcile()
-    #
-    # return True
+    def general_entry(self):
+        if not self.transfer_account_id:
+            raise UserError('Please Add Transfer To Account.')
+        line_ids = []
+        debit_sum = 0.0
+        credit_sum = 0.0
+        move_dict = {
+            'ref': self.name,
+            'journal_id': self.journal_id.id,
+            'partner_id': self.partner_id.id,
+            'date': self.date,
+            # 'state': 'draft',
+        }
+        # for oline in self.move_lines:
+        debit_line = (0, 0, {
+            'name': self.ref,
+            'debit': abs(self.amount),
+            'credit': 0.0,
+            'partner_id': self.partner_id.id,
+            # 'analytic_account_id': oline.analytic_account_id.id,
+            # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+            # 'account_id': self.destination_account_id.id,
+            'account_id': self.transfer_account_id.id,
+            'payment_id': self.id,
+        })
+        line_ids.append(debit_line)
+        debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+        credit_line = (0, 0, {
+            'name': self.ref,
+            'date_maturity': self.date,
+            'debit': 0.0,
+            'partner_id': self.partner_id.id,
+            'credit': abs(self.amount),
+            # 'account_id': self.transfer_account_id.id,
+            'account_id': self.destination_account_id.id,
+            'payment_id': self.id,
+        })
+        line_ids.append(credit_line)
+        credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+        print(line_ids)
+        # self.move_id.button_draft()
+        # self.move_id.update({
+        #     'line_ids': line_ids
+        # })
+        move_dict['line_ids'] = line_ids
+        # self.move_id.update({
+        #         'line_ids': line_ids
+        #     })
+        # move_dict['move_id'] = self.move_id.id
+        rec = self.env['account.move'].create(move_dict)
+        for l in rec.line_ids:
+            l.payment_id = self.id
+        rec.action_post()
+        rec.button_review()
+        rec.button_approved()
+        print("General entry created")
 
 
 class StockPickingInh(models.Model):
@@ -361,6 +434,7 @@ class StockPickingInh(models.Model):
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
         ('rejected', 'Rejected'),
+        ('merged', 'merged'),
     ], string='Status', compute='_compute_state',
         copy=False, index=True, readonly=True, store=True, tracking=True,
         help=" * Draft: The transfer is not confirmed yet. Reservation doesn't apply.\n"
@@ -372,8 +446,6 @@ class StockPickingInh(models.Model):
 
     def button_validate(self):
         for record in self.move_ids_without_package:
-            print(record.quantity_done)
-            print(record.product_uom_qty)
             if record.quantity_done > record.product_uom_qty:
                 raise UserError(_('Receiving Quantity Cannot be Exceeded Than Demanded'))
         self.received_by_id = self.env.user.id

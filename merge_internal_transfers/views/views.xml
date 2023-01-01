@@ -1,0 +1,41 @@
+<odoo>
+    <data>
+        <record id="action_merge_transfers_server" model="ir.actions.server">
+            <field name="name">Merge Transfer</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="state">code</field>
+            <field name="code">if records: action = records.action_open_wizard()</field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_stock_pickings_inh">
+            <field name="name">stock.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="ref" attrs="{'invisible': [('ref', '=', False)]}"/>
+                    <field name="is_merge_lines" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//page[3]" position="after">
+                    <page string="Merge From" attrs="{'invisible': [('is_merge_lines', '!=', True)]}">
+                        <field name="merge_lines">
+                            <tree editable="bottom">
+                                <field name="picking_id" invisible="1"/>
+                                <field name="product_id"/>
+                                <field name="name"/>
+                                <field name="product_ref_id"/>
+                                <field name="qty"/>
+                                <field name="product_uom_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

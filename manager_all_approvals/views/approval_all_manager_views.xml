@@ -1,5 +1,7 @@
 <odoo>
 
+
+
     <record id="view_purchase_order_form_inherit" model="ir.ui.view">
         <field name="name">purchase.order.form.inherit</field>
         <field name="model">purchase.order</field>
@@ -139,7 +141,7 @@
             <xpath expr="//field[@name='company_id']" position="after">
 <!--                <field name="review_by_id" readonly="1"/>-->
                 <field name="approve_by_id" invisible="1"/>
-                <field name="allowed_product_ids" invisible="1"/>
+<!--                <field name="allowed_product_ids" invisible="1"/>-->
             </xpath>
 
         </field>
@@ -203,6 +205,12 @@
          <field name="inherit_id" ref="account.view_account_payment_form"/>
          <field name="arch" type="xml">
 
+             <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-wrench" type="object" string="Move Lines" name="action_show_move_lines">
+<!--                    <field string="Requisitions" name="req_count" widget="statinfo" />-->
+                </button>
+            </xpath>
+
              <xpath expr="//header/button[@name='action_post']" position="after">
                  <button name="button_review"
                         type="object"
@@ -241,15 +249,61 @@
                 <field name="review_by_id" invisible="1"/>
                 <field name="approve_by_id" invisible="1"/>
              </xpath>
+             <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="transfer_account_id" attrs="{'invisible': [('is_internal_transfer', '=', False)]}" domain="[('id', 'in', account_ids)]"/>
+             </xpath>
+             <xpath expr="//field[@name='company_id']" position="after">
+                <field name="cheque_no"/>
+             </xpath>
+
+             <xpath expr="//field[@name='payment_type']" position="attributes">
+                <attribute name="attrs">{'readonly': [('is_internal_transfer', '=', True)]}</attribute>
+             </xpath>
+
+             <xpath expr="//field[@name='destination_account_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', account_ids)]</attribute>
+             </xpath>
 
         </field>
     </record>
+
+    <record id="view_picking_internal_search_inherit_stock_descriptions" model="ir.ui.view">
+            <field name="name">stock.picking.search</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="move_ids_without_package" string="Description" filter_domain="[('move_ids_without_package.description', 'ilike', self)]"/>
+                </xpath>
+                <xpath expr="//filter[@name='done']" position="after">
+                <filter name="merged" string="Merged" domain="[('state', '=', 'merged')]" help="Draft Moves"/>
+                </xpath>
+            </field>
+        </record>
+
+<!--    view_stock_move_line_detailed_operation_tree-->
+
+     <record id="view_stock_move_line_form_inherit_detailed" model="ir.ui.view">
+         <field name="name">view.stock.move.line.form.inherit</field>
+         <field name="model">stock.move.line</field>
+         <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+         <field name="arch" type="xml">
+
+             <xpath expr="//field[@name='product_id']" position="after">
+                 <field name="description"/>
+             </xpath>
+         </field>
+     </record>
 
     <record id="view_stock_picking_form_inherit" model="ir.ui.view">
          <field name="name">view.stock.picking.form.inherit</field>
          <field name="model">stock.picking</field>
          <field name="inherit_id" ref="stock.view_picking_form"/>
          <field name="arch" type="xml">
+
+             <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_id']" position="after">
+                <field name="description"/>
+            </xpath>
 
              <xpath expr="//header/button[@name='action_confirm']" position="after">
 <!--                 <button name="button_review"-->

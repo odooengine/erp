@@ -6,87 +6,84 @@
         <field name="arch" type="xml">
             <form string="PDC Payment">
                 <header>
-
-                    <button name="button_save"
-                            string="Save"
-                            type="object"
-                            class="oe_highlight"
-                            states="draft"
-                            groups="pdc_payments.group_save"/>
-
-                    <button name="button_register"
-                            string="Register"
-                            type="object"
-                            class="oe_highlight"
-                            states="save"
-                            groups="pdc_payments.group_register"/>
+<!--                    <button name="button_register"-->
+<!--                            string="Register"-->
+<!--                            type="object"-->
+<!--                            class="oe_highlight"-->
+<!--                            states="draft"-->
+<!--                            groups="pdc_payments.group_register"/>-->
 
                     <button name="button_cancel"
                             string="Cancel"
                             type="object"
-                            attrs="{'invisible': [('state', 'in', ['cancel','cleared'])]}"
+                            attrs="{'invisible': [('state', 'in', ['cancel','cleared', 'draft'])]}"
                             class="oe_highlight"
                             groups="pdc_payments.group_cancel"/>
-
-                    <button name="button_return"
-                            string="Return"
-                            type="object"
-                            states="registered"
-                            class="oe_highlight"
-                            groups="pdc_payments.group_return"/>
-
-                    <button name="button_deposit"
-                            string="Deposit"
-                            type="object"
-                            states="returned"
-                            class="oe_highlight"
-                            groups="pdc_payments.group_deposit"/>
 
                     <button name="button_bounce"
                             string="Bounce"
                             type="object"
-                            states="deposited"
+                            states="registered"
                             class="oe_highlight"
                             groups="pdc_payments.group_bounce"/>
 
                     <button name="button_cleared"
                             string="Cleared"
                             type="object"
-                            states="bounced"
+                            attrs="{'invisible': [('state', 'in', ['draft', 'bounced', 'cleared', 'cancel'])]}"
                             class="oe_highlight"
                             groups="pdc_payments.group_clear"/>
 
-                    <button name="action_pdc_payment_wizard"
-                            string="Partner Ledger Report"
-                            type="object"
-                            class="oe_highlight"
-                            attrs="{'invisible': [('state', '!=', 'cleared')]}"/>
+<!--                     <button name="action_parent_jv"-->
+<!--                            string="Test"-->
+<!--                            type="object"-->
+<!--                            />-->
+
+                    <!--                    <button name="action_pdc_payment_wizard"-->
+                    <!--                            string="Partner Ledger Report"-->
+                    <!--                            type="object"-->
+                    <!--                            class="oe_highlight"-->
+                    <!--                            attrs="{'invisible': [('state', '!=', 'cleared')]}"/>-->
 
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_get_registered_jv" type="object" icon="fa-bars"
+                                attrs="{'invisible':[('registered_counter','=',0)]}">
+                            <field name="registered_counter" widget="statinfo" string="Registered"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_get_bounce_jv" type="object" icon="fa-bars"
+                                attrs="{'invisible':[('bounce_counter','=',0)]}">
+                            <field name="bounce_counter" widget="statinfo" string="Bounce"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_get_cleared_jv" type="object" icon="fa-bars"
+                                attrs="{'invisible':[('cleared_counter','=',0)]}">
+                            <field name="cleared_counter" widget="statinfo" string="Cleared"/>
+                        </button>
+                    </div>
                     <h1>
                         <field name="name" readonly="1"/>
                     </h1>
                     <group>
                         <group>
                             <field name="partner_id" required="1"/>
-                            <field name="bank_id" required="1"/>
                             <field name="payment_amount" required="1"/>
                             <field name="cheque_ref"/>
                             <field name="memo"/>
-                            <field name="destination_account_id" required="1"/>
+                            <field name="destination_account_id" attrs="{'invisible':[('is_child','=', True)], 'required':[('is_child','=', False)]}"/>
                             <field name="journal_id" required="1"/>
                             <field name="currency_id" required="1"/>
                             <field name="pdc_type" required="1"/>
                         </group>
                         <group>
-                            <field name="date_payment"/>
-                            <field name="date_due"/>
-                            <field name="date_cleared"/>
-                            <field name="date_return"/>
-                            <field name="date_deposit"/>
+                            <field name="date_payment" required="1" string="Due Date"/>
+                            <field name="date_registered"/>
                             <field name="date_bounced"/>
+                            <field name="date_cleared"/>
+                            <field name="cheque_no" required="1"/>
+                            <field name="move_id"/>
+                            <field name="is_child" invisible="1"/>
                         </group>
                     </group>
                 </sheet>
@@ -106,7 +103,6 @@
             <tree>
                 <field name="name"/>
                 <field name="partner_id"/>
-                <field name="bank_id"/>
                 <field name="payment_amount" sum="Total"/>
                 <field name="cheque_ref"/>
                 <field name="memo"/>
@@ -123,7 +119,6 @@
             <search>
                 <field name="name"/>
                 <field name="partner_id"/>
-                <field name="bank_id"/>
                 <field name="payment_amount"/>
                 <field name="cheque_ref"/>
                 <field name="memo"/>
@@ -165,7 +160,7 @@
               action="action_pdc_payment_view"
               sequence="1"/>
 
-<!--    Inhertied Views-->
+    <!--    Inhertied Views-->
 
     <record id="view_account_payment_inherit" model="ir.ui.view">
         <field name="name">account.payment.inherit</field>

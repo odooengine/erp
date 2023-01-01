@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <report id="merge_report"
+            model="stock.picking"
+            string="Merge Report"
+            report_type="qweb-pdf"
+            name="merge_internal_transfers.merge_template"
+            file="merge_internal_transfers.merge_template"
+    />
+
+</odoo>

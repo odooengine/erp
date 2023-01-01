@@ -1,0 +1,14 @@
+<odoo>
+
+    <record id="view_stock_quant_view_graph_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.graph.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.stock_quant_view_graph"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='quantity']" position="after">
+                <field name="value" type="measure"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,101 @@
+<odoo>
+    <data>
+        
+
+
+        <template id="po_product_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <strong>Po product report</strong>
+                        <table class="table table-bordered">
+                            <thead class="text-center" style="background-color:#eeeeee; font-size:14px; font-weight:600;">
+                               <tr>
+                                    <th style="vertical-align:top" rowspan="2">Article</th>
+                                    <th style="vertical-align:top" rowspan="2">Color</th>
+                                    <th style="vertical-align:top" rowspan="2" >Vendor Code</th>
+                                    <th t-att-colspan="size_colspan">Size</th>
+                                    <th colspan="2">Price</th>
+                                    <th colspan="2">Value</th>
+                                </tr>
+                                
+                                <tr>
+                                   <t t-foreach="sv_names" t-as="sv">
+                                        <th> 
+                                            <span t-esc="sv" />
+                                        </th>
+                                    </t>
+                                    
+                                    <th> 
+                                        <strong><span>Total</span></strong>
+                                    </th>
+                                    
+                                    <th> 
+                                        <strong><span>Billing</span></strong>
+                                    </th>
+                                    <th> 
+                                        <strong><span>Retail</span></strong>
+                                    </th>
+                                    
+                                    <th> 
+                                        <strong><span>Billing</span></strong>
+                                    </th>
+                                    <th> 
+                                        <strong><span>Retail</span></strong>
+                                    </th>
+                                    
+                                    
+                                </tr>
+                            </thead>
+                              <t t-set="grand_size_total" t-value="0.0" />
+                              <t t-set="grand_total" t-value="0.0" />
+                            <tbody>
+                                <t t-foreach="val" t-as="val">
+                                 
+                                   <tr> 
+                                        <td  style="border:1px solid black !important;"><span t-esc="val['prod_tmpl'].name" /></td>
+                                        <td  style="border:1px solid black !important;"><span t-esc="val['color']" /></td>
+                                        <td style="border:1px solid black !important;"><span>&#160;</span></td>
+                                        
+                                        <t t-set="size_total" t-value="0.0" />
+                                        <t t-foreach="sv_names" t-as="svn">
+                                           <t t-set="matched_col" t-value ="getmatched_colVal(svn,val['size'])" />
+                                            <t t-if="matched_col == 'no match'">
+                                                <td  style="border:1px solid black !important;"><span>&#160;</span></td>
+                                             </t>
+                                             <t t-if="not matched_col == 'no match'">
+                                                <td  style="border:1px solid black !important;"><span t-esc="matched_col" /></td>
+                                                <t t-set="size_total" t-value="size_total + matched_col" />
+                                            </t>
+                                        </t>
+                                        
+                                        <td  style="border:1px solid black !important;"><span t-esc="size_total"/></td>
+                                          <t t-set="grand_size_total" t-value="grand_size_total + size_total " /> 
+                                        <td  style="border:1px solid black !important;"><span t-esc="val['price']" /></td>
+                                        <td  style="border:1px solid black !important;"><span>&#160;</span></td>
+                                        <td  style="border:1px solid black !important;"><span t-esc="size_total * val['price']"/></td>
+                                        <t t-set="grand_total" t-value="grand_total + (size_total * val['price'])" />
+                                        <td  style="border:1px solid black !important;"><span>&#160;</span></td> 
+                                                                 
+                                    </tr>
+                                </t>
+                                <tr style="border:1px solid black !important;">
+                                   <td  style="border:1px solid black !important;" colspan ="3"><span>&#160;</span></td>
+                                   <td   style="border:1px solid black !important;font-size:14px;" t-att-colspan="size_colspan - 1"><strong><span style="font-size:14px;">Total:</span></strong></td>
+                                   <td   style="border:1px solid black !important;"><b><span t-esc="'{:,.2f}'.format(grand_size_total)" /></b></td>
+                                   <td  style="border:1px solid black !important;" colspan ="2"><span>&#160;</span></td>
+                                   <td  style="border:1px solid black !important;"><b><span t-esc="'{:,.2f}'.format(grand_total)" /></b></td>
+                                   <td  style="border:1px solid black !important;"><span>&#160;</span></td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>   
+           
+                    
+                    
+                    </div>
+                </t>
+            </t>
+        </template>            
+    </data>
+</odoo>    

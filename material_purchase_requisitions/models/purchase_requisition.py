@@ -27,6 +27,8 @@ class MaterialPurchaseRequisition(models.Model):
     #     readonly=1,
     # )
 
+    # user_id = fields.Many2one('res.users',string='User')
+
     name = fields.Char(required=True, copy=False, readonly=True,
                        index=True, default=lambda self: _('New'))
 
@@ -50,14 +52,14 @@ class MaterialPurchaseRequisition(models.Model):
     department_id = fields.Many2one(
         'hr.department',
         string='Department',
-        required=True,
+        required=False,
         copy=True,
     )
     employee_id = fields.Many2one(
         'hr.employee',
         string='Employee',
         default=lambda self: self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1),
-        required=True,
+        required=False,
         copy=True,
     )
     approve_manager_id = fields.Many2one(
@@ -83,13 +85,18 @@ class MaterialPurchaseRequisition(models.Model):
         readonly=True,
         copy=False,
     )
-    company_id = fields.Many2one(
-        'res.company',
-        string='Company',
-        default=lambda self: self.env.user.company_id,
-        required=True,
-        copy=True,
-    )
+
+    def _default_get_company(self):
+        return self.env.company.id
+
+    company_id = fields.Many2one('res.company', 'Company', default=_default_get_company, required=True)
+    # company_id = fields.Many2one(
+    #     'res.company',
+    #     string='Company',
+    #     # default=lambda self: self.env.user.company_id,
+    #     required=True,
+    #     # copy=True,
+    # )
     location_id = fields.Many2one(
         'stock.location',
         string='Source Location',
@@ -187,6 +194,7 @@ class MaterialPurchaseRequisition(models.Model):
     )
 
     vendor_id = fields.Many2one('res.partner')
+    mrp_id = fields.Many2one('mrp.production')
     tech_pack = fields.Char('Tech Pack')
 
     @api.model
@@ -250,6 +258,7 @@ class MaterialPurchaseRequisition(models.Model):
         pick_vals = {
             'product_id': line.product_id.id,
             'product_uom_qty': line.qty,
+            'description': line.description,
             'product_uom': line.uom.id,
             'location_id': self.location_id.id,
             'location_dest_id': self.dest_location_id.id,
@@ -267,6 +276,7 @@ class MaterialPurchaseRequisition(models.Model):
             'product_id': line.product_id.id,
             'name': line.product_id.name,
             'product_qty': line.qty,
+            'description': line.description,
             'product_uom': line.uom.id,
             'date_planned': fields.Date.today(),
             'price_unit': line.product_id.standard_price,
@@ -298,6 +308,7 @@ class MaterialPurchaseRequisition(models.Model):
                     raise Warning(_('Select Destination location under the picking details.'))
                 #                 if not rec.employee_id.dest_location_id.id or not rec.employee_id.department_id.dest_location_id.id:
                 #                     raise Warning(_('Select Destination location under the picking details.'))
+
                 picking_vals = {
                     'partner_id': rec.employee_id.sudo().address_home_id.id,
                     # 'min_date' : fields.Date.today(),
@@ -308,30 +319,34 @@ class MaterialPurchaseRequisition(models.Model):
                     'custom_requisition_id': rec.id,
                     'origin': rec.name,
                     'company_id': rec.company_id.id,
+                    'product_ref_id': rec.mrp_id.product_id.id,
+                    'product_tmpl_ref_id': rec.mrp_id.product_id.product_tmpl_id.id,
 
                 }
+                print(rec.company_id.name)
                 stock_id = stock_obj.sudo().create(picking_vals)
                 delivery_vals = {
                     'delivery_picking_id': stock_id.id,
                 }
                 rec.write(delivery_vals)
-
             po_dict = {}
             if rec.vendor_id:
                 for line in rec.requisition_line_ids:
                     line.partner_id = [rec.vendor_id.id]
             else:
-                raise UserError('Please Select Vendor.')
+                for re_line in rec.requisition_line_ids:
+                    if re_line.requisition_type == 'purchase':
+                        raise UserError('Please Select Vendor.')
             for line in rec.requisition_line_ids:
                 if line.requisition_type == 'internal':
                     pick_vals = rec._prepare_pick_vals(line, stock_id)
                     move_id = move_obj.sudo().create(pick_vals)
-                # else:
                 if line.requisition_type == 'purchase':  # 10/12/2019
                     if not line.partner_id:
                         raise Warning(
                             _('Please enter atleast one vendor on Requisition Lines for Requisition Action Purchase'))
-
+            if any(line.requisition_type == 'internal' for line in rec.requisition_line_ids):
+                stock_id.action_confirm()
             rec.action_create_po()
             rec.state = 'stock'
 
@@ -403,6 +418,7 @@ class MaterialPurchaseRequisition(models.Model):
                             # 'product_tmpl_id': record.product_id.product_tmpl_id.id,
                             'name': record.product_id.name,
                             'product_qty': record.qty,
+                            # 'description': line.description,
                             'product_uom': record.uom.id,
                             # 'date_planned': datetime.today().date(),
                             'price_unit': record.product_id.standard_price,

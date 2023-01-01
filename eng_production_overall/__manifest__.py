@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "production_overall",
+    'name': "Engine Production",
 
     'summary': """
         Production""",
@@ -9,7 +9,7 @@
         Long description of module's purpose
     """,
 
-    'author': "Viltco",
+    'author': "Atif",
     'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
@@ -19,18 +19,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'mrp', 'stock', 'purchase', 'product', 'stock_account'],
+    'depends': ['base', 'mrp', 'stock', 'purchase', 'product', 'material_purchase_requisitions', 'hr', 'eng_product_format', 'manager_all_approvals'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'security/security.xml',
         'views/production_view.xml',
-        # 'views/picking_views.xml',
-        # 'views/requisition_views.xml',
-        # 'views/product_views.xml',
-        # 'views/unique_lot.xml',
         'wizard/produced_wizard.xml',
+        'views/picking_views.xml',
     ],
 
 }

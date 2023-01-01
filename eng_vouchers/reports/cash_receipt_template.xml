@@ -26,6 +26,10 @@
                     <div class="row" id="journal_information">
                         <div class="col-8">
                             <div>
+                                <strong>Voucher No. : </strong>
+                                <span t-field="o.name"/>
+                            </div>
+                            <div>
                                 <strong>Journal : </strong>
                                 <span t-field="o.journal_id"/>
                             </div>
@@ -43,7 +47,8 @@
                             </div>
                             <div class="text-left">
                                 <strong>Print Date : </strong>
-                                <span t-esc="datetime.datetime.now().strftime('%m-%d-%Y')"/>
+<!--                                <span t-esc="datetime.datetime.now().strftime('%m-%d-%Y')"/>-->
+                                <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y')"/>
                             </div>
                         </div>
                     </div>
@@ -55,9 +60,10 @@
                         <thead>
                             <tr>
                                 <th>Account</th>
-                                <th>Partner</th>
-                                <th>Label</th>
-                                <th>Taxes(%)</th>
+                                <th>&#160;</th>
+                                <th>Description</th>
+                                <!-- <th>Taxes(%)</th> -->
+                                 <th>&#160;</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
                             </tr>
@@ -67,17 +73,29 @@
                             <t t-set="total1" t-value="0.0"/>
                             <t t-foreach="o.move_id.line_ids" t-as="line">
                                 <tr>
+                                    <t t-if="line.account_id.user_type_id.name in ['Receivable','Payable']">
+                                        <td>
+                                            <span t-field="line.partner_id.name"/>
+                                        </td>
+                                    </t>
+                                    
+                                    
+                                     <t t-else="line.account_id.user_type_id.name in ['Receivable','Payable']">
+                                        <td>
+                                            <span t-field="line.account_id"/>
+                                        </td>
+                                    </t>    
+                                    
+                                        
                                     <td>
-                                        <span t-field="line.account_id"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="line.partner_id"/>
+                                        &#160;
                                     </td>
                                     <td>
                                         <span t-field="line.name"/>
                                     </td>
                                     <td>
-                                        <span t-field="line.tax_ids"/>
+                                       &#160;
+                                        <!-- <span t-field="line.tax_ids"/> -->
                                     </td>
                                     <td>
                                         <span t-field="line.debit"/>
@@ -113,7 +131,22 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    
+                   <div class="row" style="margin-top:150px;" >
+                       <div class="col-xs-4">
+                             <strong>Prepared By: </strong><span style="margin-left:7px;"  t-field="o.user_id.name"/>
+                       </div>
+                       
+                       <div class="col-xs-4"  style="margin-left:310px;">
+                          <strong>Verified By:</strong><span  style="margin-left:7px;" t-field="o.review_by_id.name"/>
+                       </div>
+                       
+                       <div class="col-xs-4"   style="margin-left:310px;">
+                         <strong>Approved By:</strong><span style="margin-left:7px;" t-field="o.approve_by_id.name"/>
+                       </div>
+                       
+                    </div>
+                    
 
                 </div>
             </t>

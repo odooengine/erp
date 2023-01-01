@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="merge_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <div class="text-center">
+                            <h3>
+                                <strong>Merged Transfers</strong>
+                            </h3>
+                        </div>
+                        <br/>
+                        <div>
+                            <div class="row mt32 mb32">
+                                <div class="col-6">
+                                    <strong>Contact: </strong><span t-field="doc.partner_id.name"/><br/>
+                                    <strong>Department: </strong><span t-field="doc.department_id.name"/><br/>
+                                    <strong>Operation Type: </strong><span t-field="doc.picking_type_id.name"/><br/>
+                                    <strong>Source Location: </strong><span t-field="doc.location_id.name"/><br/>
+                                    <strong>Destination Location: </strong><span t-field="doc.location_dest_id.name"/>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Scheduled Date: </strong><span t-field="doc.scheduled_date"/><br/>
+                                    <strong>Source Document: </strong><span t-field="doc.origin"/><br/>
+                                    <strong>Merge From: </strong><span t-field="doc.ref"/><br/>
+                                    <strong>Company: </strong><span t-field="doc.company_id.name"/>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead class="text-center" style="background-color:#eeeeee; font-size:14px; font-weight:600;">
+                                <th>SR.#</th>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th>Product Ref</th>
+                                <th>Quantity</th>
+                                <th>UOM</th>
+                            </thead>
+                            <t t-set="seq" t-value="1"/>
+                            <tbody class="text-center" style="font-size:12px;">
+                                <tr t-foreach="doc.merge_lines" t-as="line">
+                                    <td>
+                                        <span t-esc="seq"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_ref_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.qty"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_uom_id.name"/>
+                                    </td>
+                                    <t t-set="seq" t-value="seq+1"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <div style="width: 450px; height: 100px; display: inline-block;">
+                            <div class="row mt32 mb32">
+                                <div class="col-8">
+                                    <strong>Prepared By:</strong>
+                                </div>
+                                <div class="col-8">
+                                    <strong>Checked By:</strong>
+                                </div>
+                                <div class="col-8">
+                                    <strong>Approved By:</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

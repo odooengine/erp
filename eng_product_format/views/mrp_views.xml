@@ -1,0 +1,29 @@
+<odoo>
+
+    <record id="view_mrp_production_form_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='miscellaneous']" position="after">
+                <page string="Product Attributes">
+                    <group string="Product Attributes">
+                        <group>
+                            <field name="categ_id"/>
+                            <field name="life_type_id"/>
+                            <field name="calender_season_id"/>
+                            <field name="class_fabric_id"/>
+                        </group>
+                        <group>
+                            <field name="item_cat_id"/>
+                            <field name="engine_year_id"/>
+                            <field name="dept_id"/>
+                            <field name="sub_dept"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
