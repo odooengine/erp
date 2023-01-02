@@ -22,7 +22,6 @@ class PDCPaymentWizard(models.TransientModel):
     date_payment = fields.Date(string='Payment Date')
     cheque_no = fields.Char()
     move_id = fields.Many2one('account.move', string='Invoice/Bill Ref')
-    is_child = fields.Boolean()
 
     @api.onchange('journal_id')
     def _onchange_journal(self):
@@ -44,8 +43,7 @@ class PDCPaymentWizard(models.TransientModel):
                     'currency_id': record.currency_id.id,
                     'payment_amount': record.payment_amount,
                     'cheque_no': record.cheque_no,
-                    'pdc_type': 'received',
-                    'is_child': record.is_child,
+                    'pdc_type': 'received'
                 }
                 record = self.env['pdc.payment'].create(vals)
             elif rec.move_type == 'in_invoice':
@@ -58,9 +56,7 @@ class PDCPaymentWizard(models.TransientModel):
                     'currency_id': record.currency_id.id,
                     'payment_amount': record.payment_amount,
                     'cheque_no': record.cheque_no,
-                    'pdc_type': 'sent',
-                    'is_child': record.is_child,
-
+                    'pdc_type': 'sent'
                 }
                 record = self.env['pdc.payment'].create(vals)
 
