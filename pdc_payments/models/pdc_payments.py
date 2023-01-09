@@ -286,14 +286,14 @@ class PDCPayment(models.Model):
                     'name': 'PDC Payments Cleared',
                     'debit': 0.0,
                     'analytic_account_id': record.analytical_account_id.id,
-                    'credit': record.payment_amount,
+                    'credit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
                     'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
                     'account_id': self.env.company.parent_partner_id.property_account_payable_id.id if self.env.company.is_child_company else record.destination_account_id.id,
                 })
                 lines.append(debit_line)
                 credit_line = (0, 0, {
                     'name': 'PDC Payments Cleared',
-                    'debit': record.payment_amount,
+                    'debit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
                     'partner_id': record.partner_id.id,
                     'analytic_account_id': record.analytical_account_id.id,
                     'credit': 0.0,
@@ -380,14 +380,14 @@ class PDCPayment(models.Model):
                     debit_line = (0, 0, {
                         'name': 'PDC Payments',
                         'debit': 0.0,
-                        'credit': record.payment_amount_tax,
+                        'credit': record.payment_amount,
                         # 'partner_id': partner.id,
                         'account_id': journal.payment_credit_account_id.id
                     })
                     lines.append(debit_line)
                     credit_line = (0, 0, {
                         'name': 'PDC Payments',
-                        'debit': record.payment_amount,
+                        'debit': record.payment_amount_tax,
                         'partner_id': partner.id,
                         'credit': 0.0,
                         'account_id': partner.property_account_receivable_id.id
@@ -395,9 +395,9 @@ class PDCPayment(models.Model):
                     lines.append(credit_line)
                     credit_line = (0, 0, {
                         'name': 'PDC Payments',
-                        'debit': record.payment_amount_tax - record.payment_amount,
+                        'debit': 0.0,
                         # 'partner_id': line.partner_id.id,
-                        'credit': 0.0,
+                        'credit': record.payment_amount_tax - record.payment_amount,
                         'account_id': tax_account.id
                     })
                     lines.append(credit_line)
