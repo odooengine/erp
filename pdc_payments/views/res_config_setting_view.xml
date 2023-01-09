@@ -48,7 +48,10 @@
                                 <tree editable="bottom">
                                     <field name="company_id"/>
                                     <field name="partner_id"/>
+                                    <field name="child_journal_id"/>
+<!--                                    <field name="child_journal_ids" widget="many2many_tags"/>-->
                                     <field name="journal_id"/>
+                                    <field name="tax_account_id"/>
                                 </tree>
                             </field>
 

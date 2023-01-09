@@ -33,7 +33,13 @@ class ResCompanyLine(models.Model):
     _name = 'res.company.child'
 
     company_id = fields.Many2one('res.company')
+    # parent_company_id = fields.Many2one('res.company')
     partner_id = fields.Many2one('res.partner')
     journal_id = fields.Many2one('account.journal')
+    # child_journal_ids = fields.Many2one('account.journal')
+    child_journal_id = fields.Many2one('account.journal')
+    tax_account_id = fields.Many2one('account.account')
+
+
 
 
