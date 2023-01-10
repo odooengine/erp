@@ -21,7 +21,7 @@ class MRProductInherit(models.Model):
             if r.product_id.type != 'product':
                 for p in self.move_raw_ids:
                     if p.product_id.name == r.product_id.name:
-                        account = p.location_dest_id.internal_stock_valuation_account_id.id
+                        account = p.location_dest_id.valuation_in_account_id.id
                         value = p.quantity_done
                 if value and account:
                     move_dict = {
@@ -59,12 +59,6 @@ class MRProductInherit(models.Model):
                     move.button_approved()
                     r.entry_move_id = move.id
         return res
-
-
-class StockLocation(models.Model):
-    _inherit = "stock.location"
-
-    internal_stock_valuation_account_id = fields.Many2one('account.account', string="Internal Stock Valuation Account")
 
 
 class StockValuationInherit(models.Model):
