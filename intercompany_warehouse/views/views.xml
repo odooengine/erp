@@ -9,7 +9,7 @@
 
                 <xpath expr="//field[@name='origin']" position="after">
 <!--                    <field name="custom_warehouse_id" string="Warehouse" required="1" domain="[('company_id', 'in', [company_id, False])]"/>-->
-                    <field name="warehouse_custom" string="Warehouse" required="1" />
+                    <field name="warehouse_custom" string="Warehouse" required="0" />
                 </xpath>
 
             </field>

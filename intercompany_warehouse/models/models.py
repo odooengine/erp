@@ -10,7 +10,6 @@ class PurchaseOrderInh(models.Model):
         [("112", "	112/Stock"),
          ("115", "	115/Stock")],
         string="Warehouse",
-        required=True,
     )
 
     def _prepare_sale_order_data(self, name, partner, company, direct_delivery_address):
