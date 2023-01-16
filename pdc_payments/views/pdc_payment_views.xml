@@ -6,12 +6,12 @@
         <field name="arch" type="xml">
             <form string="PDC Payment">
                 <header>
-                    <!--                    <button name="button_register"-->
-                    <!--                            string="Register"-->
-                    <!--                            type="object"-->
-                    <!--                            class="oe_highlight"-->
-                    <!--                            states="draft"-->
-                    <!--                            groups="pdc_payments.group_register"/>-->
+<!--                    <button name="button_register"-->
+<!--                            string="Register"-->
+<!--                            type="object"-->
+<!--                            class="oe_highlight"-->
+<!--                            states="draft"-->
+<!--                            groups="pdc_payments.group_register"/>-->
 
                     <button name="button_cancel"
                             string="Cancel"
@@ -33,11 +33,6 @@
                             attrs="{'invisible': [('state', 'in', ['draft', 'bounced', 'cleared', 'cancel'])]}"
                             class="oe_highlight"
                             groups="pdc_payments.group_clear"/>
-
-                    <!--                     <button name="action_parent_jv"-->
-                    <!--                            string="Test"-->
-                    <!--                            type="object"-->
-                    <!--                            />-->
 
                     <!--                    <button name="action_pdc_payment_wizard"-->
                     <!--                            string="Partner Ledger Report"-->
@@ -69,11 +64,9 @@
                         <group>
                             <field name="partner_id" required="1"/>
                             <field name="payment_amount" required="1"/>
-                            <field name="is_withholding"/>
-                            <field name="payment_amount_tax" attrs="{'invisible':[('is_withholding','=', False)], 'required':[('is_withholding','=', True)]}"/>
                             <field name="cheque_ref"/>
                             <field name="memo"/>
-                            <field name="destination_account_id" attrs="{'invisible':[('is_child','=', True)], 'required':[('is_child','=', False)]}"/>
+                            <field name="destination_account_id" required="1"/>
                             <field name="journal_id" required="1"/>
                             <field name="currency_id" required="1"/>
                             <field name="pdc_type" required="1"/>
@@ -85,8 +78,6 @@
                             <field name="date_cleared"/>
                             <field name="cheque_no" required="1"/>
                             <field name="move_id"/>
-                            <field name="analytical_account_id"/>
-                            <field name="is_child" invisible="1"/>
                         </group>
                     </group>
                 </sheet>

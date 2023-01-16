@@ -8,20 +8,16 @@
 				<group col="4">
 					<field name="partner_id" required="1"/>
 					<field name="payment_amount" required="1"/>
-					<field name="is_withholding"/>
-					<field name="payment_amount_tax" attrs="{'invisible':[('is_withholding','=', False)], 'required':[('is_withholding','=', True)]}"/>
 					<field name="journal_id" required="1"/>
 					<field name="currency_id" required="1"/>
-					<field name="destination_account_id" attrs="{'invisible':[('is_child','=', True)], 'required':[('is_child','=', False)]}"/>
+					<field name="destination_account_id" required="1"/>
 
 					<field name="pdc_type" required="1"/>
 					<field name="date_payment" required="1" string="Due Date"/>
 					<field name="cheque_ref"/>
 					<field name="cheque_no" required="1"/>
 					<field name="memo"/>
-					<field name="analytical_account_id"/>
 					<field name="move_id" readonly="1"/>
-					<field name="is_child" invisible="1"/>
 				</group>
 				<footer>
 					<button name="create_pdc_payments" string="Create PDC Payment" type="object" class="btn-primary"/>
