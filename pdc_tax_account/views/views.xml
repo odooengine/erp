@@ -1,0 +1,16 @@
+<odoo>
+  <data>
+
+    <record id="res_company_view_form_inherited" model="ir.ui.view">
+      <field name="name">res.company.view.form.inherit</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='is_child_company']" position="after">
+          <field name="tax_account_id" attrs="{'invisible':[('is_child_company','=', True)], 'required':[('is_child_company','=', False)]}"/>
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>
