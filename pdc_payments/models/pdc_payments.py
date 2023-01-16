@@ -117,7 +117,7 @@ class PDCPayment(models.Model):
                     'name': 'PDC Payments Registered',
                     'debit': 0.0,
                     'credit': record.payment_amount,
-                    'partner_id': record.partner_id.id,
+                    'partner_id': False if not self.env.company.is_child_company else record.partner_id.id,
                     'analytic_account_id': record.analytical_account_id.id,
                     'account_id': self.env.company.pdc_bnk_vendor.id
                 })
@@ -254,55 +254,179 @@ class PDCPayment(models.Model):
                 move = self.env['account.move'].create(move_dict)
                 move.action_post()
             else:
-                move_dict = {
-                    'ref': record.name,
-                    'move_type': 'entry',
-                    'journal_id': record.journal_id.id,
-                    'partner_id': record.partner_id.id,
-                    'analytical_account_id': record.analytical_account_id.id,
-                    'date': record.date_payment,
-                    'state': 'draft',
-                    'pdc_cleared_id': self.id,
-                }
-                debit_line = (0, 0, {
-                    'name': 'PDC Payments Cleared',
-                    'debit': record.payment_amount,
-                    'credit': 0.0,
-                    'analytic_account_id': record.analytical_account_id.id,
-                    'partner_id': record.partner_id.id,
-                    'account_id': self.env.company.pdc_bnk_vendor.id
-                })
-                lines.append(debit_line)
-                credit_line = (0, 0, {
-                    'name': 'PDC Payments Cleared',
-                    'debit': 0.0,
-                    'analytic_account_id': record.analytical_account_id.id,
-                    'partner_id': record.partner_id.id,
-                    'credit': record.payment_amount,
-                    'account_id': self.env.company.pdc_payable.id
-                })
-                lines.append(credit_line)
-                debit_line = (0, 0, {
-                    'name': 'PDC Payments Cleared',
-                    'debit': 0.0,
-                    'analytic_account_id': record.analytical_account_id.id,
-                    'credit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
-                    'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
-                    'account_id': self.env.company.parent_partner_id.property_account_payable_id.id if self.env.company.is_child_company else record.destination_account_id.id,
-                })
-                lines.append(debit_line)
-                credit_line = (0, 0, {
-                    'name': 'PDC Payments Cleared',
-                    'debit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
-                    'partner_id': record.partner_id.id,
-                    'analytic_account_id': record.analytical_account_id.id,
-                    'credit': 0.0,
-                    'account_id': record.partner_id.property_account_payable_id.id,
-                })
-                lines.append(credit_line)
-                move_dict['line_ids'] = lines
-                move = self.env['account.move'].create(move_dict)
-                move.action_post()
+                if self.env.company.is_child_company:
+                    move_dict = {
+                        'ref': record.name,
+                        'move_type': 'entry',
+                        'journal_id': record.journal_id.id,
+                        'partner_id': record.partner_id.id,
+                        'analytical_account_id': record.analytical_account_id.id,
+                        'date': record.date_payment,
+                        'state': 'draft',
+                        'pdc_cleared_id': self.id,
+                    }
+                    debit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': record.payment_amount,
+                        'credit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'partner_id': False if not self.env.company.is_child_company else record.partner_id.id,
+                        'account_id': self.env.company.pdc_bnk_vendor.id
+                    })
+                    lines.append(debit_line)
+                    credit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'partner_id': record.partner_id.id,
+                        'credit': record.payment_amount,
+                        'account_id': self.env.company.pdc_payable.id
+                    })
+                    lines.append(credit_line)
+                    debit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'credit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
+                        'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
+                        'account_id': self.env.company.parent_partner_id.property_account_payable_id.id if self.env.company.is_child_company else record.destination_account_id.id,
+                    })
+                    lines.append(debit_line)
+                    credit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
+                        'partner_id': record.partner_id.id,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'credit': 0.0,
+                        'account_id': record.partner_id.property_account_payable_id.id,
+                    })
+                    lines.append(credit_line)
+                    move_dict['line_ids'] = lines
+                    move = self.env['account.move'].create(move_dict)
+                    move.action_post()
+                elif not self.env.company.is_child_company and not self.is_withholding:
+                    print('eeeee')
+                    move_dict = {
+                        'ref': record.name,
+                        'move_type': 'entry',
+                        'journal_id': record.journal_id.id,
+                        'partner_id': record.partner_id.id,
+                        'analytical_account_id': record.analytical_account_id.id,
+                        'date': record.date_payment,
+                        'state': 'draft',
+                        'pdc_cleared_id': self.id,
+                    }
+                    debit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': record.payment_amount,
+                        'credit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'partner_id': False if not self.env.company.is_child_company else record.partner_id.id,
+                        'account_id': self.env.company.pdc_bnk_vendor.id
+                    })
+                    lines.append(debit_line)
+                    credit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'partner_id': record.partner_id.id,
+                        'credit': record.payment_amount,
+                        'account_id': self.env.company.pdc_payable.id
+                    })
+                    lines.append(credit_line)
+                    debit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'credit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
+                        'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
+                        'account_id': self.env.company.parent_partner_id.property_account_payable_id.id if self.env.company.is_child_company else record.destination_account_id.id,
+                    })
+                    lines.append(debit_line)
+
+                    # debit_line = (0, 0, {
+                    #     'name': 'PDC Payments Cleared',
+                    #     'debit': 0.0,
+                    #     'analytic_account_id': record.analytical_account_id.id,
+                    #     'credit': record.payment_amount_tax - record.payment_amount,
+                    #     'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
+                    #     'account_id': self.env.company.tax_account_id.id,
+                    # })
+                    # lines.append(debit_line)
+                    credit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': record.payment_amount if not self.is_withholding else record.payment_amount_tax,
+                        'partner_id': record.partner_id.id,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'credit': 0.0,
+                        'account_id': record.partner_id.property_account_payable_id.id,
+                    })
+                    lines.append(credit_line)
+                    move_dict['line_ids'] = lines
+                    move = self.env['account.move'].create(move_dict)
+                    move.action_post()
+                elif not self.env.company.is_child_company and self.is_withholding:
+
+                    move_dict = {
+                        'ref': record.name,
+                        'move_type': 'entry',
+                        'journal_id': record.journal_id.id,
+                        'partner_id': record.partner_id.id,
+                        'analytical_account_id': record.analytical_account_id.id,
+                        'date': record.date_payment,
+                        'state': 'draft',
+                        'pdc_cleared_id': self.id,
+                    }
+                    debit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': record.payment_amount,
+                        'credit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'partner_id': False if not self.env.company.is_child_company else record.partner_id.id,
+                        'account_id': self.env.company.pdc_bnk_vendor.id
+                    })
+                    lines.append(debit_line)
+                    credit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'partner_id': record.partner_id.id,
+                        'credit': record.payment_amount,
+                        'account_id': self.env.company.pdc_payable.id
+                    })
+                    lines.append(credit_line)
+                    debit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'credit': record.payment_amount,
+                        'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
+                        'account_id': self.env.company.parent_partner_id.property_account_payable_id.id if self.env.company.is_child_company else record.destination_account_id.id,
+                    })
+                    lines.append(debit_line)
+
+                    debit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': 0.0,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'credit': record.payment_amount_tax - record.payment_amount,
+                        'partner_id': self.env.company.parent_partner_id.id if self.env.company.is_child_company else record.partner_id.id,
+                        'account_id': self.env.company.tax_account_id.id,
+                    })
+                    lines.append(debit_line)
+                    credit_line = (0, 0, {
+                        'name': 'PDC Payments Cleared',
+                        'debit': record.payment_amount_tax,
+                        'partner_id': record.partner_id.id,
+                        'analytic_account_id': record.analytical_account_id.id,
+                        'credit': 0.0,
+                        'account_id': record.partner_id.property_account_payable_id.id,
+                    })
+                    lines.append(credit_line)
+                    move_dict['line_ids'] = lines
+                    move = self.env['account.move'].create(move_dict)
+                    move.action_post()
+
         self.date_cleared = datetime.today().date()
 
     def button_register(self):

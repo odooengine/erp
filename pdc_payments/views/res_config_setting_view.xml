@@ -38,6 +38,7 @@
                         </group>
                         <group>
                             <field name="is_child_company"/>
+                            <field name="tax_account_id" attrs="{'invisible':[('is_child_company','=', True)], 'required':[('is_child_company','=', False)]}"/>
                             <field name="parent_partner_id" attrs="{'invisible':[('is_child_company','=', False)], 'required':[('is_child_company','=', True)]}"/>
                             <field name="parent_company_id" attrs="{'invisible':[('is_child_company','=', False)], 'required':[('is_child_company','=', True)]}"/>
                         </group>
