@@ -4,6 +4,12 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 
 
+class TempInh(models.Model):
+    _inherit = 'product.template'
+
+    show_on_hand_qty_status_button = fields.Float()
+
+
 class ResUserInh(models.Model):
     _inherit = 'res.users'
 
@@ -120,6 +126,9 @@ class StockPickingInh(models.Model):
         for res in moves:
             for move in res.account_move_id.line_ids:
                 move.analytic_account_id = self.analytical_account_id.id
+        for line in self.move_line_ids_without_package:
+            line.analytical_account_id = self.analytical_account_id.id
+            line.move_id.analytical_account_id = self.analytical_account_id.id
         return rec
 
 
