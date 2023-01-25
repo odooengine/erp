@@ -8,7 +8,7 @@
             <xpath expr="//group[1]" position="before">
                 <group>
                     <group>
-                        <field name="customer_type" attrs="{'invisible': [('partner_type', 'not in', ['customer'])]}" widget="radio"/>
+                        <field name="customer_type" widget="radio"/>
                     </group>
                 </group>
             </xpath>
