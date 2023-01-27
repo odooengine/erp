@@ -23,7 +23,7 @@ class multi_payments(models.Model):
     date = fields.Date(string="Date",track_visibility='onchange')
     journal_id = fields.Many2one('account.journal',string="Bank / Cash",track_visibility='onchange')
     amount = fields.Float(string="Amount",track_visibility='onchange')
-    operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
+    # operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
     journal_item = fields.Many2one('account.move',string="Journal Entry",copy= False,track_visibility='onchange')
     company_id = fields.Many2one('res.company',string="Company",default=lambda self: self.env.company,track_visibility='onchange')
     payment_type =fields.Selection([
@@ -58,11 +58,11 @@ class multi_payments(models.Model):
             'domain': [('move_id','=',self.journal_item.id)]
         }
 
-    @api.onchange('operating_unit_id')
-    def onchange_operating_unit_id(self):
-        for record in self:
-            for rec in record.tree_link_id:
-                rec.operating_unit_id = record.operating_unit_id.id
+    # @api.onchange('operating_unit_id')
+    # def onchange_operating_unit_id(self):
+    #     for record in self:
+    #         for rec in record.tree_link_id:
+    #             rec.operating_unit_id = record.operating_unit_id.id
 
     @api.onchange('journal_id')
     def change_journal(self):
@@ -122,49 +122,98 @@ class multi_payments(models.Model):
         return new_record
 
     def button_verified(self):
+        self.general_entry()
         self.state = 'validate'
-        if not self.journal_item:
-            self.create_journal_entry(self.journal_id,self.date,self.s_no,self.company_id.id)
-        for lines in self.tree_link_id:
-            if self.payment_type == 'inbound':
-                # credit_account = lines.partner_id_tree.property_account_receivable_id.id
-                credit_account = lines.account_id.id
-                debit_account = self.journal_id.default_account_id.id
-                create_debit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,debit_account,lines.amount,0,self.journal_item.id, lines.description)
-                create_credit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,credit_account,0,lines.amount,self.journal_item.id, lines.description)
-            if self.payment_type == 'outbound':
-                credit_account = self.journal_id.default_account_id.id
-                # debit_account = lines.partner_id_tree.property_account_payable_id.id
-                debit_account = lines.account_id.id
-                create_debit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,debit_account,lines.amount,0,self.journal_item.id, lines.description)
-                create_credit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,credit_account,0,lines.amount,self.journal_item.id, lines.description)
+        # if not self.journal_item:
+        #     self.create_journal_entry(self.journal_id,self.date,self.s_no,self.company_id.id)
+        # for lines in self.tree_link_id:
+        #     if self.payment_type == 'inbound':
+        #         # credit_account = lines.partner_id_tree.property_account_receivable_id.id
+        #         credit_account = lines.account_id.id
+        #         debit_account = self.journal_id.default_account_id.id
+        #         create_debit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,debit_account,lines.amount,0,self.journal_item.id, lines.description)
+        #         create_credit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,credit_account,0,lines.amount,self.journal_item.id, lines.description)
+        #     if self.payment_type == 'outbound':
+        #         credit_account = self.journal_id.default_account_id.id
+        #         # debit_account = lines.partner_id_tree.property_account_payable_id.id
+        #         debit_account = lines.account_id.id
+        #         create_debit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,debit_account,lines.amount,0,self.journal_item.id, lines.description)
+        #         create_credit = self.create_entry_lines(lines.partner_id_tree.id,self.date,lines.description,credit_account,0,lines.amount,self.journal_item.id, lines.description)
 
-        self.journal_item.action_post()
-        for line in self.journal_item.line_ids:
-            line.name = line.name +" "+line.payments_tree_label
+        # self.journal_item.action_post()
+        # for line in self.journal_item.line_ids:
+        #     line.name = line.name + " " + line.payments_tree_label
         
 
-    def create_journal_entry(self,journal,date,ref,company):
-        if not self.journal_item:
-            create_journal_entry = self.env['account.move'].create({
-                'company_id': company,
-                'journal_id': journal.id,
-                'date': date,
-                'move_type': 'entry',
-                'ref':  ref,   
-                })
-            self.journal_item = create_journal_entry.id
+    # def create_journal_entry(self,journal,date,ref,company):
+    #     if not self.journal_item:
+    #         create_journal_entry = self.env['account.move'].create({
+    #             'company_id': company,
+    #             'journal_id': journal.id,
+    #             'date': self.date,
+    #             'move_type': 'entry',
+    #             'ref':  ref,
+    #             })
+    #         self.journal_item = create_journal_entry.id
+    #
+    # def create_entry_lines(self,partner,date,label,account,debit,credit,entry_id, description):
+    #     self.env['account.move.line'].create({
+    #         'account_id':account,
+    #         'name': label,
+    #         'debit':debit,
+    #         'credit':credit,
+    #         'move_id':entry_id,
+    #         'partner_id':partner,
+    #         'payments_tree_label':description,
+    #         })
 
-    def create_entry_lines(self,partner,date,label,account,debit,credit,entry_id, description):
-        self.env['account.move.line'].create({
-            'account_id':account,
-            'name': label,
-            'debit':debit,
-            'credit':credit,
-            'move_id':entry_id,
-            'partner_id':partner,
-            'payments_tree_label':description,
+    def general_entry(self):
+        line_ids = []
+        debit_sum = 0.0
+        credit_sum = 0.0
+        move_dict = {
+            # 'name': self.name,
+            'journal_id': self.journal_id.id,
+            'analytical_account_id': self.analytical_account_id.id,
+            # 'partner_id': self.move_lines.partner_id.id,
+            'date': self.date,
+            'ref': self.s_no,
+            'state': 'draft',
+        }
+
+        for oline in self.tree_link_id:
+            if self.payment_type == 'inbound':
+                credit_account = oline.account_id.id
+                debit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
+            if self.payment_type == 'outbound':
+                credit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
+                debit_account = oline.account_id.id
+            debit_line = (0, 0, {
+                'name': oline.name,
+                'debit': abs(oline.amount),
+                'credit': 0.0,
+                'partner_id': oline.partner_id_tree.id,
+                'analytic_account_id': self.analytical_account_id.id,
+                # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+                'account_id': debit_account,
             })
+            line_ids.append(debit_line)
+            debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+            credit_line = (0, 0, {
+                'name': oline.name,
+                'debit': 0.0,
+                'partner_id': oline.partner_id_tree.id,
+                'credit': abs(oline.amount),
+                'analytic_account_id': self.analytical_account_id.id,
+                'account_id': credit_account,
+            })
+            line_ids.append(credit_line)
+            credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+
+        move_dict['line_ids'] = line_ids
+        move = self.env['account.move'].create(move_dict)
+        self.journal_item = move.id
+        print("General entry created")
 
     # def set_all_record_company_ext(self):
     #     rec = self.env['multi.payments'].search([])
@@ -200,11 +249,18 @@ class multi_payments_tree(models.Model):
     account_id = fields.Many2one('account.account', String="Account")
     name = fields.Char(string="name")
     partner_id_tree = fields.Many2one('res.partner',String="Partner" )
-    operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit")
+    # operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit")
     description = fields.Char(string="Description")
     cheque_no = fields.Char(string="Cheque No")
     amount = fields.Float(string="Amount")
-    analytic_account_id = fields.Many2one('account.analytic.account', String="Analytic Account")
+
+    @api.onchange('partner_id_tree')
+    def onchange_partner(self):
+        if self.tree_link.payment_type == 'outbound':
+            self.account_id = self.partner_id_tree.property_account_payable_id.id
+        if self.tree_link.payment_type == 'inbound':
+            self.account_id = self.partner_id_tree.property_account_receivable_id.id
+    # analytic_account_id = fields.Many2one('account.analytic.account', String="Analytic Account")
 
 #    @api.constrains('cheque_no')
 #    def unique_cheque_no(self):
@@ -246,7 +302,7 @@ class AccountPayment(models.Model):
     available_partner_bank_ids = fields.Many2many('res.bank', string='Available Partner Bank Ids')
     partner_ids = fields.Many2many('res.partner', compute='_compute_partner')
     account_ids = fields.Many2many('account.account', compute='_compute_partner')
-    analytic_account_id = fields.Many2one('account.analytic.account', String="Analytic Account")
+    # analytic_account_id = fields.Many2one('account.analytic.account', String="Analytic Account")
     # operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
 
     partner_type = fields.Selection([
@@ -279,10 +335,10 @@ class AccountPayment(models.Model):
             self.is_internal_transfer = False
 
 
-class AccountMoveInh(models.Model):
-    _inherit = 'account.move'
-
-    operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
+# class AccountMoveInh(models.Model):
+#     _inherit = 'account.move'
+#
+#     operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
 
 
 

@@ -38,9 +38,9 @@
                 <attribute name="string">Description</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='journal_type']" position="after">
-                <field name="analytic_account_id"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='journal_type']" position="after">-->
+<!--                <field name="analytic_account_id"/>-->
+<!--            </xpath>-->
 
 <!--            <xpath expr="//field[@name='payment_type']" position="before">-->
 <!--                <field name="operating_unit_id" readonly="0"/>-->

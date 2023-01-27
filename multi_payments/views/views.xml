@@ -22,7 +22,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="operating_unit_id"/>
+<!--                                <field name="operating_unit_id"/>-->
                                 <field name="payment_type" widget="radio" attrs="{'readonly': [('state','=','validate')]}" />
                                 <field name="company_id" readonly='1' />
                                 <field name="amount" readonly='1' force_save='1' />
@@ -41,9 +41,9 @@
                                 <field name="tree_link_id" attrs="{'readonly': [('state','=','validate')]}">
                                     <tree editable="bottom" nolabel="1">
                                         <field name="account_id"/>
-                                        <field name="analytic_account_id"/>
+<!--                                        <field name="analytic_account_id"/>-->
                                         <field name="partner_id_tree" string='Partner' />
-                                        <field name="operating_unit_id"/>
+<!--                                        <field name="operating_unit_id"/>-->
                                         <field name="description" />
                                         <field name="cheque_no"/>
                                         <field name="amount" />
@@ -121,9 +121,9 @@
                     <field name='payments_tree_label' invisible="1"/>
                 </xpath>
 
-                <xpath expr="//div[hasclass('o_td_label')]" position="before">
-                    <field name='operating_unit_id'/>
-                </xpath>
+<!--                <xpath expr="//div[hasclass('o_td_label')]" position="before">-->
+<!--                    <field name='operating_unit_id'/>-->
+<!--                </xpath>-->
             </field>
         </record>
     </data>
