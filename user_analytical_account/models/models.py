@@ -28,6 +28,46 @@ class StockMoveInh(models.Model):
     analytical_account_id = fields.Many2one('account.analytic.account', string="Operating Unit")
 
 
+class MrpWorkOrderInh(models.Model):
+    _inherit = 'mrp.workorder'
+
+    analytical_account_id = fields.Many2one('account.analytic.account', string="Operating Unit")
+
+
+class MrpProductionInh(models.Model):
+    _inherit = 'mrp.production'
+
+    analytical_account_id = fields.Many2one('account.analytic.account', string="Operating Unit")
+    analytical_account_ids = fields.Many2many('account.analytic.account', compute='compute_account')
+
+    @api.depends('analytical_account_id')
+    def compute_account(self):
+        self.analytical_account_ids = self.env.user.analytical_account_ids.ids
+
+    @api.onchange('bom_id')
+    def onchange_bom_unit(self):
+        self.analytical_account_id = self.bom_id.analytical_account_id
+
+    def action_confirm(self):
+        rec = super().action_confirm()
+        for line in self.move_raw_ids:
+            line.analytical_account_id = self.analytical_account_id.id
+        for order in self.workorder_ids:
+            order.analytical_account_id = self.analytical_account_id.id
+        return rec
+
+
+class MrpBomInh(models.Model):
+    _inherit = 'mrp.bom'
+
+    analytical_account_id = fields.Many2one('account.analytic.account', string="Operating Unit")
+    analytical_account_ids = fields.Many2many('account.analytic.account', compute='compute_account')
+
+    @api.depends('analytical_account_id')
+    def compute_account(self):
+        self.analytical_account_ids = self.env.user.analytical_account_ids.ids
+
+
 class AccountPaymentInh(models.Model):
     _inherit = 'account.payment'
 

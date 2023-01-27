@@ -16,6 +16,50 @@
         </field>
     </record>
 
+    <record id="mrp_production_form_inh" model="ir.ui.view">
+        <field name="name">mrp.production.form.inh</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='bom_id']" position="after">
+                <field name="analytical_account_ids" widget="many2many_tags" invisible="1"/>
+                <field name="analytical_account_id" domain="[('id', 'in', analytical_account_ids)]" options="{'no_quick_create': True, 'no_create_edit' : True}" required="1"/>
+            </xpath>
+
+<!--            <xpath expr="//field[@name='workorder_ids']//tree/field[@name='workcenter_id']" position="after">-->
+<!--                <field name="analytical_account_id" />-->
+<!--            </xpath>-->
+
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mrp_workorder_form_inh_unit">
+        <field name="name">mrp.workorder.form.inh</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//tree/field[@name='workcenter_id']" position="before">
+                <field name="analytical_account_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mrp_bom_form_inh" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inh</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[1]/group[1]" position="inside">
+                <field name="analytical_account_ids" widget="many2many_tags" invisible="1"/>
+                <field name="analytical_account_id" domain="[('id', 'in', analytical_account_ids)]" options="{'no_quick_create': True, 'no_create_edit' : True}" required="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
     <record id="account_payment_form_inh" model="ir.ui.view">
         <field name="name">account.payment.form.inh</field>
         <field name="model">account.payment</field>
