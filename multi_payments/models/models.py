@@ -49,6 +49,7 @@ class multi_payments(models.Model):
         ('validate', 'Validate')
     ], string='Status', default='draft',track_visibility='onchange')
 
+
     def button_journal_ext(self):
         return {
             'type': 'ir.actions.act_window',
@@ -58,12 +59,6 @@ class multi_payments(models.Model):
             'domain': [('move_id','=',self.journal_item.id)]
         }
 
-    # @api.onchange('operating_unit_id')
-    # def onchange_operating_unit_id(self):
-    #     for record in self:
-    #         for rec in record.tree_link_id:
-    #             rec.operating_unit_id = record.operating_unit_id.id
-
     @api.onchange('journal_id')
     def change_journal(self):
         # if self.journal_id.name == 'Bank':
@@ -72,13 +67,7 @@ class multi_payments(models.Model):
         else:
             self.voucher_type_o = 'cpv'
 
-    # @api.onchange('journal_id')
-    # def cha_journal(self):
-    #     if self.journal_id.name == 'Bank':
-    #         print(self.journal_id.name)
-    #         self.voucher_type_i = 'brv'
-    #     else:
-    #         self.voucher_type_i = 'crv'
+
 
     def set_multi_payments_links(self):
         records = self.search([('state','=','validate'),('id','>',490)], order='id', limit=100)
@@ -193,6 +182,7 @@ class multi_payments(models.Model):
                 'debit': abs(oline.amount),
                 'credit': 0.0,
                 'partner_id': oline.partner_id_tree.id,
+                'analytic_tag_ids': oline.analytic_tag_ids.ids,
                 'analytic_account_id': self.analytical_account_id.id,
                 # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
                 'account_id': debit_account,
@@ -204,6 +194,7 @@ class multi_payments(models.Model):
                 'debit': 0.0,
                 'partner_id': oline.partner_id_tree.id,
                 'credit': abs(oline.amount),
+                'analytic_tag_ids': oline.analytic_tag_ids.ids,
                 'analytic_account_id': self.analytical_account_id.id,
                 'account_id': credit_account,
             })
@@ -253,6 +244,7 @@ class multi_payments_tree(models.Model):
     description = fields.Char(string="Description")
     cheque_no = fields.Char(string="Cheque No")
     amount = fields.Float(string="Amount")
+    analytic_tag_ids = fields.Many2many('account.analytic.tag')
 
     @api.onchange('partner_id_tree')
     def onchange_partner(self):
