@@ -60,6 +60,24 @@
         </field>
     </record>
 
+    <record id="multi_payments_form_inh" model="ir.ui.view">
+        <field name="name">multi.payments.form.inh</field>
+        <field name="model">multi.payments</field>
+        <field name="inherit_id" ref="multi_payments.multi_payments_module_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='payment_type']" position="before">
+                <field name="analytical_account_ids" widget="many2many_tags" invisible="1"/>
+                <field name="analytical_account_id" domain="[('id', 'in', analytical_account_ids)]" options="{'no_quick_create': True, 'no_create_edit' : True}" required="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='tree_link_id']//tree/field[@name='partner_id_tree']" position="after">
+                <field name="analytical_account_id"/>
+            </xpath>
+
+        </field>
+    </record>
+
     <record id="account_payment_form_inh" model="ir.ui.view">
         <field name="name">account.payment.form.inh</field>
         <field name="model">account.payment</field>

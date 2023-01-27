@@ -34,6 +34,28 @@ class MrpWorkOrderInh(models.Model):
     analytical_account_id = fields.Many2one('account.analytic.account', string="Operating Unit")
 
 
+class MultiPaymentInh(models.Model):
+    _inherit = 'multi.payments'
+
+    analytical_account_id = fields.Many2one('account.analytic.account', string="Operating Unit")
+    analytical_account_ids = fields.Many2many('account.analytic.account', compute='compute_account')
+
+    @api.depends('analytical_account_id')
+    def compute_account(self):
+        self.analytical_account_ids = self.env.user.analytical_account_ids.ids
+
+    def button_verified(self):
+        rec = super().button_verified()
+        for line in self.tree_link_id:
+            line.analytical_account_id = self.analytical_account_id.id
+        return rec
+
+class MultiPaymentTreeInh(models.Model):
+    _inherit = 'multi.payments.tree'
+
+    analytical_account_id = fields.Many2one('account.analytic.account', string="Operating Unit")
+
+
 class MrpProductionInh(models.Model):
     _inherit = 'mrp.production'
 
