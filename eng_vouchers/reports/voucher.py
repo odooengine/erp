@@ -40,6 +40,14 @@ class EngAccPayment(models.Model):
             pay.partner_bank_id = res_partner_bank_id.id
 
 
+    def get_move_lines(self):
+        moves = self.env['account.move.line'].search(['|',('move_id.payment_id', '=', self.id),('move_id.ref', '=', self.name)])
+        return moves[0], moves[2]
+
+
+
+
+
 class AccountEdi(models.Model):
     _inherit = 'account.edi.document'
 

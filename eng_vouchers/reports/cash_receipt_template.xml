@@ -71,22 +71,51 @@
                         <tbody class="consumed_tbody">
                             <t t-set="total" t-value="0.0"/>
                             <t t-set="total1" t-value="0.0"/>
+<!--                            <t t-set="line" t-value="o.get_move_lines()"/>-->
+<!--                            <span t-esc="o.get_move_lines()"/>-->
+                            <t t-if="o.is_internal_transfer == True">
+                                <tr t-foreach="o.get_move_lines()" t-as="line">
+                                     <t>
+                                        <td>
+                                            <span t-esc="line.account_id.name"/>
+                                        </td>
+                                     </t>
+                                    <td>
+                                        &#160;
+                                    </td>
+                                    <td>
+                                        <span t-esc="line.name"/>
+                                    </td>
+                                    <td>
+                                       &#160;
+                                        <!-- <span t-field="line.tax_ids"/> -->
+                                    </td>
+                                    <td>
+                                        <span t-esc="line.debit"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="line.credit"/>
+                                    </td>
+                                </tr>
+<!--                                <t t-set="total" t-value="total + line.debit"/>-->
+<!--                                <t t-set="total1" t-value="total1 + line.credit"/>-->
+                            </t>
                             <t t-foreach="o.move_id.line_ids" t-as="line">
-                                <tr>
+                                <tr t-if="o.is_internal_transfer == False">
                                     <t t-if="line.account_id.user_type_id.name in ['Receivable','Payable']">
                                         <td>
                                             <span t-field="line.partner_id.name"/>
                                         </td>
                                     </t>
-                                    
-                                    
+
+
                                      <t t-else="line.account_id.user_type_id.name in ['Receivable','Payable']">
                                         <td>
                                             <span t-field="line.account_id"/>
                                         </td>
-                                    </t>    
-                                    
-                                        
+                                     </t>
+
+
                                     <td>
                                         &#160;
                                     </td>
