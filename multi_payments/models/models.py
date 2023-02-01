@@ -23,6 +23,12 @@ class multi_payments(models.Model):
     date = fields.Date(string="Date",track_visibility='onchange')
     journal_id = fields.Many2one('account.journal',string="Bank / Cash",track_visibility='onchange')
     amount = fields.Float(string="Amount",track_visibility='onchange')
+
+    is_withholding_tax = fields.Boolean(string='WithHolding Tax', default=False , track_visibility='onchange')
+    total_tax = fields.Float(string="Tax Amount", track_visibility='onchange')
+    tax_account_id = fields.Many2one('account.account', String="Tax Account", track_visibility='onchange')
+
+
     # operating_unit_id = fields.Many2one('operating.unit', string="Operating Unit", track_visibility='onchange')
     journal_item = fields.Many2one('account.move',string="Journal Entry",copy= False,track_visibility='onchange')
     company_id = fields.Many2one('res.company',string="Company",default=lambda self: self.env.company,track_visibility='onchange')
@@ -100,6 +106,15 @@ class multi_payments(models.Model):
 
         self.amount = total
 
+    @api.onchange('tree_link_id')
+    def calculate_tax(self):
+        total = 0
+        for x in self.tree_link_id:
+            total = total + x.tax_amount
+        self.total_tax = total
+
+
+
     @api.model
     def create(self, vals):
         if vals['payment_type'] == 'outbound':
@@ -157,54 +172,115 @@ class multi_payments(models.Model):
     #         })
 
     def general_entry(self):
-        line_ids = []
-        debit_sum = 0.0
-        credit_sum = 0.0
-        move_dict = {
-            # 'name': self.name,
-            'journal_id': self.journal_id.id,
-            'analytical_account_id': self.analytical_account_id.id,
-            # 'partner_id': self.move_lines.partner_id.id,
-            'date': self.date,
-            'ref': self.s_no,
-            'state': 'draft',
-        }
+        if self.payment_type == 'inbound':
+            line_ids = []
+            debit_sum = 0.0
+            credit_sum = 0.0
+            move_dict = {
+                # 'name': self.name,
+                'journal_id': self.journal_id.id,
+                'analytical_account_id': self.analytical_account_id.id,
+                # 'partner_id': self.move_lines.partner_id.id,
+                'date': self.date,
+                'ref': self.s_no,
+                'state': 'draft',
+            }
 
-        for oline in self.tree_link_id:
-            if self.payment_type == 'inbound':
-                credit_account = oline.account_id.id
-                debit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
-            if self.payment_type == 'outbound':
-                credit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
-                debit_account = oline.account_id.id
-            debit_line = (0, 0, {
-                'name': oline.name,
-                'debit': abs(oline.amount),
-                'credit': 0.0,
-                'partner_id': oline.partner_id_tree.id,
-                'analytic_tag_ids': oline.analytic_tag_ids.ids,
-                'analytic_account_id': self.analytical_account_id.id,
-                # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
-                'account_id': debit_account,
-            })
-            line_ids.append(debit_line)
-            debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
-            credit_line = (0, 0, {
-                'name': oline.name,
-                'debit': 0.0,
-                'partner_id': oline.partner_id_tree.id,
-                'credit': abs(oline.amount),
-                'analytic_tag_ids': oline.analytic_tag_ids.ids,
-                'analytic_account_id': self.analytical_account_id.id,
-                'account_id': credit_account,
-            })
-            line_ids.append(credit_line)
-            credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+            for oline in self.tree_link_id:
+                if self.payment_type == 'inbound':
+                    credit_account = oline.account_id.id
+                    debit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
+                if self.payment_type == 'outbound':
+                    credit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
+                    debit_account = oline.account_id.id
+                debit_line = (0, 0, {
+                    'name': oline.name,
+                    'debit': abs(oline.amount),
+                    'credit': 0.0,
+                    'partner_id': oline.partner_id_tree.id,
+                    'analytic_tag_ids': oline.analytic_tag_ids.ids,
+                    'analytic_account_id': self.analytical_account_id.id,
+                    # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+                    'account_id': debit_account,
+                })
+                line_ids.append(debit_line)
+                debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+                credit_line = (0, 0, {
+                    'name': oline.name,
+                    'debit': 0.0,
+                    'partner_id': oline.partner_id_tree.id,
+                    'credit': abs(oline.amount),
+                    'analytic_tag_ids': oline.analytic_tag_ids.ids,
+                    'analytic_account_id': self.analytical_account_id.id,
+                    'account_id': credit_account,
+                })
+                line_ids.append(credit_line)
+                credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
 
-        move_dict['line_ids'] = line_ids
-        move = self.env['account.move'].create(move_dict)
-        self.journal_item = move.id
-        print("General entry created")
+            move_dict['line_ids'] = line_ids
+            move = self.env['account.move'].create(move_dict)
+            self.journal_item = move.id
+            print("General entry2 created")
+        else:
+            line_ids = []
+            debit_sum = 0.0
+            credit_sum = 0.0
+            tax_sum = 0.0
+            move_dict = {
+                # 'name': self.name,
+                'journal_id': self.journal_id.id,
+                'analytical_account_id': self.analytical_account_id.id,
+                # 'partner_id': self.move_lines.partner_id.id,
+                'date': self.date,
+                'ref': self.s_no,
+                'state': 'draft',
+            }
+            for oline in self.tree_link_id:
+                if self.payment_type == 'inbound':
+                    credit_account = oline.account_id.id
+                    debit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
+                if self.payment_type == 'outbound':
+                    credit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
+                    debit_account = oline.account_id.id
+                debit_line = (0, 0, {
+                    'name': oline.name,
+                    'debit': abs(oline.amount),
+                    'credit': 0.0,
+                    'partner_id': oline.partner_id_tree.id,
+                    'analytic_tag_ids': oline.analytic_tag_ids.ids,
+                    'analytic_account_id': self.analytical_account_id.id,
+                    # 'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+                    'account_id': debit_account,
+                })
+                line_ids.append(debit_line)
+                debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+                credit_line = (0, 0, {
+                    'name': oline.name,
+                    'debit': 0.0,
+                    'partner_id': oline.partner_id_tree.id,
+                    'credit': abs(oline.amount - oline.tax_amount),
+                    'analytic_tag_ids': oline.analytic_tag_ids.ids,
+                    'analytic_account_id': self.analytical_account_id.id,
+                    'account_id': credit_account,
+                })
+                line_ids.append(credit_line)
+                credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+                tax_line = (0, 0, {
+                    'name': oline.name,
+                    'debit': 0.0,
+                    'partner_id': oline.partner_id_tree.id,
+                    'credit': abs(oline.tax_amount),
+                    'analytic_tag_ids': oline.analytic_tag_ids.ids,
+                    'analytic_account_id': self.analytical_account_id.id,
+                    'account_id': self.tax_account_id.id,
+                })
+                line_ids.append(tax_line)
+                credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+
+            move_dict['line_ids'] = line_ids
+            move = self.env['account.move'].create(move_dict)
+            self.journal_item = move.id
+            print("General entry2 created")
 
     # def set_all_record_company_ext(self):
     #     rec = self.env['multi.payments'].search([])
@@ -244,6 +320,7 @@ class multi_payments_tree(models.Model):
     description = fields.Char(string="Description")
     cheque_no = fields.Char(string="Cheque No")
     amount = fields.Float(string="Amount")
+    tax_amount = fields.Float(string="Tax")
     analytic_tag_ids = fields.Many2many('account.analytic.tag')
 
     @api.onchange('partner_id_tree')

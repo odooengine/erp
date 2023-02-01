@@ -26,6 +26,9 @@
                                 <field name="payment_type" widget="radio" attrs="{'readonly': [('state','=','validate')]}" />
                                 <field name="company_id" readonly='1' />
                                 <field name="amount" readonly='1' force_save='1' />
+                                <field name="is_withholding_tax" attrs="{'invisible': [('payment_type','!=','outbound')]}"/>
+                                <field name="total_tax" readonly="1" force_save='1' attrs="{'invisible': [('is_withholding_tax','!=',True)]}"/>
+                                <field name="tax_account_id" attrs="{'invisible': [('is_withholding_tax','!=',True)],'required': [('is_withholding_tax','=',True)]}"/>
                             </group>
                             <group>
                                 <field name="date" required='1' attrs="{'readonly': [('state','=','validate')]}" />
@@ -47,7 +50,8 @@
                                         <field name="analytic_tag_ids" widget="many2many_tags"/>
                                         <field name="description" />
                                         <field name="cheque_no"/>
-                                        <field name="amount" />
+                                        <field name="tax_amount"/>
+                                        <field name="amount"/>
                                     </tree>
                                 </field>
                             </page>
