@@ -194,7 +194,7 @@ class multi_payments(models.Model):
                     credit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
                     debit_account = oline.account_id.id
                 debit_line = (0, 0, {
-                    'name': oline.name,
+                    'name': self.s_no,
                     'debit': abs(oline.amount),
                     'credit': 0.0,
                     'partner_id': oline.partner_id_tree.id,
@@ -206,7 +206,7 @@ class multi_payments(models.Model):
                 line_ids.append(debit_line)
                 debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
                 credit_line = (0, 0, {
-                    'name': oline.name,
+                    'name': self.s_no,
                     'debit': 0.0,
                     'partner_id': oline.partner_id_tree.id,
                     'credit': abs(oline.amount),
@@ -243,7 +243,7 @@ class multi_payments(models.Model):
                     credit_account = self.journal_id.payment_credit_account_id.id if self.payment_type == 'outbound' else self.journal_id.payment_debit_account_id.id
                     debit_account = oline.account_id.id
                 debit_line = (0, 0, {
-                    'name': oline.name,
+                    'name': self.s_no,
                     'debit': abs(oline.amount),
                     'credit': 0.0,
                     'partner_id': oline.partner_id_tree.id,
@@ -255,7 +255,7 @@ class multi_payments(models.Model):
                 line_ids.append(debit_line)
                 debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
                 credit_line = (0, 0, {
-                    'name': oline.name,
+                    'name': self.s_no,
                     'debit': 0.0,
                     'partner_id': oline.partner_id_tree.id,
                     'credit': abs(oline.amount - oline.tax_amount),
@@ -266,7 +266,7 @@ class multi_payments(models.Model):
                 line_ids.append(credit_line)
                 credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
                 tax_line = (0, 0, {
-                    'name': oline.name,
+                    'name': self.s_no,
                     'debit': 0.0,
                     'partner_id': oline.partner_id_tree.id,
                     'credit': abs(oline.tax_amount),
