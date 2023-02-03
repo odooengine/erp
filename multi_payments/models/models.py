@@ -68,22 +68,10 @@ class multi_payments(models.Model):
     @api.onchange('journal_id')
     def change_journal(self):
         # if self.journal_id.name == 'Bank':
-        if self.journal_id.type == 'bank' and self.payment_type == 'outbound':
+        if self.journal_id.type == 'bank':
             self.voucher_type_o = 'bpv'
-        elif self.journal_id.type == 'cash' and self.payment_type == 'outbound':
+        else:
             self.voucher_type_o = 'cpv'
-        elif self.journal_id.type == 'cash' and self.payment_type == 'inbound':
-            self.voucher_type_i = 'crv'
-        elif self.journal_id.type == 'bank' and self.payment_type == 'inbound':
-            self.voucher_type_i = 'brv'
-
-    @api.onchange('payment_type')
-    def change_payment_type(self):
-        # if self.journal_id.name == 'Bank':
-        if self.payment_type == 'outbound':
-            self.voucher_type_i = ''
-        elif self.payment_type == 'inbound':
-            self.voucher_type_o = ''
 
 
 
