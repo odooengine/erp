@@ -1,6 +1,6 @@
 <odoo>
 
-    <record id="view_product_product_form_inherit" model="ir.ui.view">
+    <record id="view_product_product_status_form_inherit" model="ir.ui.view">
         <field name="name">product.product.form.inherit</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
@@ -12,7 +12,7 @@
         </field>
     </record>
 
-    <record id="view_product_product_tree_inherit" model="ir.ui.view">
+    <record id="view_product_product_status_tree_inherit" model="ir.ui.view">
         <field name="name">product.product.tree.inherit</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_product_tree_view"/>
@@ -24,7 +24,7 @@
         </field>
     </record>
 
-    <record id="view_product_template_tree_inherit" model="ir.ui.view">
+    <record id="view_product_template_status_tree_inherit" model="ir.ui.view">
         <field name="name">product.template.tree.inherit</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
@@ -36,7 +36,7 @@
         </field>
     </record>
 
-    <record id="view_product_template_form_inherit" model="ir.ui.view">
+    <record id="view_product_template_status_form_inherit" model="ir.ui.view">
         <field name="name">product.template.form.inherit</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
@@ -47,5 +47,21 @@
             </xpath>
         </field>
     </record>
+
+
+    <record id="view_stock_quant_product_form_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.tree.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='owner_id']" position="after">
+                <field name="class_fabric_id" optional="hide"/>
+                <field name="item_cat_id" optional="hide"/>
+                <field name="dept_id" optional="hide"/>
+                <field name="sub_dept" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
 
 </odoo>

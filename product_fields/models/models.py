@@ -89,3 +89,11 @@ class InheritMRP(models.Model):
         states={'draft': [('readonly', False)]}, check_company=True,
         help="Location where the system will stock the finished products." , tracking=True )
 
+class InheritStockQuant(models.Model):
+    _inherit = "stock.quant"
+
+    class_fabric_id = fields.Many2one('class.fabric', string='Fabric' ,related='product_id.product_tmpl_id.class_fabric_id')
+    item_cat_id = fields.Many2one('item.category', string='Class',related='product_id.product_tmpl_id.item_cat_id')
+    dept_id = fields.Selection([], string='Department',related='product_id.product_tmpl_id.dept_id')
+    sub_dept = fields.Selection([], string='Sub Department',related='product_id.product_tmpl_id.sub_dept')
+
