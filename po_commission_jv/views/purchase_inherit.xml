@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="commission_purchase_form_inherited" model="ir.ui.view">
+        <field name="name">purchase.order.inherited</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="model">purchase.order</field>
+        <field name="priority">100</field>
+        <field type="xml" name="arch">
+            <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="after">
+                <field name="is_commission" invisible="1"/>
+                <field name="commission" optional="show" attrs="{'column_invisible': [('parent.is_commission', '!=', True)],'required': [('is_commission', '=', True)]}"/>
+                <field name="tax_amount_custom" optional="show" attrs="{'column_invisible': [('parent.is_commission', '!=', True)],'required': [('is_commission', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="is_commission"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
+                <attribute name="attrs">{"column_invisible": [("parent.is_commission", "=", True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='amount_tax']" position="attributes">
+                <attribute name="attrs">{"invisible": [("is_commission", "=", True)]}</attribute>
+            </xpath>
+            <xpath expr="//group[hasclass('oe_subtotal_footer')]/field[@name='amount_tax']" position="after">
+                <field name="commission_total" attrs="{'invisible': [('is_commission', '!=', True)]}" force_save="1"/>
+                <field name="tax_amount_commission_total"  attrs="{'invisible': [('is_commission', '!=', True)]}" force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
