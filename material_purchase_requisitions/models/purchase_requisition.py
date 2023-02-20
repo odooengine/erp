@@ -38,6 +38,8 @@ class MaterialPurchaseRequisition(models.Model):
         ('ir_approve', 'Waiting IR Approval'),
         ('approve', 'Approved'),
         ('stock', 'Purchase Order Created'),
+        ('waiting_approval', 'Waiting Receive Approval'),
+        ('received_approve', 'Receiving Approved'),
         ('receive', 'Received'),
         ('cancel', 'Cancelled'),
         ('reject', 'Rejected')],
@@ -510,6 +512,14 @@ class MaterialPurchaseRequisition(models.Model):
     #                     purchase_order = self.env['purchase.order'].create(po_vals)
 
     # @api.multi
+    def action_ask_received(self):
+        for rec in self:
+            rec.state = 'waiting_approval'
+
+    # def action_receive_approve(self):
+    #     for rec in self:
+    #         rec.state = 'received_approve'
+
     def action_received(self):
         for rec in self:
             rec.receive_date = fields.Date.today()
