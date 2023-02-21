@@ -8,7 +8,7 @@
         <field name="priority">100</field>
         <field type="xml" name="arch">
             <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="after">
-                <field name="is_commission" invisible="1" />
+                <field name="is_commission" invisible="1"/>
                 <field name="commission" optional="show" attrs="{'column_invisible': [('parent.is_commission', '!=', True)],'required': [('is_commission', '=', True)]}"/>
                 <field name="tax_amount_custom" optional="show" attrs="{'column_invisible': [('parent.is_commission', '!=', True)],'required': [('is_commission', '=', True)]}"/>
             </xpath>

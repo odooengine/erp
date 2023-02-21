@@ -15,17 +15,14 @@ class PurchaseOrderInherit(models.Model):
     def _compute_commission(self):
         for rec in self:
             if rec.is_commission:
-                if rec.order_line:
-                    for line in rec.order_line:
-                        if line:
-                            if line.commission:
-                                rec.commission_total += line.commission * line.product_qty
-                            else:
-                                rec.commission_total = 0.0
+                for line in rec.order_line:
+                    if line:
+                        if line.commission:
+                            rec.commission_total += line.commission
                         else:
                             rec.commission_total = 0.0
-                else:
-                    rec.commission_total = 0.0
+                    else:
+                        rec.commission_total = 0.0
             else:
                 rec.commission_total = 0.0
 
@@ -33,14 +30,11 @@ class PurchaseOrderInherit(models.Model):
     def _compute_tax_amount_commission(self):
         for rec in self:
             if rec.is_commission:
-                if rec.order_line:
-                    for line in rec.order_line:
-                        if line.tax_amount_custom:
-                            rec.tax_amount_commission_total += line.tax_amount_custom * line.product_qty
-                        else:
-                            rec.tax_amount_commission_total = 0.0
-                else:
-                    rec.tax_amount_commission_total = 0.0
+                for line in rec.order_line:
+                    if line.tax_amount_custom:
+                        rec.tax_amount_commission_total += line.tax_amount_custom
+                    else:
+                        rec.tax_amount_commission_total = 0.0
             else:
                 rec.tax_amount_commission_total = 0.0
     @api.onchange('is_commission')
@@ -53,6 +47,8 @@ class PurchaseOrderInherit(models.Model):
 
     def action_create_jv(self):
         lines = []
+        debit_sum = 0.0
+        credit_sum = 0.0
         ex = self.env['ir.config_parameter'].get_param('po_commission_jv.expense_commission_account_id')
         ta = self.env['ir.config_parameter'].get_param('po_commission_jv.tax_asset_commission_account_id')
         pc = self.env['ir.config_parameter'].get_param('po_commission_jv.payable_commission_account_id')
@@ -61,8 +57,15 @@ class PurchaseOrderInherit(models.Model):
         tax_asset = self.env['account.account'].search([('id', '=', int(ta))])
         payable_commission = self.env['account.account'].search([('id', '=', int(pc))])
         tax_liability = self.env['account.account'].search([('id', '=', int(tl))])
+        print(expense)
+        print(tax_asset)
+        print(payable_commission)
+        print(tax_liability)
         for record in self:
             bill = self.env['account.move'].search([], limit=1, order='create_date desc')
+            print("billllll",bill)
+            # print("billllll",record.move_id)
+            # move_dict = bill
             move_dict = {
                 'ref': record.name,
                 'move_type': 'entry',
@@ -71,6 +74,7 @@ class PurchaseOrderInherit(models.Model):
                 'state': 'draft',
                 'analytical_account_id': record.analytical_account_id.id,
             }
+            # print(move_dict)
             if record.commission_total > 0:
                 debit_line = (0, 0, {
                     'name': record.name,
@@ -111,6 +115,10 @@ class PurchaseOrderInherit(models.Model):
                 lines.append(credit_line)
                 move_dict['line_ids'] = lines
             move = self.env['account.move'].create(move_dict)
+            move.action_post()
+            move.button_review()
+            move.button_approved()
+
 
     def _prepare_invoice(self):
         invoice_vals = super(PurchaseOrderInherit, self)._prepare_invoice()
@@ -120,6 +128,11 @@ class PurchaseOrderInherit(models.Model):
             'commission_total': self.commission_total,
             'tax_amount_commission_total': self.tax_amount_commission_total,
         })
+        # print(invoice_vals)
+        # invoice_vals['is_commission'] = self.is_commission
+        # invoice_vals['po_commission_name'] = self.name
+        # invoice_vals['commission_total'] = self.commission_total
+        # invoice_vals['tax_amount_commission_total'] = self.tax_amount_commission_total
         self.action_create_jv()
         return invoice_vals
 
@@ -131,6 +144,17 @@ class PurchaseOrderLineInherit(models.Model):
     commission = fields.Float(string="Commission")
     tax_amount_custom = fields.Float(string="Tax Amount")
     is_commission = fields.Boolean(string="Is Commission")
+
+    # def _prepare_account_move_line(self):
+    #     res = super(PurchaseOrderLineInherit, self)._prepare_account_move_line()
+    #     print("fffff")
+    #     res.update({
+    #         'commission': self.commission,
+    #         'tax_amount_custom': self.tax_amount_custom,
+    #         'is_commission': self.is_commission,
+    #     })
+    #     print(res)
+    #     return res
 
     def _prepare_account_move_line(self, move=False):
         self.ensure_one()
