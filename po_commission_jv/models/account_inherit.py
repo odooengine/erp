@@ -12,42 +12,66 @@ class AccountInherit(models.Model):
     commission_total = fields.Float(string="Commission", compute='_compute_commission')
     tax_amount_commission_total = fields.Float(string="Tax Amount", compute='_compute_tax_amount_commission')
 
-    # def action_post(self):
-    #     rec = super(AccountInherit, self).action_post()
-    #     commission_jvs = self.env['account.move'].search([('ref', '=', self.po_commission_name)])
-    #     print("ddddd",commission_jvs)
-    #     if commission_jvs:
-    #         commission_jvs.action_post()
-    #         commission_jvs.button_review()
-    #         print("aaaaaaaaaaaa")
-    #         commission_jvs.button_approved()
-    #     else:
-    #         rec = super(AccountInherit, self).action_post()
-    #     return rec
+    def action_post(self):
+        rec = super(AccountInherit, self).action_post()
+        commission_jvs = self.env['account.move'].search([('ref', '=', self.po_commission_name)], limit=1)
+        if commission_jvs:
+            commission_jvs.write({
+                'state': 'to_review'
+            })
+        return rec
+
+    def button_review(self):
+        rec = super(AccountInherit, self).button_review()
+        commission_jvs = self.env['account.move'].search([('ref', '=', self.po_commission_name)], limit=1)
+        if commission_jvs:
+            commission_jvs.write({
+                'state': 'approve'
+            })
+        return rec
+
+
+    def button_approved(self):
+        rec = super(AccountInherit, self).button_approved()
+        commission_jvs = self.env['account.move'].search([('ref', '=', self.po_commission_name)])
+        if len(commission_jvs) == 1:
+            commission_jvs.button_approved()
+        else:
+            print("Stop")
+        return rec
 
     @api.depends('invoice_line_ids.commission')
     def _compute_commission(self):
         for rec in self:
             if rec.is_commission:
-                for line in rec.invoice_line_ids:
-                    if line:
-                        if line.commission:
-                            rec.commission_total += line.commission
+                if rec.invoice_line_ids:
+                    for line in rec.invoice_line_ids:
+                        if line:
+                            if line.commission:
+                                rec.commission_total += line.commission * line.quantity
+                            else:
+                                rec.commission_total = 0.0
                         else:
                             rec.commission_total = 0.0
-                    else:
-                        rec.commission_total = 0.0
+                else:
+                    rec.commission_total = 0.0
             else:
                 rec.commission_total = 0.0
     @api.depends('invoice_line_ids.tax_amount_custom')
     def _compute_tax_amount_commission(self):
         for rec in self:
             if rec.is_commission:
-                for line in rec.invoice_line_ids:
-                    if line.tax_amount_custom:
-                        rec.tax_amount_commission_total += line.tax_amount_custom
-                    else:
-                        rec.tax_amount_commission_total = 0.0
+                if rec.invoice_line_ids:
+                    for line in rec.invoice_line_ids:
+                        if line:
+                            if line.tax_amount_custom:
+                                rec.tax_amount_commission_total += line.tax_amount_custom * line.quantity
+                            else:
+                                rec.tax_amount_commission_total = 0.0
+                        else:
+                            rec.tax_amount_commission_total = 0.0
+                else:
+                    rec.tax_amount_commission_total = 0.0
             else:
                 rec.tax_amount_commission_total = 0.0
 

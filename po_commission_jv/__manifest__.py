@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base' ,'purchase' ,'account'],
+    'depends': ['base' ,'purchase' ,'account' ,'manager_all_approvals'],
 
     # always loaded
     'data': [
