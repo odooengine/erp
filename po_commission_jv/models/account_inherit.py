@@ -11,6 +11,7 @@ class AccountInherit(models.Model):
     po_commission_name = fields.Char(string="Purchase Order")
     commission_total = fields.Float(string="Commission", compute='_compute_commission')
     tax_amount_commission_total = fields.Float(string="Tax Amount", compute='_compute_tax_amount_commission')
+    commision_jv_id = fields.Many2one('account.move' ,string="Commission Jv")
 
     # def action_post(self):
     #     rec = super(AccountInherit, self).action_post()
@@ -24,6 +25,16 @@ class AccountInherit(models.Model):
     #     else:
     #         rec = super(AccountInherit, self).action_post()
     #     return rec
+
+    def action_post(self):
+        print("qqqqqqqqqqqqqqqqqqqq")
+        rec = super(AccountInherit, self).action_post()
+        print("sssssssssssssssssss")
+        if self.is_commission:
+            self.commision_jv_id.action_post()
+            self.commision_jv_id.button_review()
+            self.commision_jv_id.button_approved()
+        return rec
 
     @api.depends('invoice_line_ids.commission')
     def _compute_commission(self):
@@ -89,6 +100,8 @@ class AccountSettingCommission(models.TransientModel):
                                                     config_parameter='po_commission_jv.payable_commission_account_id')
     tax_liability_commission_account_id = fields.Many2one('account.account', string='Tax(Liability) Account',
                                                     config_parameter='po_commission_jv.tax_liability_commission_account_id')
+    commission_journal_id = fields.Many2one('account.journal', string='Journal',
+                                                          config_parameter='po_commission_jv.commission_journal_id')
 
 
 

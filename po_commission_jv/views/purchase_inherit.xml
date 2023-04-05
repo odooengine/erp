@@ -25,6 +25,10 @@
                 <field name="commission_total" attrs="{'invisible': [('is_commission', '!=', True)]}" force_save="1"/>
                 <field name="tax_amount_commission_total"  attrs="{'invisible': [('is_commission', '!=', True)]}" force_save="1"/>
             </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="replace">
+                <field name="picking_type_id" domain="[('code','=','incoming'), '|', ('warehouse_id', '=', False), ('warehouse_id.company_id', '=', company_id)]" options="{'no_create': True}" groups="stock.group_stock_multi_locations"/>
+            </xpath>
+
         </field>
     </record>
 
