@@ -25,6 +25,9 @@
                                      <group>
                                         <field name="tax_liability_commission_account_id"/>
                                     </group>
+                                    <group>
+                                        <field name="commission_journal_id"/>
+                                    </group>
                                 </div>
                             </div>
                         </div>
