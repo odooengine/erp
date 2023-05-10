@@ -13,6 +13,7 @@ class StatusProductTemplate(models.Model):
 
     status = fields.Char(string='Status')
     book_number = fields.Char(string='Book No')
+    show_on_hand_qty_status_button = fields.Boolean()
 
     @api.model
     def create(self, vals):

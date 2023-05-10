@@ -9,6 +9,9 @@
                 <field name="status" optional="hide"/>
                 <field name="book_number" optional="hide"/>
             </xpath>
+            <xpath expr="//field[@name='categ_id']" position="attributes">
+				<attribute name="options">{'no_open': True, 'no_create': True}</attribute>
+			</xpath>
         </field>
     </record>
 
@@ -44,6 +47,9 @@
             <xpath expr="//field[@name='uom_id']" position="after">
                 <field name="status" optional="hide"/>
                 <field name="book_number" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='categ_id']" position="attributes">
+				<attribute name="options">{'no_open': True, 'no_create': True}</attribute>
             </xpath>
         </field>
     </record>
